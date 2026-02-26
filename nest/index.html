@@ -3,8 +3,791 @@ layout: nest-default
 title: Главная
 ---
 
-<section class="hero">
-    <h1>Добро пожаловать в Гнездо</h1>
-    <p>Здесь начинается путь истинного Феникса.</p>
-    <p>Скоро здесь появятся вся полезная информация, включая правила Гильдии .</p>
-</section>
+<div class="container main my-3 my-lg-5">
+  <div class="row">
+    <div class="col-12 text-light">
+      <div class="alert alert-warning fs-5" id="alert" role="alert">
+        <span class="fw-bold">Внимание!</span>
+        <ul>
+          <li>
+            Наш сайт переехал на Github Pages и теперь доступен по адресу
+            <a href="https://phoenix-guilds.github.io/nest/" title="Сайт гильдии Phoenix Nest на Github Pages">https://phoenix-guilds.github.io/nest/</a>.
+            Пожалуйста, обновите свои закладки и ссылки на наш сайт. Короткая ссылка на этот сайт:
+            <a href="https://bit.ly/3N5XUQG" title="Сайт гильдии Phoenix Nest на Github Pages">https://bit.ly/3N5XUQG</a>.
+          </li>
+          <li>
+            В связи с переездом сайта на Github Pages, некоторые старые ссылки на страницы и ресурсы могут быть недоступны. Сейчас идет активная работа по
+            переносу всего сайта на Github Pages.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="container main my-3 my-lg-5">
+  <div class="row">
+    <div class="col-12 text-light">
+      <div class="main-content p-3 p-lg-5" id="search">
+        <h2 class="text-center mb-3">Поиск предметов</h2>
+        <div class="col-12 col-lg-4 offset-lg-4">
+          <form id="search-form">
+            <div class="input-group mb-lg-0">
+              <input class="form-control" type="text" placeholder="Поиск..." aria-label="Search" id="search-input" />
+              <button class="btn btn-outline-warning" type="submit" form="search-form">Найти</button>
+            </div>
+          </form>
+        </div>
+        <div class="col-12 text-center my-3">
+          <p>
+            Введите часть названия искомого предмета в строку поиска выше и нажмите Enter или кнопку "Найти"
+          </p>
+          <div id="suggested-items" class="mt-3">
+            <p>
+              Поищите и возьмите эти предметы: <a href="#" class="suggested-item">зелье скорости</a>, <a href="#" class="suggested-item">накладки</a>,
+              <a href="#" class="suggested-item">свиток чар</a>, <a href="#" class="suggested-item">шпоры</a>,
+              <a href="#" class="suggested-item">шип для щита</a>, <a href="#" class="suggested-item">противовес</a>,
+              <a href="#" class="suggested-item">волшебное масло</a>, <a href="#" class="suggested-item">колода</a>
+            </p>
+          </div>
+        </div>
+        <div class="row mb-5" id="search-results"></div>
+        <h2 class="text-center">Подобрать предмет по параметрам</h2>
+        <p class="text-center my-3">
+          Выберите ниже вкладку с нужным типом предметов, слева в фильтрах выберите необходимые параметры, нажмите клавишу Enter или кнопку "Подобрать"
+        </p>
+        <ul class="nav nav-tabs border-0" id="filtersTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              aria-current="page"
+              data-bs-toggle="tab"
+              id="armor-tab"
+              data-bs-target="#armor"
+              role="tab"
+              aria-controls="armor"
+              aria-selected="true"
+            >
+              Экипировка
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="weapon-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#weapon"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+            >
+              Оружие
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="glyphs-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#glyphs"
+              type="button"
+              role="tab"
+              aria-controls="glyphs"
+              aria-selected="false"
+            >
+              Символы
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="recipes-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#recipes"
+              type="button"
+              role="tab"
+              aria-controls="recipes"
+              aria-selected="false"
+            >
+              Профессии
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content tab-search-container p-3" id="selectTabContent">
+          <div class="tab-pane fade show active" id="armor" role="tabpanel" aria-labelledby="armor-tab">
+            <div class="row">
+              <div class="col-12 col-lg-3">
+                <form id="select-armor-form">
+                  <h3>Фильтры:</h3>
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <h5>Требуемый уровень</h5>
+                      <div class="row mb-3">
+                        <div class="col me-1">
+                          <input type="number" class="form-control" id="select-armor-required-level-min" min="1" max="80" placeholder="От" />
+                        </div>
+                        <div class="col ms-1">
+                          <input type="number" class="form-control" id="select-armor-required-level-max" min="1" max="80" placeholder="До" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Качество</h5>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="select-armor-quality-any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-armor-quality-any">Любое качество</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" id="select-armor-quality-1" />
+                        <label class="form-check-label" for="select-armor-quality-1" style="color: white;">Обычное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="2" id="select-armor-quality-2" />
+                        <label class="form-check-label" for="select-armor-quality-2" style="color: green;">Необычное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="3" id="select-armor-quality-3" />
+                        <label class="form-check-label" for="select-armor-quality-3" style="color: blue;">Редкое</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="4" id="select-armor-quality-4" />
+                        <label class="form-check-label" for="select-armor-quality-4" style="color: purple;">Эпическое</label>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Тип</h5>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="select-armor-type-any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-armor-type-any">Любой тип</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Ткань" id="select-armor-type-cloth" />
+                        <label class="form-check-label" for="select-armor-type-cloth">Ткань</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кожа" id="select-armor-type-leather" />
+                        <label class="form-check-label" for="select-armor-type-leather">Кожа</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кольчуга" id="select-armor-type-mail" />
+                        <label class="form-check-label" for="select-armor-type-mail">Кольчуга</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Латы" id="select-armor-type-plate" />
+                        <label class="form-check-label" for="select-armor-type-plate">Латы</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Спина" id="select-armor-type-cloak" />
+                        <label class="form-check-label" for="select-armor-type-cloak">Спина</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Щит" id="select-armor-type-shield" />
+                        <label class="form-check-label" for="select-armor-type-shield">Щит</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Левая рука" id="select-armor-type-offhand" />
+                        <label class="form-check-label" for="select-armor-type-offhand">Левая рука</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Палец" id="select-armor-type-ring" />
+                        <label class="form-check-label" for="select-armor-type-ring">Кольцо</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Шея" id="select-armor-type-necklace" />
+                        <label class="form-check-label" for="select-armor-type-necklace">Шея</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Аксессуар" id="select-armor-type-earring" />
+                        <label class="form-check-label" for="select-armor-type-earring">Аксессуар</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Идол" id="select-armor-type-idol" />
+                        <label class="form-check-label" for="select-armor-type-idol">Идол</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Тотем" id="select-armor-type-totem" />
+                        <label class="form-check-label" for="select-armor-type-totem">Тотем</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Манускрипт" id="select-armor-type-relic" />
+                        <label class="form-check-label" for="select-armor-type-relic">Реликвия</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex form-buttons">
+                    <button type="submit" class="btn btn-success me-1" form="select-armor-form">Подобрать</button>
+                    <button type="reset" class="btn btn-outline-warning ms-1">Сброс</button>
+                  </div>
+                </form>
+              </div>
+              <div class="col-12 col-lg-9">
+                <div class="row" id="select-armor-results">
+                  <p>
+                    Выберите в фильтре необходимые параметры и нажмите кнопку "Подобрать" или клавишу Enter чтобы отобразились отфильтрованные по нужным
+                    параметрам предметы.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="weapon" role="tabpanel" aria-labelledby="weapon-tab">
+            <form id="select-weapon-form">
+              <div class="row">
+                <div class="col-12 col-lg-3">
+                  <h3>Фильтры:</h3>
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <h5>Требуемый уровень</h5>
+                      <div class="row mb-3">
+                        <div class="col me-1">
+                          <input type="number" class="form-control" id="select-weapon-required-level-min" min="1" max="80" placeholder="От" />
+                        </div>
+                        <div class="col ms-1">
+                          <input type="number" class="form-control" id="select-weapon-required-level-max" min="1" max="80" placeholder="До" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Качество</h5>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="select-weapon-quality-any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-weapon-quality-any">Любое качество</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" id="select-weapon-quality-1" />
+                        <label class="form-check-label" for="select-weapon-quality-1" style="color: white;">Обычное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="2" id="select-weapon-quality-2" />
+                        <label class="form-check-label" for="select-weapon-quality-2" style="color: green;">Необычное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="3" id="select-weapon-quality-3" />
+                        <label class="form-check-label" for="select-weapon-quality-3" style="color: blue;">Редкое</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="4" id="select-weapon-quality-4" />
+                        <label class="form-check-label" for="select-weapon-quality-4" style="color: purple;">Эпическое</label>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Способ удержания</h5>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="select-weapon-retention-any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-weapon-retention-any">Любой</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Одноручное" id="select-weapon-retention-sword" />
+                        <label class="form-check-label" for="select-weapon-retention-sword">Одноручное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Двуручное" id="select-weapon-retention-axe" />
+                        <label class="form-check-label" for="select-weapon-retention-axe">Двуручное</label>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Вид оружия</h5>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="select-weapon-type-any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-weapon-type-any">Любой вид</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Меч" id="select-weapon-type-sword" />
+                        <label class="form-check-label" for="select-weapon-type-sword">Меч</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Топор" id="select-weapon-type-axe" />
+                        <label class="form-check-label" for="select-weapon-type-axe">Топор</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Дробящее" id="select-weapon-type-mace" />
+                        <label class="form-check-label" for="select-weapon-type-mace">Дробящее</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Древковое" id="select-weapon-type-polearm" />
+                        <label class="form-check-label" for="select-weapon-type-polearm">Древковое</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Посох" id="select-weapon-type-staff" />
+                        <label class="form-check-label" for="select-weapon-type-staff">Посох</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кинжал" id="select-weapon-type-dagger" />
+                        <label class="form-check-label" for="select-weapon-type-dagger">Кинжал</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кистевое оружие" id="select-weapon-type-fist" />
+                        <label class="form-check-label" for="select-weapon-type-fist">Кистевое</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Лук" id="select-weapon-type-bow" />
+                        <label class="form-check-label" for="select-weapon-type-bow">Лук</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Арбалет" id="select-weapon-type-crossbow" />
+                        <label class="form-check-label" for="select-weapon-type-crossbow">Арбалет</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Огнестрельное" id="select-weapon-type-gun" />
+                        <label class="form-check-label" for="select-weapon-type-gun">Огнестрельное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Метательное" id="select-weapon-type-throw" />
+                        <label class="form-check-label" for="select-weapon-type-throw">Метательное</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Жезл" id="select-weapon-type-wand" />
+                        <label class="form-check-label" for="select-weapon-type-wand">Жезл</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex form-buttons">
+                    <button type="submit" class="btn btn-success me-1" form="select-weapon-form">Подобрать</button
+                    ><button type="reset" class="btn btn-outline-warning ms-1">Сброс</button>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-9">
+                  <div class="row" id="select-weapon-results">
+                    <p>
+                      Выберите в фильтре необходимые параметры и нажмите кнопку "Подобрать" или клавишу Enter чтобы отобразились отфильтрованные по нужным
+                      параметрам предметы.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="glyphs" role="tabpanel" aria-labelledby="glyphs-tab">
+            <form id="select-glyphs-form">
+              <div class="row">
+                <div class="col-12 col-lg-3">
+                  <h3>Фильтры:</h3>
+                  <div class="row mb-3">
+                    <div class="col-12 mb-3">
+                      <h5>Размер символа</h5>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-glyphs-size-any" value="any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-glyphs-size-any">Любой размер</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-glyphs-size-big" value="Большой символ" />
+                        <label class="form-check-label" for="select-glyphs-size-big">Большой символ</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-glyphs-size-small" value="Малый символ" />
+                        <label class="form-check-label" for="select-glyphs-size-small">Малый символ</label>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Классы</h5>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-any" value="any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-class-any">Любой класс</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-warrior" value="Воин" />
+                        <label class="form-check-label" style="color: #c79c6e;" for="select-class-warrior">Воин</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-paladin" value="Паладин" />
+                        <label class="form-check-label" style="color: #f58cba;" for="select-class-paladin">Паладин</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-hunter" value="Охотник" />
+                        <label class="form-check-label" style="color: #abd473;" for="select-class-hunter">Охотник</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-rogue" value="Разбойник" />
+                        <label class="form-check-label" style="color: #fff569;" for="select-class-rogue">Разбойник</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-priest" value="Жрец" />
+                        <label class="form-check-label" style="color: #ffffff;" for="select-class-priest">Жрец</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-shaman" value="Шаман" />
+                        <label class="form-check-label" style="color: #0070de;" for="select-class-shaman">Шаман</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-mage" value="Маг" />
+                        <label class="form-check-label" style="color: #69ccf0;" for="select-class-mage">Маг</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-warlock" value="Чернокнижник" />
+                        <label class="form-check-label" style="color: #9482c9;" for="select-class-warlock">Чернокнижник</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="select-class-druid" value="Друид" />
+                        <label class="form-check-label" style="color: #ff7d0a;" for="select-class-druid">Друид</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex form-buttons">
+                    <button type="submit" class="btn btn-success me-1" form="select-glyphs-form">Подобрать</button
+                    ><button type="reset" class="btn btn-outline-warning ms-1">Сброс</button>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-9">
+                  <div class="row" id="select-glyphs-results">
+                    <p>
+                      Выберите в фильтре необходимые параметры и нажмите кнопку "Подобрать" или клавишу Enter чтобы отобразились отфильтрованные по нужным
+                      параметрам предметы.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
+            <div class="row">
+              <div class="col-12 col-lg-3">
+                <form id="select-recipes-form">
+                  <h3>Фильтры:</h3>
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <h5>Требуемый уровень навыка</h5>
+                      <div class="row mb-3">
+                        <div class="col me-1">
+                          <input type="number" class="form-control" id="select-recipes-required-level-min" min="1" max="450" placeholder="От" />
+                        </div>
+                        <div class="col ms-1">
+                          <input type="number" class="form-control" id="select-recipes-required-level-max" min="1" max="450" placeholder="До" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <h5>Профессия</h5>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="select-recipes-profession-any" checked />
+                        <label class="form-check-label" style="color: #ce8900;" for="select-recipes-profession-any">Любая</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Портняжное дело" id="select-recipes-profession-tailoring" />
+                        <label class="form-check-label" for="select-recipes-profession-tailoring">Портняжное дело</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кожевничество" id="select-recipes-profession-leatherworking" />
+                        <label class="form-check-label" for="select-recipes-profession-leatherworking">Кожевничество</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кузнечное дело" id="select-recipes-profession-blacksmithing" />
+                        <label class="form-check-label" for="select-recipes-profession-blacksmithing">Кузнечное дело</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Ювелирное дело" id="select-recipes-profession-jewelcrafting" />
+                        <label class="form-check-label" for="select-recipes-profession-jewelcrafting">Ювелирное дело</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Алхимия" id="select-recipes-profession-alchemy" />
+                        <label class="form-check-label" for="select-recipes-profession-alchemy">Алхимия</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Наложение чар" id="select-recipes-profession-enchanting" />
+                        <label class="form-check-label" for="select-recipes-profession-enchanting">Наложение чар</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Инженерное дело" id="select-recipes-profession-engineering" />
+                        <label class="form-check-label" for="select-recipes-profession-engineering">Инженерное дело</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Кулинария" id="select-recipes-profession-cooking" />
+                        <label class="form-check-label" for="select-recipes-profession-cooking">Кулинария</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Первая помощь" id="select-recipes-profession-firstaid" />
+                        <label class="form-check-label" for="select-recipes-profession-firstaid">Первая помощь</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Начертание" id="select-recipes-profession-inscription" />
+                        <label class="form-check-label" for="select-recipes-profession-inscription">Начертание</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex form-buttons">
+                    <button type="submit" class="btn btn-success me-1" form="select-recipes-form">Подобрать</button>
+                    <button type="reset" class="btn btn-outline-warning ms-1">Сброс</button>
+                  </div>
+                </form>
+              </div>
+              <div class="col-12 col-lg-9">
+                <div class="row" id="select-recipes-results">
+                  <p>
+                    Выберите в фильтре необходимые параметры и нажмите кнопку "Подобрать" или клавишу Enter чтобы отобразились отфильтрованные по нужным
+                    параметрам предметы.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container main my-3 my-lg-5">
+  <div class="row">
+    <div class="col-12 col-lg-4 mb-5 mb-lg-0 text-light">
+      <div class="main-content p-3 p-lg-5" id="items">
+        <h2>Склады:</h2>
+        <ul class="list-unstyled" id="character-list"></ul>
+      </div>
+    </div>
+    <div class="col-12 col-lg-8 mb-5 mb-lg-0 text-light">
+      <div class="main-content p-3 p-lg-5">
+        <h2 class="mb-0">Персонаж: <span id="character-name"></span></h2>
+        <small class="text-danger pb-5"
+          >Обязательно обновите страницу с помощью <b>Ctrl+F5</b> перед выбором складских персонажей, т.к. в этом разделе без обновления страницы, информация
+          может быть не актуальной.</small
+        >
+        <div class="mb-3">
+          <small id="updated-at-all-info" class="mb-3"></small>
+        </div>
+        <div class="character-items-list mb-3">
+          <h5 class="pb-0 mb-0">Предметы персонажа:</h5>
+        </div>
+        <div class="row align-items-center text-center" id="item-list"></div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="container main my-3 my-lg-5 text-light">
+  <h2 class="text-center">Наши аддоны:</h2>
+  <div class="row">
+    <div class="col-12 col-lg-auto mt-4" id="ItemStorageBrowser">
+      <div class="main-content p-3 p-lg-5">
+        <a href="#ItemStorageBrowser"><h4>ItemStorageBrowser</h4></a>
+        <div class="addon-content mb-5">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <img src="{{ '/nest/uploads/ItemStorageBrowser_1_1.jpg' | relative_url }}" alt="Item Storage Browser v2" class="img-fluid mb-3" />
+              <img src="{{ '/nest/uploads/ItemStorageBrowser_1_2.jpg' | relative_url }}" alt="Item Storage Browser v2" class="img-fluid mb-3" />
+              <img src="{{ '/nest/uploads/ItemStorageBrowser_1_3.jpg' | relative_url }}" alt="Item Storage Browser v2" class="img-fluid mb-3" />
+              <img src="{{ '/nest/uploads/ItemStorageBrowser_1_4.jpg' | relative_url }}" alt="Item Storage Browser v2" class="img-fluid mb-3" />
+              <!-- <iframe
+                width="100%"
+                height="auto"
+                src="https://www.youtube.com/embed/STzLexEVW-A"
+                title="Скачивание и установка, запуск складского аддона и скрипта"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                style="min-height: 400px;"
+                allowfullscreen
+              ></iframe> -->
+            </div>
+            <div class="col-12 col-lg-6">
+              <h5>Стабильная версия: <span class="text-success">2.8.0-beta</span> (17/10/25 14:01)</h5>
+              <h5>Описание:</h5>
+              <p class="text-danger">
+                Внимание! Наш складской аддон включает в себя весь функционал предыдущего аддона "ItemStorageInfo": если Вы ранее пользовались тем аддоном,
+                перед использованием складского аддона "ItemStorageBrowser" Вам будет необходимо удалить аддон "ItemStorageInfo" и его скрипт-обновлятор.
+              </p>
+              <p>
+                Складской аддон состоит из нескольких вкладок (иконки-кнопки слева), переключающихся кликом по ним. Первая вкладка предназначена для текстового
+                поиска предметов по названию предмета, например, чтобы найти медный слиток, можно ввести "медный" или "медн", и нажать кнопку "Найти" -
+                выведутся все результаты, содержащие введенный Вами текст, если таковые имеются. Обработки опечаток и слов введенных с ошибками, у аддона нет, и
+                если вы ввели вместо "медн" слово "медк", то вы не получите ожидаемый результат поиска.
+              </p>
+              <p>
+                В каждой следующей вкладке - свои фильтры, предназначенные для подбора необходимых предметов по типу, виду, уровню и другим параметрам. Однако,
+                стоит помнить, что плащи имеют тип брони - ткань, и если вы выберете Кожа вместо Ткань и слот - Спина, то плащи не будут найдены. Выберите по 1
+                или несколько вариантов в выпадающих списках фильтров, при необходимости, для уточнения результатов - введите диапазоны уровней (персонажа,
+                профессии и т.п. на соответствующих вкладках) и нажмите кнопку "Подобрать". Чтобы сбросить результаты поиска и выбранные фильтры на этой вкладке
+                - нажмите кнопку "Сбросить", или перейдите на другую вкладку.
+              </p>
+              <p>
+                Складской аддон также отображает количество таких же предметов на складах при клике на ссылку предмета в чате, или при наведении на предмет
+                указателя мышки.
+              </p>
+              <p>
+                <b
+                  >Для того, чтобы аддон имел актуальную информацию о состоянии складов, необходимо скачивание актуальной базы данных перед каждым его
+                  использованием с перезагрузкой интерфейса командой "/reload" или перезаходом в игру.</b
+                >
+                Базу данных можно считать актуальной несколько часов, при низкой активности складских персонажей, и несколько минут - при высокой их активности.
+              </p>
+              <!-- <p>
+                Для автоматической синхронизации базы предметов в аддоне - загрузите скрипт-обновлятор, распаковав архив и сохранив скрипт в корневой папке
+                клиента игры. Запуск скрипта производится следующим образом: клик <b>правой</b> кнопкой по нему (или по ярлыку, созданному для него, например -
+                на рабочем столе) - выбрать пункт "Запустить с помощью PowerShell", после чего откроется окно терминала PowerShell и начнется выполнение работы
+                скрипта. Возможно, при первом запуске скрипта, система запросит у вас разрешение на запуск скриптов PowerShell - нажмите разрешить (Ок). В
+                некоторых системах, например - Windows 11, может потребоваться разрешение запуска скриптов PowerShell через настройки системы.
+              </p> -->
+              <p>
+                Чтобы скачать файл актуальной БД аддона в нашем ТГ-чате - нажмите на соответствующую кнопку ниже, сохраните файл в папке аддона по пути от начала папки игры: "\Interface\AddOns\ItemStorageBrowser" с заменой файла. После скачивания, и каждый раз перед тем как вам понадобится актуальная информация о количестве предметов на складах - не забудьте перезагрузить интерфейс или перезайти в игру, чтобы данные из файла БД подгрузились в аддон.
+              </p>
+              <p class="text-info">На данный момент работает только такое ручное обновление БД аддона, и сейчас, мы работаем над тем, чтобы этот процесс стал автоматизированным как можно скорее.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="text-end p-3 p-lg-5 fixed-bottom">
+          <a href="https://t.me/c/1445771123/9542" class="btn btn-outline-info text-light me-1" rel="noopener noreferrer" target="_blank"
+            >Скачать актуальный файл БД аддона в нашем ТГ</a
+          >
+          <!-- <span class="me-1">или</span>
+                <a href="{{ '/uploads/check_storage_browser_updates.zip' | relative_url }}" class="btn btn-outline-primary text-light me-3" rel="noopener noreferrer" target="_blank"
+                  >Скачать скрипт-обновлятор</a
+                >
+                 --><a href="https://github.com/Phoenix-Guilds/ItemStorageBrowser" class="btn btn-outline-success" rel="noopener noreferrer" target="_blank"
+            >Аддон ItemStorageBrowser на Github</a
+          >
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-12 col-lg-6 mt-4" id="LFG_TimeRemaining">
+      <div class="main-content p-3 p-lg-5">
+        <a href="#LFG_TimeRemaining"><h4>LFG Time Remaining (v1.0)</h4></a>
+        <div class="addon-content mb-5">
+          <h5>Описание:</h5>
+          <p>
+            Аддон позволяет увидеть, сколько осталось времени до публикации Вами следующего сообщения в канал "Поиск спутников(И)", чтобы помочь Вам избежать
+            появления сообщений фильтров типа "Подождите еще N секунд", а потом при повторной отправке - "Вы недавно уже отправляли похожее сообщение".
+          </p>
+          <h5>Особенности аддона в этой версии:</h5>
+          <ul>
+            <li>можно переместить аддон мышкой в любое удобное для Вас место</li>
+            <li>аддон <b>НЕ</b> влияет на фильтры и <b>НЕ</b> блокирует отправку сообщений до истечения таймера</li>
+            <li>при срабатывании фильтров в чате, новый отсчет времени до следующей отправки сообщения <b>НЕ будет</b> запущен</li>
+          </ul>
+          <h5>Размер: 4Кб</h5>
+          <div class="text-end p-3 p-lg-5 fixed-bottom">
+            <a href="/uploads/addons/LFGTimeRemaining.zip" class="btn btn-outline-success">Скачать</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6 mt-4" id="PingMeter">
+      <div class="main-content p-3 p-lg-5">
+        <a href="#PingMeter"><h4>Ping Meter (v1.0)</h4></a>
+        <div class="addon-content mb-5">
+          <h5>Описание:</h5>
+          <p>
+            Аддон позволяет увидеть величину пинга (задержка в милисекундах) в удобном для Вас месте (аналог "лагбара"). Разместить фрейм пинга можно в том
+            месте, где он будет заметен Вам всегда. Данный аддон не претендует на замену аддонов отображающих текущую величину задержки, к которым Вы уже
+            привыкли.
+          </p>
+          <h5>Особенности аддона в этой версии:</h5>
+          <ul>
+            <li>можно переместить аддон мышкой в любое удобное для Вас место</li>
+            <li>
+              текст меняет свой цвет в зависимости от величины задержки:
+              <ul>
+                <li>зеленый - до 100 мс</li>
+                <li>желтый - от 101 до 200 мс</li>
+                <li>красный - от 201 мс</li>
+              </ul>
+            </li>
+          </ul>
+          <h5>Размер: 2Кб</h5>
+          <div class="text-end p-3 p-lg-5 fixed-bottom">
+            <a href="/uploads/addons/PingMeter.zip" class="btn btn-outline-success">Скачать</a>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <!-- <div class="col-12 col-lg-auto mt-4" id="WarehouseAssistant">
+                  <div class="main-content p-3 p-lg-5">
+                    <a href="#WarehouseAssistant"><h4>WarehouseAssistant</h4></a>
+                    <div class="addon-content mb-5">
+                      <div class="row">
+                        <div class="col-12 col-lg-3">
+                          <img src="/uploads/WarehouseAssistant_2.jpg" alt="Warehouse Assistant 2" class="img-fluid mb-3" />
+                        </div>
+                      </div>
+                      <h5>Стабильная версия: <span class="text-success">2.1.9</span> (13/10/25 13:53)</h5>
+                      <h5>Описание:</h5>
+                      <p>
+                        Отображает занятость складских аккаунтов помощниками по складу, своего рода "семафор" для того, чтобы помощники по складу видели, на
+                        какой аккаунт сейчас нельзя заходить, а какой свободен для посещения. Также, все остальные члены гильдии при установке этого аддона
+                        могут видеть, есть кто-то сейчас на складах или нет.
+                      </p>
+                      <p>
+                        С версии 2.0 добавлен вывод списка персонажей на аккаунтах.
+                      </p>
+                      <p>С версии 2.1.4:</p>
+                      <ul>
+                        <li>
+                          добавлена кнопка-переключатель состояния готовности работать со складом для персонажей со званием "Банкир" или "Зам/твин ГМ", с
+                          отправкой в гильдейский чат сообщения о статусе готовности помощника работать со складом, по умолчанию - текст на кнопке "Не работаю",
+                          при первом клике - текст меняется на "Работаю", а в чат отправляется сообщение "Принимаю списки на выдачу со склада". Для того чтобы
+                          кнопка изменила тект на "Не работаю" и в чат отправилось сообщение "Работа со складами завершена" - нажмите на эту кнопку снова.
+                        </li>
+                      </ul>
+                      <p>В актуальной версии 2.1.9:</p>
+                      <ul>
+                        <li>
+                          добавлен новый складской персонаж - Шкурная
+                        </li>
+                      </ul>
+                      <p>
+                        <b>Аддон работает только у членов нашей Гильдии Phoenix Nest, и пока что не планируется обеспечение его работы у других игроков.</b>
+                      </p>
+                    </div>
+                    <div class="text-end p-3 p-lg-5 fixed-bottom">
+                      <a href="/uploads/addons/WarehouseAssistant_2.1.9.zip" class="btn btn-outline-success" rel="noopener noreferrer" target="_blank"
+                        >Скачать 2.1.9 (стабильная)</a
+                      >
+                    </div>
+                  </div>
+                </div> -->
+  </div>
+</div>
+
+<div class="container main my-3 my-lg-5">
+  <div class="row">
+    <div class="col-12 text-light">
+      <div class="main-content p-3 p-lg-5" id="about">
+        <h1 class="text-center mb-5">ХК-гильдия "Phoenix Nest" ("Гнездо Феникса", Sirus-x5)</h1>
+        <h3>О нас</h3>
+        <p>Развивающаяся ХК-гильдия сервера Sirus-WoW в игровом мире Scourge x5, созданная с целью комфортного времяпровождения в игре всех ее членов.</p>
+        <p>
+          Основополагающими принципами существования нашей Гильдии являются: дружеское отношение и бескорыстная взаимопомощь в коллективе, совместное накопление
+          ресурсов и рациональное их распределение между всеми игроками ХК Орды.
+        </p>
+        <h4 class="text-center mt-5">
+          Если Ваш выбор - быть членом нашей Гильдии, Вы совершаете позитивный переворот в своем понимании о том, какой должна быть идеальная Гильдия в World Of
+          Warcraft!
+        </h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container main my-3 my-lg-5" id="touch">
+  <div class="row">
+    <div class="col-12 text-light">
+      <div class="main-content p-5">
+        <h3 class="text-center mb-3">Поддержать донатом Гильдию, на развитие наших каналов и других проектов</h3>
+        <p class="text-center">
+          Вся ваша поддержка является добровольной, и мы высоко ценим ваш вклад в развитие наших проектов. На некоторых площадках для донатов, ссылки на которые
+          расположены ниже, Вы можете выбрать различные цели или проекты, которые вы хотите поддержать, отправив любую сумму в качестве поддержки. При
+          перевыполнении целей сборов, их излишки могут быть переданы помощникам по складу (по их пожеланию), или перенесены на другие цели сборов.
+        </p>
+        <div class="row mt-5">
+          <div class="col text-center">
+            <a href="https://www.donationalerts.com/r/phoenixnest" target="_blank"
+              ><img src="{{ '/nest/assets/images/buttons/DA-black-button.png' | relative_url }}" class="img-fluid main-content" style="height: 50px;"
+            /></a>
+          </div>
+          <div class="col text-center">
+            <a href="https://www.buymeacoffee.com/TekhnoKhobbIT" target="_blank"
+              ><img
+                src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=TekhnoKhobbIT&button_colour=e0ab1a&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"
+                class="main-content"
+            /></a>
+          </div>
+          <div class="col text-center">
+            <a href="https://www.paypal.com/donate/?hosted_button_id=LG7F5LAEYQPY2"
+              ><img src="{{ '/nest/assets/images/buttons/paypal-button-donation.png' | relative_url }}" class="img-fluid main-content" style="height: 50px;"
+            /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

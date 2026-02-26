@@ -1,3 +1,170 @@
-body { background-color: #0d1117; color: #3498db; font-family: sans-serif; }
-header { border-bottom: 1px solid #3498db; padding: 10px; }
-footer { margin-top: 50px; font-size: 0.8rem; opacity: 0.7; }
+@font-face {
+	font-family: BeaufortBold;
+	src: url('../fonts/Beaufort_Bold.otf');
+}
+
+/* Default styles */
+html, body {
+    width: 100%;
+    height: 100%;
+}
+body {
+    background-color: #000;
+    background-image: url('../images/background-large-min.jpg');
+    background-size: cover;
+    background-position: top center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+	font-family: BeaufortBold;
+    padding-top: 90px;
+    overflow-x: hidden;
+}
+a:not(.btn), a:not(.dropdown-item.disabled), h1, h2, h3, h4, h5, h6 {
+    color: #ce8900;
+}
+a:not(.btn):hover, a:not(.dropdown-item.disabled):hover, a.active {
+    color: #ffac0a;
+}
+li, h1, h2, h3, h4, h5, h6 {
+    scroll-margin-top: 120px;
+}
+p {
+    font-size: 18px;
+}
+a {
+    text-decoration: none;
+}
+
+/* Header styles */
+.navbar {
+    border-bottom: 4px solid rgba(255, 172, 12, 0.95);
+    box-shadow: 0px 2px 24px 12px rgba(216, 111, 0, 0.8);
+    text-transform: uppercase;
+    padding: 0;
+    min-height: 90px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.navbar-dark.bg-dark {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+.navbar .navbar-toggler-icon {
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='rgba(216, 111, 0, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+}
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+.navbar-toggler:focus>.navbar-toggler-icon {
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='rgba(255, 172, 12, 0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+}
+.navbar-brand {
+    min-width: 90px;
+}
+.logo {
+    max-height: 80px;
+}
+.navbar-background {
+    display: none;
+}
+.collapsing .navbar-background, .show .navbar-background {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.head-guild-logo {
+    max-height: 250px;
+}
+
+/* Search tabs styles */
+.nav-tabs .nav-link {
+    color: #ce8900;
+}
+.nav-tabs .nav-link.active {
+    color: #ce8900;
+    background-color: transparent;
+    border: 4px solid rgba(255, 172, 12, 0.95);
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+}
+.nav-tabs .nav-link:not(.active) {
+    border: 4px solid transparent;
+    border-radius: 16px 16px 0 0;
+    /* border-bottom: 4px solid rgba(255, 172, 12, 0.95); */
+}
+.nav-pills .nav-link {
+    color: #ce8900;
+    border: 0;
+}
+.nav-pills .nav-link.active {
+    color: #ce8900;
+    background-color: rgba(0, 0, 0, 1);
+    border: 4px solid rgba(255, 172, 12, 0.95);
+    border-radius: 16px 4px 4px 16px;
+    border-right: 4px solid rgba(0, 0, 0, 1);
+    z-index: 1;
+}
+.nav-pills .nav-link:not(.active) {
+    outline: 4px solid transparent;
+    /* border-radius: 16px 16px 0 0;
+    border-bottom: 4px solid rgba(255, 172, 12, 0.95); */
+}
+.tab-search-container {
+    outline: 4px solid rgba(255, 172, 12, 0.95);
+    border-radius: 0 0 16px 16px;
+}
+
+/* Main styles */
+.main-content, .footer, .card, .features-video, .features, .guild-rigts {
+    background-color: rgba(0, 0, 0, 0.8);
+    outline: 4px solid rgba(255, 172, 12, 0.95);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+    box-shadow: 0px 2px 24px 12px rgba(216, 111, 0, 0.8);
+    height: 100%;
+    overflow: hidden;
+}
+.main-content {
+    position: relative;
+    min-height: 100%;
+    height: 100%;
+}
+.rounded-pills {
+    margin-left: -1px;
+    border-radius: 2px 16px 16px 2px;
+}
+.features-video {
+    overflow: hidden;
+}
+
+/* Footer styles */
+.footer {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    body {
+        background-size: cover;
+        background-position: top right;
+    }
+    .navbar-brand {
+        width: auto;
+    }
+}
+
+@media (max-width: 524px) {
+    .nav-pills .nav-link span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg); /* Для нормального отображения текста справа налево */
+        text-align: center;
+    }
+}

@@ -1,0 +1,32 @@
+title: Phoenix Guild Hub
+email: your-email@example.com
+description: >-
+  Портал гильдий True Phoenix и Phoenix Nest.
+
+# Настройки Jekyll
+markdown: kramdown
+# theme: minima # Обязательно убираем, чтобы использовать свои layouts
+plugins:
+  - jekyll-feed
+
+# Настройки по умолчанию для папок
+defaults:
+  # Настройки для всех файлов в папке /nest/
+  - scope:
+      path: "nest"
+    values:
+      layout: "nest-default"
+      author: "Phoenix Nest Team"
+
+  # Настройки для файлов в корне (Старшая гильдия)
+  - scope:
+      path: "" # Пустая строка означает корень
+    values:
+      layout: "true-default"
+
+# Исключаем служебные файлы
+exclude:
+  - vendor/
+  - .bundle/
+  - .github/
+  - README.md

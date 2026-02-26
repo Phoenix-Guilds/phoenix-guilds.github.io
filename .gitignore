@@ -1,0 +1,17 @@
+# Jekyll файлы
+.jekyll-cache/
+.jekyll-metadata
+_site/
+
+# Ruby/Bundle файлы
+bin/
+.bundle/
+vendor/
+Gemfile.lock
+
+# Временные файлы системы
+.DS_Store
+Thumbs.db
+
+# Локальные переменные (если появятся)
+.env

@@ -2,7 +2,11 @@
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="{{ '/nest/' | relative_url }}">
-        <img src="{{ '/nest/assets/images/logo-phoenix-min.png' | relative_url }}" alt="Логотип Гильдии Phoenix Nest (Гнездо Феникса, Sirus-WoW)" class="logo img-fluid" />
+        <img
+          src="{{ '/nest/assets/images/logo-phoenix-min.png' | relative_url }}"
+          alt="Логотип Гильдии Phoenix Nest (Гнездо Феникса, Sirus-WoW)"
+          class="logo img-fluid"
+        />
       </a>
       <button
         class="navbar-toggler me-0"
@@ -17,19 +21,15 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-3 mb-lg-0">
-          <!-- <li class="nav-item">
-            <a class="nav-link scroll-link" href="/#search">Поиск предметов</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link scroll-link" href="/#items">Склады</a>
-          </li> -->
           <li class="nav-item dropdown bg-dark">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Полезное
             </a>
             <ul class="dropdown-menu bg-dark">
               <li><a class="dropdown-item" href="{{ '/nest/useful/ridiculous-deaths/' | relative_url }}" title="Список Нелепых Смертей ХК">СНС</a></li>
-              <li><a class="dropdown-item" href="{{ '/nest/useful/useful-tips/' | relative_url }}" title="Полезные советы по выживанию на ХК">Полезные советы</a></li>
+              <li>
+                <a class="dropdown-item" href="{{ '/nest/useful/useful-tips/' | relative_url }}" title="Полезные советы по выживанию на ХК">Полезные советы</a>
+              </li>
               <!-- <li><a class="dropdown-item" href="/faq.html" title="Часто задаваемые Вопросы">ЧаВо (FAQ)</a></li> -->
               <li><a class="dropdown-item" href="{{ '/nest/useful/dangerous-quests/' | relative_url }}">Опасные квесты</a></li>
               <!-- <li><a class="dropdown-item" href="/addons.html">Аддоны</a></li>
@@ -65,6 +65,16 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item dropdown bg-dark">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Склады
+            </a>
+            <ul class="dropdown-menu bg-dark">
+              <li>
+                <a class="dropdown-item" href="{{ '/nest/warehouses/story/' | relative_url }}">История складов ХК</a>
+              </li>
+            </ul>
+          </li>
         </ul>
         <div class="icons d-flex justify-content-center align-items-center ms-auto mb-3 mb-lg-0">
           <a href="https://www.youtube.com/@PhoenixNestGuild" target="_blank" class="me-3" title="Наш канал на Youtube"
@@ -73,7 +83,9 @@
           <a href="https://www.twitch.tv/phoenixnestguild" target="_blank" class="me-3" title="Наш канал на Twich"><i class="fa-brands fa-twitch fa-2x"></i></a>
           <a href="https://discord.gg/UyvwHtv4u5" target="_blank" class="me-3" title="Наш сервер в Discord"><i class="fa-brands fa-discord fa-2x"></i></a>
           <a href="https://t.me/+HnliAMRqO9A5ZGVi" target="_blank" class="me-3" title="Наш чат в Telegram"><i class="fa-brands fa-telegram fa-2x"></i></a>
-          <a href="https://github.com/Phoenix-Guilds" target="_blank" class="me-3" title="Наш репозиторий на Github"><i class="fa-brands fa-github fa-2x"></i></a>
+          <a href="https://github.com/Phoenix-Guilds" target="_blank" class="me-3" title="Наш репозиторий на Github"
+            ><i class="fa-brands fa-github fa-2x"></i
+          ></a>
         </div>
         <div class="navbar-background"></div>
       </div>

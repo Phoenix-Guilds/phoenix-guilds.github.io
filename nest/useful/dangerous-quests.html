@@ -1,0 +1,1404 @@
+---
+layout: nest-default
+title: Опасные квесты
+---
+
+<div class="container main my-3 my-lg-5">
+  <div class="row">
+    <div class="col-12 text-light">
+      <div class="main-content p-3 p-md-5">
+        <h1 class="text-center mb-5">Опасные квесты</h1>
+        <p class="text-center mb-5">
+          Всегда полезно знать, "где подстелить соломку" - Вашему вниманию представлен список квестов, которые крайне опасно выполнять в одиночку, судя по
+          частоте всплывающих уведомлений о гибели персонажей, проходящих испытание "Один шанс". Выберите ниже локацию, чтобы отобразился список опасных квестов
+          и нажмите на названии задания, чтобы узнать причины, по которым данное задание попало в этот список.
+        </p>
+        <div class="row">
+          <div class="col-3 pe-0">
+            <div class="nav flex-column nav-pills text-end" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <button
+                class="nav-link text-center text-md-end active"
+                id="v-pills-durotar-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-durotar"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-durotar"
+                aria-selected="true"
+              >
+                <span>Дуротар</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-barrens-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-barrens"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-barrens"
+                aria-selected="false"
+              >
+                <span>Степи</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-hillsbradFoothills-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-hillsbradFoothills"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-hillsbradFoothills"
+                aria-selected="false"
+              >
+                <span>Предгорья Хилсбрада</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-stranglethornVale-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-stranglethornVale"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-stranglethornVale"
+                aria-selected="false"
+              >
+                <span>Тернистая долина</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-unGoroCrater-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-unGoroCrater"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-unGoroCrater"
+                aria-selected="false"
+              >
+                <span>Кратер Ун'Горо</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-zangarmarsh-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-zangarmarsh"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-zangarmarsh"
+                aria-selected="false"
+              >
+                <span>Зангартопь</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-terokkarForest-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-terokkarForest"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-terokkarForest"
+                aria-selected="false"
+              >
+                <span>Лес Тероккар</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-nagrand-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-nagrand"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-nagrand"
+                aria-selected="false"
+              >
+                <span>Награнд</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-dragonblight-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-dragonblight"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-dragonblight"
+                aria-selected="false"
+              >
+                <span>Драконий Погост</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-zulDrak-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-zulDrak"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-zulDrak"
+                aria-selected="false"
+              >
+                <span>Зул'Драк</span>
+              </button>
+              <button
+                class="nav-link text-center text-md-end"
+                id="v-pills-sholazarBasin-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#v-pills-sholazarBasin"
+                type="button"
+                role="tab"
+                aria-controls="v-pills-sholazarBasin"
+                aria-selected="false"
+              >
+                <span>Низина Шолазар</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-9 ps-0">
+            <div class="main-content rounded-pills">
+              <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-durotar" role="tabpanel" aria-labelledby="v-pills-durotar-tab">
+                  <div class="accordion accordion-flush" id="accordion-durotar">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#pshiksClaw"
+                          aria-expanded="false"
+                          aria-controls="pshiksClaw"
+                        >
+                          Сгущаются черные тучи (задание на коготь Пшикса)
+                        </button>
+                      </h2>
+                      <div id="pshiksClaw" class="accordion-collapse collapse border-bottom bg-transparent text-white" data-bs-parent="#accordion-durotar">
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Принесите коготь Пшикса Оргнилу Душегрызу из Колючего Холма.
+                          </p>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=4869"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=4869"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Коготь Пшикса</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            Цель:
+                            <a href="https://www.wowhead.com/wotlk/ru/npc=3203" target="_blank" rel="noopener nofollow">Пшикс Черношквал</a>
+                          </p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/47587-%D0%BF%D1%88%D0%B8%D0%BA%D1%81-%D1%87%D0%B5%D1%80%D0%BD%D0%BE%D1%88%D0%BA%D0%B2%D0%B0%D0%BB.jpg"
+                              class="img-fluid"
+                              alt="Пшикс Черношквал"
+                            />
+                          </p>
+                          <p>Координаты: Дуротар, 42.6 26.4</p>
+                          <img src="{{ '/nest/uploads/pshiksClaw.jpg' | relative_url }}" class="img-fluid" alt="местонахождение НПС Пшикс Черношквал" />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Сложность этого задания состоит в том, что рядом с монстром (Пшиксом) стоят и другие кастующие мобы (чернокнижники с
+                                прислужниками), которых обойти никак не получится, на уровнях примерно до 15. Чтобы выполнить это задание с наименьшими рисками
+                                - рекомендуется позвать кого-то на помощь.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-barrens" role="tabpanel" aria-labelledby="v-pills-barrens-tab">
+                  <div class="accordion accordion-flush" id="accordion-barrens">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#counterattack"
+                          aria-expanded="false"
+                          aria-controls="counterattack"
+                        >
+                          Контратака! (задание на кусок знамени Кром'зара)
+                        </button>
+                      </h2>
+                      <div id="counterattack" class="accordion-collapse collapse border-bottom bg-transparent text-white" data-bs-parent="#accordion-barrens">
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Принесите кусок знамени Кром'зара Регтару Вратам Смерти. Его можно найти на западе от Перекрестка.
+                          </p>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=11227"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=11227"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Кусок знамени Кром'зара</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 3 и более</p>
+                          <p>Цель: <a href="https://www.wowhead.com/wotlk/ru/npc=9456" target="_blank" rel="noopener nofollow">Полководец Кром'зар</a></p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/52073-%D0%BF%D0%BE%D0%BB%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B5%D1%86-%D0%BA%D1%80%D0%BE%D0%BC%D0%B7%D0%B0%D1%80.jpg"
+                              class="img-fluid"
+                              alt="Полководец Кром'зар"
+                            />
+                          </p>
+                          <p>Координаты: Степи, 44.6 28.0</p>
+                          <img
+                            src="{{ '/nest/uploads/counterattack-barrens.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение НПС Полководец Кром'зар"
+                          />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Это задание помечено как групповое не просто так. Полководец Кром'зар - сильный элитный НПС, способный за короткое время
+                                нанести сокрушительный урон даже тем персонажам, уровень которых выше чем у него. Не стоит рассчитывать, что питомец охотника
+                                или прислужник чернокнижника удержит на себе агро этого НПС.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#northwatchCannons"
+                          aria-expanded="false"
+                          aria-controls="northwatchCannons"
+                        >
+                          Пушки крепости Северной Стражи (задание на 10 тераморских медалей и капитанов в башнях)
+                        </button>
+                      </h2>
+                      <div
+                        id="northwatchCannons"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-barrens"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Капитан Тало'тас Сияющий поручил вам собрать 10 тераморских медалей и убить капитана Гордостанную, канонира Вессана и
+                            канонира Смайта.
+                          </p>
+                          <p>Прогресс:</p>
+                          <ul>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=3393" target="_blank" rel="noopener nofollow">Капитан Гордостанная</a> убито</li>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=3455" target="_blank" rel="noopener nofollow">Канонир Вессан</a> убито</li>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=3454" target="_blank" rel="noopener nofollow">Канонир Смайт</a> убито</li>
+                          </ul>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=5078"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=5078"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Медаль Терамора</a
+                            >
+                            (10)
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <div class="row mb-3">
+                            <div class="col-12 col-lg-4">
+                              <p>Капитан Гордостанная:</p>
+                              <img
+                                src="https://wow.zamimg.com/uploads/screenshots/normal/78410-%D0%BA%D0%B0%D0%BF%D0%B8%D1%82%D0%B0%D0%BD-%D0%B3%D0%BE%D1%80%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F.jpg"
+                                class="img-fluid"
+                                alt="Капитан Гордостанная"
+                              />
+                            </div>
+                            <div class="col-12 col-lg-4">
+                              <p>Канонир Вессан:</p>
+                              <img
+                                src="https://wow.zamimg.com/uploads/screenshots/normal/78413-%D0%BA%D0%B0%D0%BD%D0%BE%D0%BD%D0%B8%D1%80-%D0%B2%D0%B5%D1%81%D1%81%D0%B0%D0%BD-previous-location.jpg"
+                                class="img-fluid"
+                                alt="Канонир Вессан"
+                              />
+                            </div>
+                            <div class="col-12 col-lg-4">
+                              <p>Канонир Смайт:</p>
+                              <img
+                                src="https://wow.zamimg.com/uploads/screenshots/normal/48182-%D0%BA%D0%B0%D0%BD%D0%BE%D0%BD%D0%B8%D1%80-%D1%81%D0%BC%D0%B0%D0%B9%D1%82-in-his-previous-incarnation-as-a-horde-quest-objective.jpg"
+                                class="img-fluid"
+                                alt="Канонир Смайт"
+                              />
+                            </div>
+                          </div>
+                          <p>Координаты: Степи, 60.4 54.8 (приблизительно)</p>
+                          <img
+                            src="{{ '/nest/uploads/northwatchCannons.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение НПС капитан Гордостанная, канонир Вессан, канонир Смайт"
+                          />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Сам квест считается простым, но могут возникнуть проблемы из-за плотно стоящих мобов, у которых относительно быстрый респаун, в
+                                связке с нововведением "позови друга", при котором рядом стоящие мобы могут быть заагрены убегающими мобами на большем
+                                расстоянии, чем это было раньше. В результате - приходится биться не с 1-3 целями, а уже с с бОльшим их количеством, без
+                                возможности передышки на отхил/отпой. Также, действие на убийство капитана и канониров происходит в башнях - закрытое
+                                пространство, что само по себе усложняет ситуацию. На обратном пути может возникнуть желание взять квест на сопровождение НПС,
+                                однако в начале мобы уже реснутся, и будет крайне сложно с ними справиться, с учетом того, что на сопровождаемого НПС будут
+                                накатывать волны неписей, которых раньше тут не было: перед выполнением квеста на сопровождение рекомендуется очистить от мобов
+                                путь до выхода их крепости.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-terokkarForest" role="tabpanel" aria-labelledby="v-pills-terokkarForest-tab">
+                  <div class="accordion accordion-flush" id="accordion-terokkarForest">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#greatBoneWorm"
+                          aria-expanded="false"
+                          aria-controls="greatBoneWorm"
+                        >
+                          Большой костяной червь (задание на Органы гигантского костяного червя)
+                        </button>
+                      </h2>
+                      <div
+                        id="greatBoneWorm"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-terokkarForest"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Принесите органы гигантского костяного червя Дворфовитцу в лагерь Ша'тар в Костяных пустошах.<br />
+                            Заодно верните ему барабан Фампер.
+                          </p>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=31826"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=31826"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Органы гигантского костяного червя</a
+                            ><br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=31825"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=31825"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Древний барабан Фампер</a
+                            >
+                            (прилагается)
+                          </p>
+                          <p>Рекомендуемое количество игроков: 3 и более</p>
+                          <p>
+                            Цель:
+                            <a href="https://www.wowhead.com/wotlk/ru/npc=22038" target="_blank" rel="noopener nofollow"
+                              >Хай'шулуд <Император костяных червей></a
+                            >
+                          </p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/82958-%D1%85%D0%B0%D0%B9%D1%88%D1%83%D0%BB%D1%83%D0%B4.jpg"
+                              class="img-fluid"
+                              alt="Хай'шулуд <Император костяных червей>"
+                            />
+                          </p>
+                          <p>Координаты: Лес Тероккар, 45.6 76.8 (приблизительно)</p>
+                          <img src="{{ '/nest/uploads/greatBoneWorm.jpg' | relative_url }}" class="img-fluid" alt="местонахождение НПС Хай'шулуд" />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Нужно убить копытня и использовав квестовый бубен возле его тела призвать червя.<br />
+                                Червь очень опасен, грызёт больно, плюётся ядом, может прятаться под землю мешая атаковать.<br />
+                                По непроверенной информации с официального сервера - имеет деспавн в 2 минуты, если начать его атаковать спустя 1:50 после
+                                вызова и продержаться 10 секунд - квест будет засчитан.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#escapeFromFirewingCamp"
+                          aria-expanded="false"
+                          aria-controls="escapeFromFirewingCamp"
+                        >
+                          Побег из лагеря Огнекрылых (задание на Органы гигантского костяного червя)
+                        </button>
+                      </h2>
+                      <div
+                        id="escapeFromFirewingCamp"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-terokkarForest"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Проводите Ислу Звездную Гриву в безопасное место, после чего расскажите об этом советнице Файле в форте Камнеломов в лесу
+                            Тероккар.
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            Цель: Проводите
+                            <a href="https://www.wowhead.com/wotlk/ru/npc=18760" target="_blank" rel="noopener nofollow">Исла Звездная Грива</a> в безопасное
+                            место.
+                          </p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/23121-%D0%B8%D1%81%D0%BB%D0%B0-%D0%B7%D0%B2%D0%B5%D0%B7%D0%B4%D0%BD%D0%B0%D1%8F-%D0%B3%D1%80%D0%B8%D0%B2%D0%B0.jpg"
+                              class="img-fluid"
+                              alt="Исла Звездная Грива"
+                            />
+                          </p>
+                          <p>Координаты: Лес Тероккар, 73.4 36.2 (приблизительно)</p>
+                          <img
+                            src="{{ '/nest/uploads/escapeFromFirewingCamp.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение НПС Исла Звездная Грива"
+                          />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Квест на сопровождение эльфийки Исла Звездная Грива из плена эльфов-бомбистов, нужно вывести её за пределы лагеря пройдя
+                                площадь с мана-бомбой.<br />
+                                Опасность в том, что эльфийка ходит крайне медленно, поэтому 100%, что во время сопровождения окружающие мобы реснутся, а её
+                                маршрут идёт мимо площади с огромным количеством кастующих мобов, которые бегут за подмогой.<br />
+                                Если вы не можете вытанчить несколько кастеров за раз отводя их за ближайшие деревья - даже не беритесь за этот квест в соло,
+                                т.к. эльфийку скорее всего убьют, а затем побегут за вами.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-zangarmarsh" role="tabpanel" aria-labelledby="v-pills-zangarmarsh-tab">
+                  <div class="accordion accordion-flush" id="accordion-zangarmarsh">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#darkcrestLeader"
+                          aria-expanded="false"
+                          aria-controls="darkcrestLeader"
+                        >
+                          Предводитель Темного Гребня (задание на раджу Хагазеда)
+                        </button>
+                      </h2>
+                      <div
+                        id="darkcrestLeader"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-zangarmarsh"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Убейте раджу Хагазеда в Лагуне и вернитесь к стражу Хамуту из Кенарийской экспедиции в Зангартопи, чтобы получить награду.
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>Цель: <a href="https://www.wowhead.com/wotlk/ru/npc=18046" target="_blank" rel="noopener nofollow">Раджа Хагхазед</a> убито</p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/34445-%D1%80%D0%B0%D0%B4%D0%B6%D0%B0-%D1%85%D0%B0%D0%B3%D1%85%D0%B0%D0%B7%D0%B5%D0%B4.jpg"
+                              class="img-fluid"
+                              alt="Раджа Хагхазед"
+                            />
+                          </p>
+                          <p>Координаты: Зангартопь, 65.0 69.6</p>
+                          <img src="{{ '/nest/uploads/darkcrestLeader.jpg' | relative_url }}" class="img-fluid" alt="местонахождение НПС Раджа Хагхазед" />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Цель квеста - элитная нага Раджа Хагхазед. Очень противный моб, обладает мортал страйком на -50% отхила, бафом на -75% урона по
+                                себе и просто больно бьёт. Старайтесь до боя слить всех окружающих мобов, которые могут быть задеты во время боя, т.к. моб умеет
+                                пинаться и рядом есть патрулирующие элементали, которые обязательно будут проходить мимо во время боя.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-nagrand" role="tabpanel" aria-labelledby="v-pills-nagrand-tab">
+                  <div class="accordion accordion-flush" id="accordion-nagrand">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#bringMeEgg"
+                          aria-expanded="false"
+                          aria-controls="bringMeEgg"
+                        >
+                          Принеси мне яйцо (задание на коготь Матриарха)
+                        </button>
+                      </h2>
+                      <div id="bringMeEgg" class="accordion-collapse collapse border-bottom bg-transparent text-white" data-bs-parent="#accordion-nagrand">
+                        <div class="accordion-body">
+                          <p>
+                            Задача: С помощью Прыготрона-4000 запрыгните в гнездо на ближайшем дереве и украдите оттуда таинственное яйцо.
+                          </p>
+                          <p>
+                            Цель:
+                          </p>
+                          <ul>
+                            <li>
+                              <a
+                                href="https://wowhead.com/wotlk/ru/object=183147"
+                                data-wh-icon-size="small"
+                                data-wowhead="object=183147"
+                                class="wowhead wowhead-icon"
+                                target="_blank"
+                                rel="noopener nofollow"
+                                >Попытайтесь украсть яйцо</a
+                              >
+                            </li>
+                          </ul>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=27841"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=27841"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Отрубленный коготь Матриарха</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/85742-%D0%B2%D0%B5%D1%82%D1%80%D1%83%D1%85-%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D0%B0%D1%80%D1%85.jpg"
+                              class="img-fluid"
+                              alt="Ветрух-матриарх"
+                            />
+                          </p>
+                          <p>Координаты: Награнд, 61.6 66.6</p>
+                          <img src="{{ '/nest/uploads/bringMeEgg.jpg' | relative_url }}" class="img-fluid" alt="местонахождение НПС Ветрух-матриарх" />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >В процессе квеста нужно призвать и убить матриарха ветрухов путём активации яйца в гнезде.<br />
+                                Первая проблема - если у вас еще почему-то нет летающего маунта и вы пытаетесь попасть в гнездо с помощью батута - есть риск
+                                потерять часть здоровья от падения.<br />
+                                Основная сложность квеста - сама Ветрух-матриарх - обладает высокой скоростью передвижения, внушительным здоровьем, уроном и
+                                накидывает кровотечение. В целом к бою стоит подходить ответственно, т.к. убежать или уйти в инвиз может быть невозможно.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#gurokUsurper"
+                          aria-expanded="false"
+                          aria-controls="gurokUsurper"
+                        >
+                          Гурок Узурпатор (задание на сбор черепов огров и убийство Гурока Узурпатора)
+                        </button>
+                      </h2>
+                      <div id="gurokUsurper" class="accordion-collapse collapse border-bottom bg-transparent text-white" data-bs-parent="#accordion-nagrand">
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Убейте Гурока Узурпатора и принесите его голову Гордаугу к Трону стихий.
+                          </p>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=24503"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=24503"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Голова земли Гурока</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 3 и более</p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/15524-%D0%B3%D1%83%D1%80%D0%BE%D0%BA-%D1%83%D0%B7%D1%83%D1%80%D0%BF%D0%B0%D1%82%D0%BE%D1%80.jpg"
+                              class="img-fluid"
+                              alt="Гурок Узурпатор"
+                            />
+                          </p>
+                          <p>Координаты: Награнд, 29.0 25.0</p>
+                          <img src="{{ '/nest/uploads/gurokUsurper.jpg' | relative_url }}" class="img-fluid" alt="местонахождение НПС Гурок Узурпатор" />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Для квеста необходимо собрать черепа огров и призвать Гурока в магическом круге на горе.<br />
+                                Особую опасность для неподготовленного игрока представляет способность Гурока пинаться. Танчить его нужно стоя спиной к столбам
+                                или железным клетка возле зоны призыва, иначе есть риск улететь от пинка упав с горы и разбиться.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-dragonblight" role="tabpanel" aria-labelledby="v-pills-dragonblight-tab">
+                  <div class="accordion accordion-flush" id="accordion-dragonblight">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#mightyMagnataur"
+                          aria-expanded="false"
+                          aria-controls="mightyMagnataur"
+                        >
+                          Могучие магнатавры (задание на элитных монстров)
+                        </button>
+                      </h2>
+                      <div
+                        id="mightyMagnataur"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-dragonblight"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Выследите и убейте Кровавого Пира, Ледоскала и Дракрова к востоку от Драконьего Покоя.<br />
+                            Кровавый Пир обитает в юго-восточном углу Драконьих Пустошей, прямо к северу от изумрудного святилища драконов. Ледоскал патрулирует
+                            северную оконечность Зеркала Рассвета. Дракров бродит у подножья утесов к западу от бронзового святилища драконов.<br />
+                            Когда все три магнатавра будут убиты, возвращайтесь к Аурастразе в Драконий Покой.
+                          </p>
+                          <p>Прогресс:</p>
+                          <ul>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=27007" target="_blank" rel="noopener nofollow">Ледоскал</a> убито</li>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=27008" target="_blank" rel="noopener nofollow">Кровавый Пир</a> убито</li>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=27009" target="_blank" rel="noopener nofollow">Дракров</a> убито</li>
+                          </ul>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/93824-%D0%BB%D0%B5%D0%B4%D0%BE%D1%81%D0%BA%D0%B0%D0%BB.jpg"
+                              class="img-fluid"
+                              alt="Ледоскал"
+                            />
+                          </p>
+                          <p>Координаты Ледоскала: Драконий Погост, 68.0 50.0 (приблизительно)</p>
+                          <img
+                            src="{{ '/nest/uploads/mightyMagnataur.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение Ледоскала в Драконьих Пустошах"
+                          />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Один из монстров, которого необходимо убить по условиям этого <b>группового</b> задания,
+                                <a href="https://www.wowhead.com/wotlk/ru/npc=27007" target="_blank" rel="noopener nofollow">Ледоскал</a> - кидает стакающуюся
+                                доту, разгоняя ее урон до 2500/3с и снижая на треть скорость атаки и каста Вашего персонажа. Даже после убийства этого босса
+                                есть большой риск гибели персонажа из-за продолжения действия стакающегося дебафа.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-hillsbradFoothills" role="tabpanel" aria-labelledby="v-pills-hillsbradFoothills-tab">
+                  <div class="accordion accordion-flush" id="accordion-hillsbradFoothills">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#battleOfHillsbrad"
+                          aria-expanded="false"
+                          aria-controls="battleOfHillsbrad"
+                        >
+                          Битва за Хилсбрад (задание на обычных монстров)
+                        </button>
+                      </h2>
+                      <div
+                        id="battleOfHillsbrad"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-hillsbradFoothills"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            5-я задача в цепочке заданий с одноименным названием: Убейте Штейгера Бондса и 10 хилсбрадских шахтеров и доложите о проделанной
+                            работе Дарталии в Мельнице Таррен.
+                          </p>
+                          <p>Прогресс:</p>
+                          <ul>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=2305" target="_blank" rel="noopener nofollow">Штейгер Бондс</a> убито</li>
+                            <li><a href="https://www.wowhead.com/wotlk/ru/npc=2269" target="_blank" rel="noopener nofollow">Хилсбрадский шахтер</a> убито</li>
+                          </ul>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/38947-%D1%88%D1%82%D0%B5%D0%B9%D0%B3%D0%B5%D1%80-%D0%B1%D0%BE%D0%BD%D0%B4%D1%81.jpg"
+                              class="img-fluid"
+                              alt="Штейгер Бондс"
+                            />
+                          </p>
+                          <p>Координаты: Предгорья Хилсбрада, 31.0 56.2</p>
+                          <img
+                            src="{{ '/nest/uploads/battleOfHillsbrad.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение Штейгера Бондса в Предгорьях Хилсбрада"
+                          />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Один из монстров, которого необходимо убить по условиям этого задания,
+                                <a href="https://www.wowhead.com/wotlk/ru/npc=2305" target="_blank" rel="noopener nofollow">Штейгер Бондс</a>, когда у него
+                                остается мало ХП, призывает двух мобов 30 лвла (стан не помогает прервать их призыв). Может стать фатальным, если Вы пришли туда
+                                на уровне <30 и не подготовили путь отхода. Единственный плюс: если вы не двигаетесь - призванные Штейгером Бондсом мобы не
+                                агрятся на Вашего персонажа.</i
+                              ></small
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-stranglethornVale" role="tabpanel" aria-labelledby="v-pills-stranglethornVale-tab">
+                  <div class="accordion accordion-flush" id="accordion-stranglethornVale">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#battleWithNegolash"
+                          aria-expanded="false"
+                          aria-controls="battleWithNegolash"
+                        >
+                          Бой с Неголашем (задание на элитного монстра)
+                        </button>
+                      </h2>
+                      <div
+                        id="battleWithNegolash"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-stranglethornVale"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            2-я задача в цепочке заданий с одноименным названием: Отнесите 10 жареных крылышек канюка и 5 бутылок экзотического вина в
+                            спасательную шлюпку капитана Смоттса.<br />Убейте Неголаша и отнесите абордажную саблю Смоттса хозяину в Тернистую долину.
+                          </p>
+                          <p>
+                            Квестовый итем:<br />
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=3935"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=3935"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Абордажная сабля Смоттса</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/60431-%D0%BD%D0%B5%D0%B3%D0%BE%D0%BB%D0%B0%D1%88-negolash-approaching-after-being-summoned.jpg"
+                              class="img-fluid"
+                              alt="Неголаш"
+                            />
+                          </p>
+                          <p>Координаты: Тернистая долина, 32.6 81.6</p>
+                          <img
+                            src="{{ '/nest/uploads/battleWithNegolash.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение Неголаша в Тернистой долине"
+                          />
+                          <p class="mb-0">
+                            <small
+                              ><i
+                                >Требует сбора 10х
+                                <a
+                                  href="https://wowhead.com/wotlk/ru/item=3404"
+                                  data-wh-icon-size="small"
+                                  data-wowhead="item=3404"
+                                  class="wowhead wowhead-icon"
+                                  target="_blank"
+                                  rel="noopener nofollow"
+                                  >Крыло канюка</a
+                                >
+                                для создания из них 10х
+                                <a
+                                  href="https://wowhead.com/wotlk/ru/item=4457"
+                                  data-wh-icon-size="small"
+                                  data-wowhead="item=4457"
+                                  class="wowhead wowhead-icon"
+                                  target="_blank"
+                                  rel="noopener nofollow"
+                                  >Жареное крылышко канюка</a
+                                >
+                                и покупки 5х
+                                <a
+                                  href="https://wowhead.com/wotlk/ru/item=4595"
+                                  data-wh-icon-size="small"
+                                  data-wowhead="item=4595"
+                                  class="wowhead wowhead-icon"
+                                  target="_blank"
+                                  rel="noopener nofollow"
+                                  >Экзотическое вино</a
+                                >
+                                у <a href="https://www.wowhead.com/wotlk/ru/npc=2305" target="_blank" rel="noopener nofollow">Никсраз Наливайка</a> в Пиратской
+                                бухте, для призыва Неголаша. Квест помечен как групповой на 42 лвл, но несмотря на это, даже на 48 лвл в одиночку Неголаш очень
+                                опасен. Вваливает латнику по 300хп и станит на 2 секунды по кд через каждые 10 секунд.</i
+                              ></small
+                            >
+                            <!-- <video controls style="width: 100%; min-height: 520px;" preload="metadata" playsinline class="mb-3">
+                              <source src="{{ '/nest/uploads/negolash_last.mp4' | relative_url }}" type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video> -->
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-zulDrak" role="tabpanel" aria-labelledby="v-pills-zulDrak-tab">
+                  <div class="accordion accordion-flush" id="accordion-zulDrak">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#Betrayal"
+                          aria-expanded="false"
+                          aria-controls="Betrayal"
+                        >
+                          Предательство (квест на Череп Дракуру)
+                        </button>
+                      </h2>
+                      <div id="Betrayal" class="accordion-collapse collapse border-bottom bg-transparent text-white" data-bs-parent="#accordion-zulDrak">
+                        <div class="accordion-body">
+                          <p>
+                            Задача для задания Предательство: По поручению Стефана с Черной заставы убейте Дракуру.
+                          </p>
+                          <p>
+                            Цель:
+                          </p>
+                          <ul>
+                            <li>
+                              <a
+                                href="https://wowhead.com/wotlk/ru/item=40425"
+                                data-wh-icon-size="small"
+                                data-wowhead="item=40425"
+                                class="wowhead wowhead-icon"
+                                target="_blank"
+                                rel="noopener nofollow"
+                              >
+                                Череп Дракуру</a
+                              >
+                            </li>
+                          </ul>
+                          <p>
+                            Если вы потеряете заколдованное колье, возвращайтесь к Стефану на Черную заставу, и он даст вам другое.
+                          </p>
+                          <p>
+                            Квестовый итем (прилагается):
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=39664"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=39664"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                            >
+                              Скипетр господства</a
+                            >
+                          </p>
+                          <p>
+                            Череп Дракуру:<br />
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/119049-%D0%BF%D1%80%D0%B5%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%BE.jpg"
+                              class="img-fluid"
+                              alt="Череп Дракуру"
+                            />
+                          </p>
+                          <p>Координаты: Зул'Драк, 28.6 44.7</p>
+                          <img
+                            src="{{ '/nest/uploads/Betrayal.jpg' | relative_url }}"
+                            class="img-fluid"
+                            alt="местонахождение выполнения квеста Предательство в Зул'Драке"
+                          />
+                          <p class="mb-0">
+                            Судя по комментариям к
+                            <a
+                              href="https://www.wowhead.com/wotlk/ru/quest=12713/%D0%BF%D1%80%D0%B5%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%BE#comments"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >Wowhead: квест "Предательство"</a
+                            >, там очень много тонкостей, которые на нашем сервере могут не работать, или работать иначе, поэтому, если что-то пойдет не так
+                            (например, ядовитые лужи разливаются по всей платформе, подчиненный вами прислужник начинает агриться на вас и т.п.), то Вам просто
+                            придется спрыгивать с платформы Волтара, что с высокой вероятностью может привести к гибели персонажа, даже при использовании
+                            плаща-парашута, бабла или БОПа паладина (они к этому времени могут стать недоступны) и других приспособлений и абилок, замедляющих
+                            падение. Если Вы относительно недавно выполняли это задание еще до того как начали качть персонажа на ХК и точно знаете, что и как
+                            здесь нужно делать, как это работает именно на нашем сервере х2, то с высокой вероятностью, вы это задание пройдете и ХК-персонажем,
+                            в противном случае - стоит это задание отменить, так как хорошая награда за этот квест все равно не стоит нескольких недель игры.
+                          </p>
+                          <p>
+                            Если вы точно знаете, как проходится этот квест на нашем сервере х2 и сможете записать видео с успешным прохождением этого квеста на
+                            ХК, и затем прислать его нам, то все игроки ХК будут Вам за это очень благодарны!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#convocationAtZolHeb"
+                          aria-expanded="false"
+                          aria-controls="convocationAtZolHeb"
+                        >
+                          Вызов в Зол'Хебе (пророк Акали)
+                        </button>
+                      </h2>
+                      <div
+                        id="convocationAtZolHeb"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-zulDrak"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача для задания Вызов в Зол'Хебе: По заданию Хар'коа из Зим'Торги убейте пророка Акали.
+                          </p>
+                          <p>
+                            Цель:
+                          </p>
+                          <ul>
+                            <li>
+                              <a
+                                href="https://wowhead.com/wotlk/ru/npc=29028"
+                                data-wh-icon-size="small"
+                                data-wowhead="npc=29028"
+                                class="wowhead wowhead-icon"
+                                target="_blank"
+                                rel="noopener nofollow"
+                              >
+                                Пророк Акали</a
+                              >
+                              - убито
+                            </li>
+                            <li class="list-unstyled">Рекомендуемое количество игроков: 3</li>
+                          </ul>
+                          <p>
+                            Квестовый итем (прилагается):
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=39566"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=39566"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                            >
+                              Вызов пророка Акали</a
+                            >
+                          </p>
+                          <h5>Описание:</h5>
+                          <p>
+                            Возьми этот инструмент насильственного призыва – вызова духов и сущностей – и отправляйся с друзьями в Зол'Хеб, на юг от Гундрака.
+                          </p>
+                          <p>Там вы найдете круг силы. С помощью этого инструмента вы призовете пророка Акали.</p>
+                          <p>
+                            Знай, <имя>, мое сердце – всегда с тобой. Мы столько всего пережили вместе, и ты <спас/спасла> не только меня, но и многих богов,
+                            уничтоженных племенем Драккари.
+                          </p>
+                          <p>Но, боюсь, что теперь мы с тобой встретимся только в загробном мире.</p>
+                          <p>Координаты: Зул'Драк, 28.6 44.7</p>
+                          <img src="{{ '/nest/uploads/convocationAtZolHeb.jpg' | relative_url }}" class="img-fluid" alt="местонахождение выполнения квеста Вызов в Зол'Хебе в Зул'Драке" />
+                          <p class="mb-0">
+                            Квест, на котором часто погибают персонажи тех классов, которые не могут себя хилить, снимать яды и т.п., проходящие его в соло. Не
+                            даром это задание помечено как групповое, на 3 игрока, но даже с лечащими абилками, самоотхилом, этот квест может быть опасен при
+                            прохождении в соло. Некоторые игроки могут сделать этот квест самостоятельно "на автомате", даже не заметив, в чем тут опасность,
+                            т.к. сразу снимаются яды, хороший самоотхил, отличная экипировка и т.д., но все же, таким классам как охотники, разбойники,
+                            чернокнижники, маги и воины - лучше идти делать этот квест как минимум вдвоем или втроем, и обязательно, чтобы в пати был тот, кто
+                            может снимать яды и/или хилить.
+                          </p>
+                          <p>
+                            Если вы сможете записать видео с успешным прохождением этого квеста на ХК в соло одним из указанных выше классов на сервере х2, и
+                            затем прислать его нам, то все игроки ХК будут Вам за это очень благодарны!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-sholazarBasin" role="tabpanel" aria-labelledby="v-pills-sholazarBasin-tab">
+                  <div class="accordion accordion-flush" id="accordion-sholazarBasin">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#poweringTheWaygate"
+                          aria-expanded="false"
+                          aria-controls="poweringTheWaygate"
+                        >
+                          Включение Спирали: Обитель Творцов + Старинный сундук
+                        </button>
+                      </h2>
+                      <div
+                        id="poweringTheWaygate"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-sholazarBasin"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача для задания Обитель Творцов: Аватара Фрейи с водопадов Гласа Дождя хочет, чтобы вы отправились в Обитель Творцов и
+                            воспользовались активационным переключателем "гамма".
+                          </p>
+                          <p>
+                            Цель:
+                          </p>
+                          <ul>
+                            <li>
+                              <a
+                                href="https://wowhead.com/wotlk/ru/object=190508"
+                                data-wh-icon-size="small"
+                                data-wowhead="object=190508"
+                                class="wowhead wowhead-icon"
+                                target="_blank"
+                                rel="noopener nofollow"
+                                >Активационный переключатель "гамма" включен</a
+                              >
+                            </li>
+                          </ul>
+                          <p>
+                            Задача для задания Старинный сундук: Добудьте у стражей Шолазара огромный каменный ключ и старинный откройте сундук, который вы
+                            нашли в Дозоре Творцов.
+                          </p>
+                          <p>
+                            Квестовый итем:
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=39227"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=39227"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Огромный каменный ключ</a
+                            >
+                          </p>
+                          <p>
+                            Старинный сундук:<br />
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/109520-%D1%81%D1%82%D0%B0%D1%80%D0%B8%D0%BD%D0%BD%D1%8B%D0%B9-%D1%81%D1%83%D0%BD%D0%B4%D1%83%D0%BA.jpg"
+                              class="img-fluid"
+                              alt="Старинный сундук"
+                            />
+                          </p>
+                          <p>
+                            Караульный дозорного укрепления:<br />
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/98491-%D0%BA%D0%B0%D1%80%D0%B0%D1%83%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%B4%D0%BE%D0%B7%D0%BE%D1%80%D0%BD%D0%BE%D0%B3%D0%BE-%D1%83%D0%BA%D1%80%D0%B5%D0%BF%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F.jpg"
+                              class="img-fluid"
+                              alt="Караульный дозорного укрепления"
+                            />
+                          </p>
+                          <p>Координаты: Низина Шолазар, 83.6 53.8 (приблизительно)</p>
+                          <img src="{{ '/nest/uploads/poweringTheWaygate.jpg' | relative_url }}" class="img-fluid" alt="местонахождение Стражников Шолазара в Низине Шолазар" />
+                          <p class="mb-0">
+                            Действия этих двух квестов происходят в одном и том же месте Низины Шолазар: Дозор Творцов, расположенном на Востоке данной локации.
+                            Сами эти квесты не являются проблемными, в первом нужно добежать до конца хранилища, во втором - выбить ключ со стражей и открыть
+                            сундук.<br />
+                            Тут есть два значимых фактора:
+                          </p>
+                          <ol>
+                            <li>
+                              В центре хранилища по кругу ходит элитный моб
+                              <a href="https://www.wowhead.com/wotlk/ru/npc=28840" target="_blank" rel="noopener nofollow">Караульный дозорного укрепления</a>.
+                              Моб бьёт неслабо, но гораздо опаснее его способность "Взрыв руны". Моб моментально вешает на себя дебафф, который через 4 секунды
+                              взрывается по площади на ~7 тыс. При этом атаки продолжаются, поэтому если вы не ожидаете этого - риск умереть очень велик.
+                            </li>
+                            <li>
+                              Время респа мобов в хранилище - 2 минуты. Включая элитку. На практике это время как раз истекает, когда вы активируете
+                              переключатель в возвращаетесь обратно, элитка как раз респится у вас на голове.
+                            </li>
+                          </ol>
+                          <p>
+                            По возможности старайтесь обойти элитку через круг, вокруг которого она ходит, либо танкуйте вдалеке от себя петом или другим
+                            игроком.
+                          </p>
+                          <!-- <video controls style="width: 100%; min-height: 520px;" preload="metadata" playsinline class="mb-3">
+                            <source src="{{ '/nest/uploads/poweringTheWaygate.mp4' | relative_url }}" type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-unGoroCrater" role="tabpanel" aria-labelledby="v-pills-unGoroCrater-tab">
+                  <div class="accordion accordion-flush" id="accordion-unGoroCrater">
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#pawnCapturesQueen"
+                          aria-expanded="false"
+                          aria-controls="pawnCapturesQueen"
+                        >
+                          Пешка берет королеву (задание на мозг матки улья Гориши)
+                        </button>
+                      </h2>
+                      <div
+                        id="pawnCapturesQueen"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-unGoroCrater"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Призовите и сразите матку улья Гориши.<br />
+                            Принесите мозг матки Гориши алхимику Пестычинсу в Прибамбасск.
+                          </p>
+                          <p>
+                            Цель:
+                          </p>
+                          <ul>
+                            <li>
+                              <a
+                                href="https://wowhead.com/wotlk/ru/npc=10041"
+                                data-wh-icon-size="small"
+                                data-wowhead="npc=10041"
+                                class="wowhead wowhead-icon"
+                                target="_blank"
+                                rel="noopener nofollow"
+                                >Матка улья Гориши</a
+                              >
+                            </li>
+                          </ul>
+                          <p>
+                            Квестовый итем:
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=11835"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=11835"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Мозг королевы Гориши</a
+                            >
+                          </p>
+                          <p>
+                            Предмет, необходимый для задания (прилагается, исчезает после использования):
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=11833"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=11833"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Приманка для королевы Гориши</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            Матка улья Гориши:<br />
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/62344-%D0%BC%D0%B0%D1%82%D0%BA%D0%B0-%D1%83%D0%BB%D1%8C%D1%8F-%D0%B3%D0%BE%D1%80%D0%B8%D1%88%D0%B8.jpg"
+                              class="img-fluid"
+                              alt="Матка улья Гориши"
+                            />
+                          </p>
+                          <p>Координаты: Кратер Ун'Горо, 43.4 81.4</p>
+                          <img src="{{ '/nest/uploads/pawnCapturesQueen.jpg' | relative_url }}" class="img-fluid" alt="Местонахождение матки улья Гориши в Кратере Ун'Горо" />
+                          <p>
+                            Задание предполагает появление нескольких волн ос, с увеличением количества/качества монстров с каждой волной:
+                          </p>
+                          <ol>
+                            <li>2 моба 54-го уровня</li>
+                            <li>3 моба 54-го уровня</li>
+                            <li>2 моба 54-го уровня и босс 56-го уровня</li>
+                          </ol>
+                          <p>
+                            При этом, действие происходит в пещере. Большинство классов вряд ли смогут справиться с таким наплывом монстров без возможности
+                            отдохнуть и восполнить здоровье/ману.
+                          </p>
+                          <p>Из комментариев с сайта WowHead:</p>
+                          <blockquote class="blockquote border border-dark rounded rounded-4 p-3 fst-italic fs-6" style="color: #ce8900;">
+                            <ul>
+                              <li>
+                                мобов можно "оттягивать" в коридор, добивать там и отпиваться между волнами, мобы агрятся сразу все, как только бьете одного,
+                                независимо от радиуса агро
+                              </li>
+                              <li>
+                                мобов можно выводить в коридор, отпиваться, однако пока вы будете их выводить и отпиваться/отъедаться, к моменту как матка
+                                останется одна - в комнате реснутся мобы, придется опять их чистить, и тут, оп - матка-сэвэйдилась по времени...
+                              </li>
+                            </ul>
+                          </blockquote>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item border bg-transparent border-0">
+                      <h2 class="accordion-header">
+                        <button
+                          class="accordion-button collapsed border-bottom bg-transparent fs-5"
+                          type="button"
+                          style="color: #ce8900;"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#safetyInNumbers"
+                          aria-expanded="false"
+                          aria-controls="safetyInNumbers"
+                        >
+                          Один в поле не воин (задание на убийство монстра: Яропламень)
+                        </button>
+                      </h2>
+                      <div
+                        id="safetyInNumbers"
+                        class="accordion-collapse collapse border-bottom bg-transparent text-white"
+                        data-bs-parent="#accordion-unGoroCrater"
+                      >
+                        <div class="accordion-body">
+                          <p>
+                            Задача: Отправляйтесь к Вулкану Огненного Венца, к югу от Укрытия Маршалла.<br />
+                            Найдите Яропламеня и разрушьте его защитную ауру с помощью тотема. Когда дух будет сражен, заберите из пещеры Золотое пламя.
+                          </p>
+                          <p>
+                            Цель:
+                          </p>
+                          <ul>
+                            <li>
+                              <a
+                                href="https://wowhead.com/wotlk/ru/npc=9376"
+                                data-wh-icon-size="small"
+                                data-wowhead="npc=9376"
+                                class="wowhead wowhead-icon"
+                                target="_blank"
+                                rel="noopener nofollow"
+                                >Яропламень</a
+                              >
+                              убито
+                            </li>
+                          </ul>
+                          <p>
+                            Квестовый итем:
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=11179"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=11179"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Золотое пламя</a
+                            >
+                          </p>
+                          <p>
+                            Предмет, необходимый для задания (прилагается):
+                            <a
+                              href="https://wowhead.com/wotlk/ru/item=11522"
+                              data-wh-icon-size="small"
+                              data-wowhead="item=11522"
+                              class="wowhead wowhead-icon"
+                              target="_blank"
+                              rel="noopener nofollow"
+                              >Серебряный тотем Аквамонтоса</a
+                            >
+                          </p>
+                          <p>Рекомендуемое количество игроков: 2 и более</p>
+                          <p>
+                            Яропламень:<br />
+                            <img
+                              src="https://wow.zamimg.com/uploads/screenshots/normal/21299-%D0%BE%D0%B4%D0%B8%D0%BD-%D0%B2-%D0%BF%D0%BE%D0%BB%D0%B5-%D0%BD%D0%B5-%D0%B2%D0%BE%D0%B8%D0%BD.jpg"
+                              class="img-fluid"
+                              alt="Яропламень"
+                            />
+                          </p>
+                          <p>Координаты: Кратер Ун'Горо, 49.2 49.0</p>
+                          <img src="{{ '/nest/uploads/safetyInNumbers.jpg' | relative_url }}" class="img-fluid" alt="Местонахождение Яропламеня в Кратере Ун'Горо" />
+                          <p class="mb-0">
+                            Яропламень может с сокрушительным дамагом откинуть Вашего персонажа прямо в лавовый резервуар, а лава бьет часто и очень сильно:
+                            персонаж окунается в лаву с сильно уменьшенным уровнем здоровья, поэтому, как правило, смерть персонажа неминуемо наступает через
+                            несколько секунд. Чтобы избежать данной ситуации, Вам необходимо стоять спиной к стене пещеры, или танковать Яропламеня петом, если
+                            он у вас есть.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container main my-3 my-lg-5">
+  <div class="row">
+    <div class="col-12 text-light">
+      <div class="main-content text-center p-5">
+        <p class="mb-0">
+          Уважаемые игроки испытания "Один шанс" сервера Sirus x5! Вы можете прислать Ваш список опасных заданий (квестов) на ХК, в наш
+          <a href="https://t.me/+HnliAMRqO9A5ZGVi" target="_blank" title="Наш чат в Telegram">телеграм-чат</a>, а мы добавим их на эту страницу в ближайшее
+          время.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -22,33 +22,30 @@
           </li>
           <li class="nav-item">
             <a class="nav-link scroll-link" href="/#items">Склады</a>
-          </li>
+          </li> -->
           <li class="nav-item dropdown bg-dark">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Полезное
             </a>
             <ul class="dropdown-menu bg-dark">
-              <li><a class="dropdown-item" href="/ridiculous-deaths.html" title="Список Нелепых Смертей ХК">СНС</a></li>
-              <li><a class="dropdown-item" href="/useful-tips.html" title="Полезные советы по выживанию на ХК">Полезные советы</a></li>
-              <li><a class="dropdown-item" href="/faq.html" title="Часто задаваемые Вопросы">ЧаВо (FAQ)</a></li>
-              <li><a class="dropdown-item" href="/dangerous-quests.html">Опасные квесты</a></li>
-              <li><a class="dropdown-item" href="/addons.html">Аддоны</a></li>
+              <li><a class="dropdown-item" href="{{ '/nest/useful/ridiculous-deaths/' | relative_url }}" title="Список Нелепых Смертей ХК">СНС</a></li>
+              <li><a class="dropdown-item" href="{{ '/nest/useful/useful-tips/' | relative_url }}" title="Полезные советы по выживанию на ХК">Полезные советы</a></li>
+              <!-- <li><a class="dropdown-item" href="/faq.html" title="Часто задаваемые Вопросы">ЧаВо (FAQ)</a></li> -->
+              <li><a class="dropdown-item" href="{{ '/nest/useful/dangerous-quests/' | relative_url }}">Опасные квесты</a></li>
+              <!-- <li><a class="dropdown-item" href="/addons.html">Аддоны</a></li>
               <li><hr class="dropdown-divider bg-light" /></li>
-              <li><a class="dropdown-item disabled" href="#" title="Страница Макросы запланирована в разработку">Макросы</a></li>
+              <li><a class="dropdown-item disabled" href="#" title="Страница Макросы запланирована в разработку">Макросы</a></li> -->
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/stories.html">Байки ХК</a>
-          </li> -->
+            <a class="nav-link" href="{{ '/nest/stories/' | relative_url }}">Байки ХК</a>
+          </li>
           <li class="nav-item dropdown bg-dark">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Гильдия
             </a>
             <ul class="dropdown-menu bg-dark">
               <!-- <li>
-                <a class="dropdown-item" href="/politics.html">Правила</a>
-              </li>
-              <li>
                 <a class="dropdown-item" href="/warehouses.html">Складские персонажи</a>
               </li>
               <li>
@@ -62,6 +59,9 @@
               </li> -->
               <li>
                 <a class="dropdown-item scroll-link" href="{{ '/nest/guild/about/' | relative_url }}">О нас</a>
+              </li>
+              <li>
+                <a class="dropdown-item scroll-link" href="{{ '/nest/guild/politics/' | relative_url }}">Правила</a>
               </li>
             </ul>
           </li>

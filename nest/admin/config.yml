@@ -1,16 +1,18 @@
 backend:
-  name: github
-  repo: ТВОЯ_ОРГАНИЗАЦИЯ/РЕПОЗИТОРИЙ
-  branch: dev # Пока работаем в dev
+  name: git-gateway
+  repo: Phoenix-Guilds/phoenix-guilds.github.io
+  branch: main
 
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"
 
 collections:
-  - name: "nest_news"
-    label: "Новости Гнезда"
-    folder: "nest/_posts" # Только новости из папки nest
-    create: true
-    fields:
-      - {label: "Заголовок", name: "title", widget: "string"}
-      - {label: "Текст", name: "body", widget: "markdown"}
+  - name: "guides"
+    label: "Гайды"
+    files:
+      - name: "hc-leveling"
+        label: "Гайд по прокачке ХК от Сильмы"
+        file: "nest/guides/hc-leveling.md"
+        fields:
+          - { label: "Заголовок", name: "title", widget: "string" }
+          - { label: "Текст гайда", name: "body", widget: "markdown" }

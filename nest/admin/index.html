@@ -11,46 +11,43 @@ layout: null
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
     <script>
+      window.CMS_CONFIG = {
+        backend: {
+          name: "git-gateway",
+          repo: "Phoenix-Guilds/phoenix-guilds.github.io",
+          branch: "main",
+          site_domain: "phoenix-guilds.netlify.app",
+          identity_url: "https://phoenix-guilds.netlify.app/.netlify/identity",
+          gateway_url: "https://phoenix-guilds.netlify.app/.netlify/git",
+        },
+        display_url: "https://phoenix-guilds.github.io",
+        media_folder: "nest/assets/images/uploads",
+        public_folder: "/nest/assets/images/uploads",
+        collections: [
+          {
+            name: "guides",
+            label: "Гайды",
+            files: [
+              {
+                name: "hc-leveling",
+                label: "Гайд по прокачке ХК от Сильмы",
+                file: "nest/guides/hc-leveling.md",
+                fields: [
+                  { label: "Заголовок", name: "title", widget: "string" },
+                  { label: "Текст гайда", name: "body", widget: "markdown" },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
       window.netlifyIdentity.init({
         API_URL: "https://phoenix-guilds.netlify.app/.netlify/identity",
       });
-
-      CMS.init({
-        config: {
-          load_config_file: false,
-          display_url: "https://phoenix-guilds.github.io",
-          backend: {
-            name: "git-gateway",
-            repo: "Phoenix-Guilds/phoenix-guilds.github.io",
-            branch: "main",
-            site_domain: "phoenix-guilds.netlify.app",
-            identity_url: "https://phoenix-guilds.netlify.app/.netlify/identity",
-            gateway_url: "https://phoenix-guilds.netlify.app/.netlify/git",
-          },
-          media_folder: "nest/assets/images/uploads",
-          public_folder: "/nest/assets/images/uploads",
-          collections: [
-            {
-              name: "guides",
-              label: "Гайды",
-              files: [
-                {
-                  name: "hc-leveling",
-                  label: "Гайд по прокачке ХК от Сильмы",
-                  file: "nest/guides/hc-leveling.md",
-                  fields: [
-                    { label: "Заголовок", name: "title", widget: "string" },
-                    { label: "Текст гайда", name: "body", widget: "markdown" },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      });
     </script>
+
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>

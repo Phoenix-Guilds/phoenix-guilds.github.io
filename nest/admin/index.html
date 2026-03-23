@@ -16,12 +16,31 @@ layout: null
       window.addEventListener(
         "message",
         (event) => {
-          console.log("Получено сообщение от:", event.origin);
-          console.log("Данные:", event.data);
+          if (event.origin === "https://decap-cms-oauth-proxy.vercel.app") {
+            console.log("Сигнал получен, обрабатываем токен...");
 
-          if (event.data === "authorizing:github:success") {
-            console.log("Авторизация успешна! Перезагружаем для входа...");
-            setTimeout(() => window.location.reload(), 500);
+            if (event.data && event.data.includes("success")) {
+              const jsonStr = event.data.replace("authorization:github:success:", "");
+              try {
+                const data = JSON.parse(jsonStr);
+                if (data.token) {
+                  const user = {
+                    backendName: "github",
+                    token: data.token,
+                    provider: "github",
+                  };
+                  localStorage.setItem("decap-cms-user", JSON.stringify(user));
+                  localStorage.setItem("netlify-cms-user", JSON.stringify(user));
+
+                  console.log("Токен сохранен! Перезагрузка...");
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 500);
+                }
+              } catch (e) {
+                console.error("Ошибка парсинга токена:", e);
+              }
+            }
           }
         },
         false,

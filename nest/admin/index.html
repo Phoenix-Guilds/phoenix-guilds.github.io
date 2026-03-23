@@ -8,42 +8,20 @@ layout: null
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <title>Phoenix Nest CMS</title>
+    <title>Content Manager | Phoenix Nest</title>
   </head>
   <body>
     <div id="nc-root"></div>
-
-    <script type="text/config" id="cms-config">
-      {
-        "backend": {
-          "name": "github",
-          "repo": "Phoenix-Guilds/phoenix-guilds.github.io",
-          "branch": "main",
-          "base_url": "https://decap-cms-oauth-proxy.vercel.app",
-          "auth_endpoint": "auth"
-        },
-        "media_folder": "nest/assets/images/uploads",
-        "public_folder": "/nest/assets/images/uploads",
-        "collections": [
-          {
-            "name": "guides",
-            "label": "Гайды",
-            "files": [
-              {
-                "name": "hc-leveling",
-                "label": "Гайд по прокачке ХК от Сильмы",
-                "file": "nest/guides/hc-leveling.md",
-                "fields": [
-                  { "label": "Заголовок", "name": "title", "widget": "string" },
-                  { "label": "Текст гайда", "name": "body", "widget": "markdown" }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    </script>
-
     <script defer src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>
+      (function () {
+        const url = new URL(window.location.href);
+        const token = url.searchParams.get("token");
+        if (token) {
+          window.opener.postMessage(`authorization:github:success:${JSON.stringify({ token: token })}`, url.origin);
+          window.close();
+        }
+      })();
+    </script>
   </body>
 </html>

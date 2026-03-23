@@ -8,11 +8,7 @@ layout: null
     <meta charset="utf-8" />
     <title>Content Manager | Phoenix Nest</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  </head>
-  <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
-      // Добавьте этот скрипт СРАЗУ после подключения виджета
       if (window.netlifyIdentity) {
         window.netlifyIdentity.on("init", (user) => {
           if (!user) {
@@ -23,5 +19,8 @@ layout: null
         });
       }
     </script>
+  </head>
+  <body>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>

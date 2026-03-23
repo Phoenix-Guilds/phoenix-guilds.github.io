@@ -2,7 +2,7 @@ backend:
   name: github
   repo: Phoenix-Guilds/phoenix-guilds.github.io
   branch: main
-  base_url: https://decap-cms-oauth-proxy.vercel.app
+  base_url: https://decap-cms-oauth-proxy-git-main-firsthards-projects.vercel.app
   auth_endpoint: auth
   site_domain: phoenix-guilds.github.io
 

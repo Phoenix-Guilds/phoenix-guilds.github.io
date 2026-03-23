@@ -2,8 +2,9 @@ backend:
   name: github
   repo: Phoenix-Guilds/phoenix-guilds.github.io
   branch: main
-  auth_endpoint: https://decap-cms-oauth-proxy.vercel.app/auth
-  use_graphql: false
+  base_url: https://decap-cms-oauth-proxy.vercel.app
+  auth_endpoint: auth
+  site_domain: phoenix-guilds.github.io
 
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"

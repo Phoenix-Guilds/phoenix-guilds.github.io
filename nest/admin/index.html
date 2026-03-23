@@ -7,21 +7,25 @@ layout: null
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex" />
     <title>Content Manager | Phoenix Nest</title>
   </head>
   <body>
     <div id="nc-root"></div>
-    <script defer src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
     <script>
-      (function () {
-        const url = new URL(window.location.href);
-        const token = url.searchParams.get("token");
-        if (token) {
-          window.opener.postMessage(`authorization:github:success:${JSON.stringify({ token: token })}`, url.origin);
-          window.close();
-        }
-      })();
+      window.addEventListener(
+        "message",
+        (event) => {
+          if (event.origin === "https://decap-cms-oauth-proxy.vercel.app") {
+            if (event.data === "authorizing:github:success") {
+              window.location.reload();
+            }
+          }
+        },
+        false,
+      );
     </script>
   </body>
 </html>

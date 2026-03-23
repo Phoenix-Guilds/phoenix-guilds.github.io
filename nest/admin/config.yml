@@ -2,6 +2,8 @@ backend:
   name: git-gateway
   repo: Phoenix-Guilds/phoenix-guilds.github.io
   branch: main
+  site_domain: phoenix-guilds.netlify.app
+  gateway_url: https://phoenix-guilds.netlify.app/.netlify/git
 
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"

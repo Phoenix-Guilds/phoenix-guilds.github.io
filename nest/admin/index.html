@@ -8,7 +8,7 @@ layout: null
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Content Manager | Phoenix Nest</title>
-    <script src="https://identity.netlify.app/v1/netlify-identity-widget.js"></script>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
@@ -18,15 +18,37 @@ layout: null
         API_URL: "https://phoenix-guilds.netlify.app/.netlify/identity",
       });
 
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", (user) => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/nest/admin/";
-            });
-          }
-        });
-      }
+      window.CMS.init({
+        config: {
+          backend: {
+            name: "git-gateway",
+            repo: "Phoenix-Guilds/phoenix-guilds.github.io",
+            branch: "main",
+            site_domain: "phoenix-guilds.netlify.app",
+            identity_url: "https://phoenix-guilds.netlify.app/.netlify/identity",
+            gateway_url: "https://phoenix-guilds.netlify.app/.netlify/git",
+          },
+          media_folder: "nest/assets/images/uploads",
+          public_folder: "/nest/assets/images/uploads",
+          collections: [
+            {
+              name: "guides",
+              label: "Гайды",
+              files: [
+                {
+                  name: "hc-leveling",
+                  label: "Гайд по прокачке ХК от Сильмы",
+                  file: "nest/guides/hc-leveling.md",
+                  fields: [
+                    { label: "Заголовок", name: "title", widget: "string" },
+                    { label: "Текст гайда", name: "body", widget: "markdown" },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      });
     </script>
   </body>
 </html>

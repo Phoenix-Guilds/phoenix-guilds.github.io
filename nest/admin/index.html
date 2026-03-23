@@ -18,8 +18,10 @@ layout: null
         API_URL: "https://phoenix-guilds.netlify.app/.netlify/identity",
       });
 
-      window.CMS.init({
+      CMS.init({
         config: {
+          load_config_file: false,
+          display_url: "https://phoenix-guilds.github.io",
           backend: {
             name: "git-gateway",
             repo: "Phoenix-Guilds/phoenix-guilds.github.io",

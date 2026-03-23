@@ -11,8 +11,8 @@ layout: null
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
     <script>
-      // Этот скрипт связывает виджет с твоим Netlify
       if (window.netlifyIdentity) {
         window.netlifyIdentity.on("init", (user) => {
           if (!user) {
@@ -23,12 +23,12 @@ layout: null
         });
       }
 
-      // ВАЖНО: Если Identity не находит сайт, принудительно задаем API
-      document.addEventListener("DOMContentLoaded", () => {
-        if (window.localStorage.getItem("netlifySiteURL") === null) {
-          window.localStorage.setItem("netlifySiteURL", "https://phoenix-guilds.netlify.app");
-        }
-      });
+      window.CMS_CONFIG = {
+        backend: {
+          name: "git-gateway",
+          address: "https://phoenix-guilds.netlify.app/.netlify/identity",
+        },
+      };
     </script>
   </body>
 </html>

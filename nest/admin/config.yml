@@ -4,7 +4,6 @@ backend:
   branch: main
   base_url: https://decap-cms-oauth-proxy.vercel.app
   auth_endpoint: auth
-  site_domain: phoenix-guilds.github.io
 
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"

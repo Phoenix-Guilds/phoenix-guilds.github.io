@@ -1,9 +1,8 @@
 backend:
-  name: git-gateway
+  name: github
   repo: Phoenix-Guilds/phoenix-guilds.github.io
   branch: main
-  site_domain: phoenix-guilds.netlify.app
-  base_url: https://phoenix-guilds.netlify.app
+  auth_endpoint: https://decap-cms-oauth-proxy.vercel.app/auth
 
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"

@@ -47,6 +47,8 @@ layout: null
         false,
       );
 
+      const { createClass, h } = window.CMS;
+
       const translit = (str) => {
         const ru = {
           а: "a",
@@ -93,25 +95,36 @@ layout: null
           .replace(/^-+|-+$/g, "");
       };
 
-      CMS.registerWidget(
-        "slugger",
-        CMS.widgets.string.control.extend({
-          onChange(e) {
-            const value = e.target.value;
-            this.props.onChange(value);
+      const SluggerControl = createClass({
+        handleChange(e) {
+          const value = e.target.value;
+          this.props.onChange(value);
 
-            const slug = translit(value);
+          const slug = translit(value);
+          
+          const event = new Event("input", { bubbles: true });
 
-            setTimeout(() => {
-              const input = document.querySelector('input[name="slug"]');
-              if (input) {
-                input.value = slug;
-                input.dispatchEvent(new Event("input", { bubbles: true }));
-              }
-            }, 50);
-          },
-        }),
-      );
+          setTimeout(() => {
+            const slugInput = document.querySelector('input[name="slug"]');
+            if (slugInput) {
+              slugInput.value = slug;
+              slugInput.dispatchEvent(event);
+            }
+          }, 100);
+        },
+
+        render() {
+          return h("input", {
+            id: this.props.forID,
+            className: this.props.classNameWrapper,
+            type: "text",
+            value: this.props.value || "",
+            onChange: this.handleChange,
+          });
+        },
+      });
+
+      CMS.registerWidget("slugger", SluggerControl);
     </script>
   </body>
 </html>

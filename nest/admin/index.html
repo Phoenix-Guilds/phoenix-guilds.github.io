@@ -14,7 +14,7 @@ layout: null
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <script>
-      window.addEventListener(
+      /* window.addEventListener(
         "message",
         (event) => {
           if (event.origin === "https://decap-cms-oauth-proxy.vercel.app") {
@@ -45,11 +45,10 @@ layout: null
           }
         },
         false,
-      );
+      ); */
 
-      const { createClass, h } = window.CMS;
-
-      const translit = (str) => {
+      // --- ТРАНСЛИТ ---
+      function translit(str) {
         const ru = {
           а: "a",
           б: "b",
@@ -93,38 +92,37 @@ layout: null
           .join("")
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-+|-+$/g, "");
-      };
+      }
 
-      const SluggerControl = createClass({
-        handleChange(e) {
-          const value = e.target.value;
-          this.props.onChange(value);
+      function setupSlugAutoFill() {
+        const titleInput = document.querySelector('input[name="title"]');
+        const slugInput = document.querySelector('input[name="slug"]');
 
-          const slug = translit(value);
-          
-          const event = new Event("input", { bubbles: true });
+        if (!titleInput || !slugInput) return;
 
-          setTimeout(() => {
-            const slugInput = document.querySelector('input[name="slug"]');
-            if (slugInput) {
-              slugInput.value = slug;
-              slugInput.dispatchEvent(event);
-            }
-          }, 100);
-        },
+        titleInput.addEventListener("input", () => {
+          if (slugInput.dataset.locked === "true") return;
 
-        render() {
-          return h("input", {
-            id: this.props.forID,
-            className: this.props.classNameWrapper,
-            type: "text",
-            value: this.props.value || "",
-            onChange: this.handleChange,
-          });
-        },
+          const slug = translit(titleInput.value);
+          slugInput.value = slug;
+          slugInput.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+
+        slugInput.addEventListener("input", () => {
+          if (slugInput.value) {
+            slugInput.dataset.locked = "true";
+          }
+        });
+      }
+
+      const observer = new MutationObserver(() => {
+        setupSlugAutoFill();
       });
 
-      CMS.registerWidget("slugger", SluggerControl);
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
     </script>
   </body>
 </html>

@@ -23,7 +23,7 @@ defaults:
 collections:
   guides:
     output: true
-    permalink: /nest/useful/guides/:path/
+    permalink: /nest/useful/guides/:slug/
 
 exclude:
   - vendor/

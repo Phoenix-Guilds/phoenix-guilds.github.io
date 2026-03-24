@@ -11,12 +11,12 @@ public_folder: "/nest/assets/images/uploads"
 collections:
   - name: "guides"
     label: "Гайды"
-    folder: "nest/useful/guides"
+    folder: "nest/useful/guides/"
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "nest-guide" }
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Автор", name: "author", widget: "string", default: "Сильма" }
+      - { label: "Автор", name: "author", widget: "string", default: "" }
       - { label: "Краткое описание", name: "description", widget: "text" }
       - { label: "Текст гайда", name: "body", widget: "markdown" }

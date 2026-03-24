@@ -20,6 +20,11 @@ defaults:
     values:
       layout: "true-default"
 
+collections:
+  guides:
+    output: true
+    permalink: /nest/useful/guides/:path/
+
 exclude:
   - vendor/
   - .bundle/

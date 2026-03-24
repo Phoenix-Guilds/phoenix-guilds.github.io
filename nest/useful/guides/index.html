@@ -3,22 +3,34 @@ layout: nest-default
 title: Гайды
 ---
 
-<div class="container my-5">
+<div class="container main my-3 my-lg-5">
   <div class="text-center mb-5">
     <h1 class="display-3">Полезные Гайды</h1>
-    <p class="lead">Опыт и знания игроков гильдии Phoenix Nest</p>
+    <p class="lead text-light">Опыт и знания игроков гильдии Phoenix Nest</p>
   </div>
 
-  <div class="row justify-content-center">
-    {% for guide in site.guides limit:1 %}
-    <div class="col-lg-9 shadow-sm p-4 rounded bg-white">
-      <h2 class="mb-3">{{ guide.title }}</h2>
-      <p class="text-muted small">Автор: {{ guide.author }}</p>
-      <div class="mb-4"><strong>Кратко:</strong> {{ guide.description }}</div>
-      <div class="guide-preview">
-        {{ guide.content }}
+  <div class="main-content p-5">
+    <div class="row justify-content-center">
+      {% if site.guides.size > 0 %} {% for guide in site.guides limit:1 %}
+      <div class="col-lg-9 shadow-sm p-4 rounded bg-white text-dark">
+        <h2 class="mb-3">{{ guide.title }}</h2>
+        <p class="text-muted small">Автор: {{ guide.author }}</p>
+        <div class="mb-4 text-dark"><strong>Кратко:</strong> {{ guide.description }}</div>
+        <div class="guide-preview text-dark">
+          {{ guide.content }}
+        </div>
       </div>
+      {% endfor %} {% else %}
+      <div class="col-lg-8">
+        <div class="text-center p-5 shadow-sm">
+          <div class="mb-3">
+            <i class="bi bi-journal-x" style="font-size: 3rem; color: #adb5bd;"></i>
+          </div>
+          <h3 class="text-light">Библиотека гайдов пуста</h3>
+          <p class="text-light mb-0">Мы еще не опубликовали свои гайды, но скоро здесь появятся первые знания.</p>
+        </div>
+      </div>
+      {% endif %}
     </div>
-    {% endfor %}
   </div>
 </div>

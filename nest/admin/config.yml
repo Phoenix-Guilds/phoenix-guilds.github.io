@@ -13,12 +13,14 @@ collections:
     label: "Гайды"
     folder: "_guides"
     create: true
-    slug: "{{slug}}"
+
+    slug: "{{fields.slug}}"
     identifier_field: slug
+
     fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "nest-guide" }
       - { label: "Заголовок", name: "title", widget: "slugger" }
-      - { label: "Slug", name: "slug", widget: "string", required: false }
+      - { label: "Slug", name: "slug", widget: "string" }
       - { label: "Автор", name: "author", widget: "string", default: "" }
       - { label: "Краткое описание", name: "description", widget: "text" }
       - { label: "Текст гайда", name: "body", widget: "markdown" }

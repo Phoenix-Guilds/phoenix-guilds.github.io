@@ -87,38 +87,31 @@ layout: null
         return str
           .toLowerCase()
           .split("")
-          .map((c) => (ru[c] !== undefined ? ru[c] : c))
+          .map((c) => ru[c] ?? c)
           .join("")
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-+|-+$/g, "");
       };
 
-      const AutoSlugControl = createClass({
-        handleChange: function (e) {
-          const value = e.target.value;
-          this.props.onChange(value);
+      CMS.registerWidget(
+        "slugger",
+        CMS.widgets.string.control.extend({
+          onChange(e) {
+            const value = e.target.value;
+            this.props.onChange(value);
 
-          const slugValue = translit(value);
+            const slug = translit(value);
 
-          const slugField = document.querySelector('[name="slug"]');
-          if (slugField) {
-            slugField.value = slugValue;
-            slugField.dispatchEvent(new Event("input", { bubbles: true }));
-          }
-        },
-
-        render: function () {
-          return h("input", {
-            id: this.props.forID,
-            className: this.props.classNameWrapper,
-            type: "text",
-            value: this.props.value || "",
-            onChange: this.handleChange,
-          });
-        },
-      });
-
-      CMS.registerWidget("slugger", AutoSlugControl);
+            setTimeout(() => {
+              const input = document.querySelector('input[name="slug"]');
+              if (input) {
+                input.value = slug;
+                input.dispatchEvent(new Event("input", { bubbles: true }));
+              }
+            }, 50);
+          },
+        }),
+      );
     </script>
   </body>
 </html>

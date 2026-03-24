@@ -47,8 +47,8 @@ layout: null
         false,
       );
 
-      function transliterate(text) {
-        const map = {
+      const translit = (str) => {
+        const ru = {
           а: "a",
           б: "b",
           в: "v",
@@ -59,7 +59,7 @@ layout: null
           ж: "zh",
           з: "z",
           и: "i",
-          й: "j",
+          й: "y",
           к: "k",
           л: "l",
           м: "m",
@@ -75,7 +75,7 @@ layout: null
           ц: "c",
           ч: "ch",
           ш: "sh",
-          щ: "shh",
+          щ: "sch",
           ъ: "",
           ы: "y",
           ь: "",
@@ -83,27 +83,38 @@ layout: null
           ю: "yu",
           я: "ya",
         };
-        return text
+        return str
           .toLowerCase()
           .split("")
-          .map((char) => map[char] || char)
+          .map((c) => (ru[c] !== undefined ? ru[c] : c))
           .join("")
-          .replace(/[^a-z0-0]/g, "-")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
-      }
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      };
 
-      CMS.registerEventListener({
-        name: "preSave",
-        handler: ({ entry }) => {
-          const title = entry.getIn(["data", "title"]);
-          const currentSlug = entry.getIn(["data", "slug"]);
+      const AutoSlugControl = createClass({
+        handleChange: function (e) {
+          const separator = this.props.field.get("separator", "-");
+          const value = e.target.value;
 
-          if (title && !currentSlug) {
-            return entry.setIn(["data", "slug"], transliterate(title));
-          }
+          this.props.onChange(value);
+
+          const slugValue = translit(value);
+          this.props.forID("slug", slugValue);
+        },
+
+        render: function () {
+          return h("input", {
+            id: this.props.forID,
+            className: this.props.classNameWrapper,
+            type: "text",
+            value: this.props.value || "",
+            onChange: this.handleChange,
+          });
         },
       });
+
+      CMS.registerWidget("slugger", AutoSlugControl);
     </script>
   </body>
 </html>

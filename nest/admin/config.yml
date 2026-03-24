@@ -16,6 +16,7 @@ collections:
     fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "nest-guide" }
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Автор", name: "author", widget: "string", default: "" }
+      - { label: "URL адрес (создается сам)", name: "slug", widget: "string", required: false }
+      - { label: "Автор", name: "author", widget: "string", default: "Сильма" }
       - { label: "Краткое описание", name: "description", widget: "text" }
       - { label: "Текст гайда", name: "body", widget: "markdown" }

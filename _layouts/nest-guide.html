@@ -2,6 +2,7 @@
 layout: nest-default
 ---
 
+{% assign real_slug = page.slug | default: page.title %}
 <div class="container main my-3 my-lg-5">
   <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">

@@ -1,0 +1,30 @@
+---
+layout: nest-default
+---
+
+<div class="guide-container">
+  <h1>{{ page.title }}</h1>
+  <p class="guide-meta">Автор: {{ page.author }}</p>
+  <hr />
+  <div class="guide-content">
+    {{ content }}
+  </div>
+  <hr />
+  <p><a href="/nest/guides/">← Ко всем гайдам</a></p>
+</div>
+
+<style>
+  .guide-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .guide-meta {
+    color: #666;
+    font-style: italic;
+  }
+  .guide-content img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+</style>

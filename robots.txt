@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /nest/admin/
+Sitemap: https://phoenix-guilds.github.io/sitemap.xml

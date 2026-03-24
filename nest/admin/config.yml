@@ -11,10 +11,11 @@ public_folder: "/nest/assets/images/uploads"
 collections:
   - name: "guides"
     label: "Гайды"
-    files:
-      - name: "hc-leveling"
-        label: "Гайд по прокачке ХК от Сильмы"
-        file: "nest/guides/hc-leveling.md"
-        fields:
-          - { label: "Заголовок", name: "title", widget: "string" }
-          - { label: "Текст гайда", name: "body", widget: "markdown" }
+    folder: "nest/guides"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "nest-guide" }
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Автор", name: "author", widget: "string", default: "Сильма" }
+      - { label: "Текст гайда", name: "body", widget: "markdown" }

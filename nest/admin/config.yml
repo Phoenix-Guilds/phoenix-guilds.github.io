@@ -1,3 +1,8 @@
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
 backend:
   name: github
   repo: Phoenix-Guilds/phoenix-guilds.github.io
@@ -11,9 +16,8 @@ public_folder: "/nest/assets/images/uploads"
 collections:
   - name: "guides"
     label: "Гайды"
-    folder: "nest/useful/guides/"
+    folder: "_guides"
     create: true
-    slug: "{{slug}}"
     fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "nest-guide" }
       - { label: "Заголовок", name: "title", widget: "string" }

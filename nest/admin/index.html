@@ -83,6 +83,7 @@ layout: null
           ю: "yu",
           я: "ya",
         };
+
         return str
           .toLowerCase()
           .split("")
@@ -94,13 +95,16 @@ layout: null
 
       const AutoSlugControl = createClass({
         handleChange: function (e) {
-          const separator = this.props.field.get("separator", "-");
           const value = e.target.value;
-
           this.props.onChange(value);
 
           const slugValue = translit(value);
-          this.props.forID("slug", slugValue);
+
+          const slugField = document.querySelector('[name="slug"]');
+          if (slugField) {
+            slugField.value = slugValue;
+            slugField.dispatchEvent(new Event("input", { bubbles: true }));
+          }
         },
 
         render: function () {

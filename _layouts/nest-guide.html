@@ -2,29 +2,30 @@
 layout: nest-default
 ---
 
-<div class="guide-container">
-  <h1>{{ page.title }}</h1>
-  <p class="guide-meta">Автор: {{ page.author }}</p>
-  <hr />
-  <div class="guide-content">
-    {{ content }}
-  </div>
-  <hr />
-  <p><a href="/nest/guides/">← Ко всем гайдам</a></p>
-</div>
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/nest/">Главная</a></li>
+          <li class="breadcrumb-item"><a href="/nest/useful/guides/">Гайды</a></li>
+          <li class="breadcrumb-item active">{{ page.title }}</li>
+        </ol>
+      </nav>
 
-<style>
-  .guide-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  .guide-meta {
-    color: #666;
-    font-style: italic;
-  }
-  .guide-content img {
-    max-width: 100%;
-    border-radius: 8px;
-  }
-</style>
+      <h1 class="display-4 mb-3">{{ page.title }}</h1>
+      <p class="text-muted"><em>Автор: {{ page.author }}</em></p>
+
+      <div class="lead border-start border-4 border-primary ps-3 mb-4">
+        {{ page.description }}
+      </div>
+
+      <div class="guide-content">
+        {{ content }}
+      </div>
+
+      <hr class="my-5" />
+      <a href="/nest/useful/guides/" class="btn btn-outline-primary">← Ко всем гайдам</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+name: Slugify
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  slugify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3
+
+      - name: Slugify filenames
+        run: |
+          python3 <<EOF
+            import os
+            import re
+            import subprocess
+
+            folder = "_guides"
+
+            ru = {
+            'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z',
+            'и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r',
+            'с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'c','ч':'ch','ш':'sh',
+            'щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
+            }
+
+            def translit(text):
+                text = text.lower()
+                text = ''.join(ru.get(c, c) for c in text)
+                text = re.sub(r'[^a-z0-9]+', '-', text)
+                text = re.sub(r'-+', '-', text).strip('-')
+                return text
+
+            for filename in os.listdir(folder):
+                if not filename.endswith(".md"):
+                    continue
+
+                old_path = os.path.join(folder, filename)
+
+                name = filename[:-3]
+                new_name = translit(name) + ".md"
+
+                if filename != new_name:
+                    new_path = os.path.join(folder, new_name)
+
+                    print(f"Renaming: {filename} -> {new_name}")
+                    os.rename(old_path, new_path)
+
+                    subprocess.run(["git", "add", new_path])
+                    subprocess.run(["git", "rm", old_path])
+
+            EOF
+
+                - name: Commit changes
+                    run: |
+                    git config user.name "slug-bot"
+                    git config user.email "slug-bot@users.noreply.github.com"
+
+                    git diff --cached --quiet || git commit -m "Auto slugify filenames"
+                    git push

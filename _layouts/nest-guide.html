@@ -2,30 +2,47 @@
 layout: nest-default
 ---
 
-<div class="container my-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/nest/">Главная</a></li>
-          <li class="breadcrumb-item"><a href="/nest/useful/guides/">Гайды</a></li>
-          <li class="breadcrumb-item active">{{ page.title }}</li>
-        </ol>
-      </nav>
+<div class="container main my-3 my-lg-5">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/nest/">Главная</a></li>
+      <li class="breadcrumb-item"><a href="/nest/useful/guides/">Гайды</a></li>
+      <li class="breadcrumb-item active text-light" aria-current="page">{{ page.title }}</li>
+    </ol>
+  </nav>
 
-      <h1 class="display-4 mb-3">{{ page.title }}</h1>
-      <p class="text-muted"><em>Автор: {{ page.author }}</em></p>
+  <div class="main-content p-4 p-lg-5 text-light">
+    <h1 class="display-4 mb-2">{{ page.title }}</h1>
+    <p class="text-muted mb-3">Автор: {{ page.author }}</p>
 
-      <div class="lead border-start border-4 border-primary ps-3 mb-4">
-        {{ page.description }}
-      </div>
+    <div class="lead p-3 mb-3 bg-dark bg-opacity-50 border-start border-info border-4 rounded-end">
+      {{ page.description }}
+    </div>
 
-      <div class="guide-content">
-        {{ content }}
-      </div>
+    <div class="guide-full-text">
+      {{ content }}
+    </div>
 
-      <hr class="my-5" />
-      <a href="/nest/useful/guides/" class="btn btn-outline-primary">← Ко всем гайдам</a>
+    <div class="mt-4 pt-3 border-top border-secondary">
+      <a href="/nest/useful/guides/" class="btn btn-outline-secondary"> <i class="bi bi-arrow-left"></i> Назад к списку </a>
     </div>
   </div>
 </div>
+
+<style>
+  .guide-full-text img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  .guide-full-text h2,
+  .guide-full-text h3 {
+    color: #0dcaf0;
+    margin-top: 1.5rem;
+  }
+  .guide-full-text p {
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+</style>

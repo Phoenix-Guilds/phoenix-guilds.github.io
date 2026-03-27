@@ -2,7 +2,6 @@
 layout: nest-default
 ---
 
-{% assign real_slug = page.slug | default: page.title %}
 <div class="container main my-3 my-lg-5">
   <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">
@@ -12,38 +11,330 @@ layout: nest-default
     </ol>
   </nav>
 
-  <div class="main-content p-4 p-lg-5 text-light">
-    <h1 class="display-4 mb-2">{{ page.title }}</h1>
-    <p class="text-muted mb-3">Автор: {{ page.author }}</p>
-
-    <div class="lead p-3 mb-3 bg-dark bg-opacity-50 border-start border-info border-4 rounded-end">
-      {{ page.description }}
+  <div class="main-content p-3 p-lg-5 text-light shadow-lg rounded-4">
+    <div class="header-section mb-4">
+      <h1 class="display-4 mb-2">{{ page.title }}</h1>
+      <p class="text-muted mb-3">Автор: {{ page.author }}</p>
+      <div class="lead p-3 bg-dark bg-opacity-50 border-start border-info border-4 rounded-end">
+        {{ page.description }}
+      </div>
     </div>
 
-    <div class="guide-full-text">
+    <div class="row g-4 guide-layout">
+      <aside class="col-12 col-lg-4 d-flex flex-column">
+        <button
+          class="btn btn-outline-info w-100 d-lg-none mb-3 shadow-sm"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#guide-toc"
+          aria-expanded="false"
+          aria-controls="guide-toc"
+        >
+          <i class="bi bi-list"></i> Содержание
+        </button>
+
+        <div class="collapse d-lg-block flex-grow-1" id="guide-toc">
+          <div class="guide-toc-box rounded-4 border border-secondary bg-dark bg-opacity-75 shadow">
+            <div class="guide-toc-header p-3 border-bottom border-secondary">
+              <div class="small text-uppercase text-info fw-bold">Оглавление</div>
+            </div>
+            <div class="guide-toc-body p-2">
+              <div id="guide-nav" class="nav flex-column text-end"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="col-12 col-lg-8">
+        <div id="guide-panels" class="guide-content-area shadow-sm rounded-4 p-1"></div>
+
+        <div class="guide-navigation-footer mt-5 pt-4 border-top border-secondary d-flex justify-content-between gap-3 flex-wrap">
+          <button id="guide-prev" type="button" class="btn btn-outline-info px-4" disabled>← Назад</button>
+          <a href="/nest/useful/guides/" class="btn btn-outline-secondary px-4">Все гайды</a>
+          <button id="guide-next" type="button" class="btn btn-outline-info px-4" disabled>Вперед →</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="guide-full-text d-none" aria-hidden="true">
       {{ content }}
-    </div>
-
-    <div class="mt-4 pt-3 border-top border-secondary">
-      <a href="/nest/useful/guides/" class="btn btn-outline-secondary"> <i class="bi bi-arrow-left"></i> Назад к списку </a>
     </div>
   </div>
 </div>
 
 <style>
-  .guide-full-text img {
-    max-width: 100%;
-    height: auto;
+  :root {
+    --guide-navbar-offset: 80px;
+  }
+
+  /* --- ГЛАВНОЕ: ограничиваем всю зону гайда по высоте экрана --- */
+  .guide-layout {
+    height: calc(100vh - var(--guide-navbar-offset) - 40px);
+  }
+
+  .guide-layout > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0; /* 🔥 */
+  }
+
+  .guide-layout .collapse.d-lg-block {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column;
+    min-height: 0; /* 🔥 */
+  }
+
+  .guide-toc-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    min-height: 0; /* 🔥 */
+  }
+
+  .guide-toc-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0; /* 🔥 */
+  }
+  
+  /* --- ПРАВАЯ КОЛОНКА --- */
+  .guide-content-area {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 1rem;
+  }
+
+  /* фикс футера */
+  .guide-navigation-footer {
+    flex: 0 0 auto;
+  }
+
+  /* скролл стили */
+  .guide-toc-body::-webkit-scrollbar,
+  .guide-content-area::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .guide-toc-body::-webkit-scrollbar-thumb,
+  .guide-content-area::-webkit-scrollbar-thumb {
+    background: #0dcaf0;
+    border-radius: 10px;
+  }
+
+  /* ссылки */
+  .guide-main-link {
+    display: block;
+    padding: 0.6rem 1rem;
+    color: #ced4da;
+    text-decoration: none;
     border-radius: 8px;
-    margin: 20px 0;
+    margin-bottom: 2px;
   }
-  .guide-full-text h2,
-  .guide-full-text h3 {
+
+  .guide-main-link.active {
+    background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
-    margin-top: 1.5rem;
   }
-  .guide-full-text p {
-    line-height: 1.7;
-    margin-bottom: 1.2rem;
+
+  .guide-sub-link {
+    font-size: 0.85rem;
+    color: #adb5bd;
+    padding: 0.2rem 0.75rem;
+    display: block;
+  }
+
+  .guide-sub-link.active {
+    color: #fff;
+  }
+
+  /* контент */
+  .doc-section {
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* --- МОБИЛКА --- */
+  @media (max-width: 991.98px) {
+    .guide-layout {
+      height: auto;
+    }
+
+    .guide-content-area {
+      max-height: none;
+      overflow: visible;
+    }
+
+    .guide-toc-body {
+      max-height: 50vh;
+    }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const source = document.querySelector(".guide-full-text");
+    const nav = document.getElementById("guide-nav");
+    const panels = document.getElementById("guide-panels");
+    const prevBtn = document.getElementById("guide-prev");
+    const nextBtn = document.getElementById("guide-next");
+
+    if (!source) return;
+
+    let currentIndex = 0;
+    const sections = [];
+
+    function translit(text) {
+      const map = {
+        а: "a",
+        б: "b",
+        в: "v",
+        г: "g",
+        д: "d",
+        е: "e",
+        ё: "e",
+        ж: "zh",
+        з: "z",
+        и: "i",
+        й: "y",
+        к: "k",
+        л: "l",
+        м: "m",
+        н: "n",
+        о: "o",
+        п: "p",
+        р: "r",
+        с: "s",
+        т: "t",
+        у: "u",
+        ф: "f",
+        х: "h",
+        ц: "ts",
+        ч: "ch",
+        ш: "sh",
+        щ: "sch",
+        ы: "y",
+        э: "e",
+        ю: "yu",
+        я: "ya",
+        ь: "",
+        ъ: "",
+      };
+      return text
+        .toLowerCase()
+        .split("")
+        .map((c) => map[c] || c)
+        .join("")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-");
+    }
+
+    let current = null;
+
+    Array.from(source.children).forEach((el) => {
+      if (el.tagName === "H3") {
+        const id = translit(el.textContent);
+        el.id = id;
+
+        const section = {
+          id,
+          title: el.textContent,
+          content: [],
+          anchors: [],
+        };
+
+        sections.push(section);
+        current = section;
+      }
+
+      if (!current) return;
+
+      if (/H[4-6]/.test(el.tagName)) {
+        const aid = translit(el.textContent);
+        el.id = aid;
+        current.anchors.push({ id: aid, title: el.textContent });
+      }
+
+      current.content.push(el);
+    });
+
+    source.remove();
+
+    sections.forEach((sec) => {
+      const pane = document.createElement("div");
+      pane.className = "doc-section";
+      pane.style.display = "none";
+      pane.id = sec.id;
+
+      sec.content.forEach((el) => pane.appendChild(el));
+      panels.appendChild(pane);
+
+      const link = document.createElement("a");
+      link.textContent = sec.title;
+      link.className = "guide-main-link";
+      link.href = "#";
+
+      link.onclick = (e) => {
+        e.preventDefault();
+        show(sec.id);
+      };
+
+      nav.appendChild(link);
+    });
+
+    function show(id) {
+      const index = sections.findIndex((s) => s.id === id);
+      if (index === -1) return;
+
+      currentIndex = index;
+
+      document.querySelectorAll(".doc-section").forEach((el) => {
+        el.style.display = "none";
+      });
+
+      const active = document.getElementById(id);
+      active.style.display = "block";
+
+      document.querySelectorAll(".guide-main-link").forEach((l, i) => {
+        l.classList.toggle("active", i === index);
+      });
+
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === sections.length - 1;
+
+      panels.scrollTop = 0;
+    }
+
+    prevBtn.onclick = () => {
+      if (currentIndex > 0) show(sections[currentIndex - 1].id);
+    };
+
+    nextBtn.onclick = () => {
+      if (currentIndex < sections.length - 1) show(sections[currentIndex + 1].id);
+    };
+
+    if (sections.length) show(sections[0].id);
+
+    // --- вычисление высоты навбара ---
+    function updateOffset() {
+      const nav = document.querySelector(".navbar");
+      const h = nav ? nav.offsetHeight : 70;
+      document.documentElement.style.setProperty("--guide-navbar-offset", h + "px");
+    }
+
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+  });
+</script>

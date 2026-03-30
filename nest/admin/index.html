@@ -97,13 +97,10 @@ layout: null
         ],
 
         toBlock: function (obj) {
-          // Собираем все классы воедино
           const combinedClasses = `${obj.preset || ""} ${obj.custom_class || ""}`.trim();
           const klassAttr = combinedClasses ? `{: .${combinedClasses}}` : "";
           const styleAttr = obj.style ? `{: style="${obj.style}"}` : "";
 
-          // Kramdown очень чувствителен к пробелам.
-          // Вставляем атрибуты сразу после закрывающей скобки без пробела.
           return `![${obj.alt || ""}](${obj.image})${klassAttr}${styleAttr}`;
         },
 
@@ -111,19 +108,15 @@ layout: null
           return {
             alt: match[1],
             image: match[2],
-            // Мы не можем легко разделить пресет и кастомный класс обратно,
-            // поэтому при редактировании всё попадет в поле Custom Class, а пресет сбросится в дефолт.
             custom_class: match[3],
             style: match[4],
           };
         },
 
-        // Улучшенный паттерн для захвата атрибутов
         pattern: /^!\[(.*)\]\((.*)\)(?:{: \.(.*)})?(?:{: style="(.*)"})?$/,
 
         toPreview: function (obj) {
           const combinedClasses = `${obj.preset || ""} ${obj.custom_class || ""}`.trim();
-          // В превью админки мы имитируем работу Kramdown, подставляя классы напрямую в тег
           return `<img src="${obj.image}" alt="${obj.alt}" class="${combinedClasses}" style="${obj.style || ""}" />`;
         },
       });

@@ -20,11 +20,7 @@ description: |-
 
 Предвступление будет таким:
 
-* я использую 
-
-  [мапстер](https://ssylka.na/addon){: rel="nofollow noopener" target="_blank"}
-
-  , в гайде есть координаты <https://sirus.su/api/base/addons/download/Mapster>
+* я использую [мапстер](https://ssylka.na/addon){: rel="nofollow noopener" target="_blank"}<https://sirus.su/api/base/addons/download/Mapster>, в гайде есть координаты
 * я использую склад, КАЧАЙТЕ АДДОН, беру со склада всё что вкусно в пределах 5 лвлов
 * если набрать больше - теперь будет под плиткой всё набранное добро.
 

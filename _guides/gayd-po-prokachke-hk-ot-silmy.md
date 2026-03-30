@@ -10,6 +10,8 @@ description: |-
 
 Итак, начнём.
 
+[Тестовая ссылка без веса](https://something.else){: rel="nofollow noopener" target="_blank"}
+
 Предвступление будет таким:
 
 * я использую мапстер, в гайде есть координаты <https://sirus.su/api/base/addons/download/Mapster>

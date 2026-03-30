@@ -2,6 +2,7 @@
 layout: nest-guide
 title: Гайд по прокачке ХК от Сильмы
 author: Сильма
+thumbnail: /nest/assets/images/uploads/hc-guide-silma-thumb.jpg
 description: |-
   Делюсь собственным разработанным путём прокачки персонажей на ХК. 
   При написании прохожу лично и всё конспектирую.

@@ -12,9 +12,19 @@ description: |-
 
 [Тестовая ссылка без веса](https://something.else){: rel="nofollow noopener" target="_blank"}
 
+[Прямая (спонсорская) ссылка](https://something.else){: rel="opener" target="_blank"}
+
+[Внутренняя (в том же окне) ссылка](https://something.else)
+
+[Якорь на той же странице](#prokachka-persona-zha-za-ordu-po-kvestam-ot-1-do-79){: .anchor-link}
+
 Предвступление будет таким:
 
-* я использую мапстер, в гайде есть координаты <https://sirus.su/api/base/addons/download/Mapster>
+* я использую 
+
+  [мапстер](https://ssylka.na/addon){: rel="nofollow noopener" target="_blank"}
+
+  , в гайде есть координаты <https://sirus.su/api/base/addons/download/Mapster>
 * я использую склад, КАЧАЙТЕ АДДОН, беру со склада всё что вкусно в пределах 5 лвлов
 * если набрать больше - теперь будет под плиткой всё набранное добро.
 

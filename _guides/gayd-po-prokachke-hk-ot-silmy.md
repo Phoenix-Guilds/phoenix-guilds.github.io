@@ -10,14 +10,6 @@ description: |-
 
 Итак, начнём.
 
-[Тестовая ссылка без веса](https://something.else){: rel="nofollow noopener" target="_blank"}
-
-[Прямая (спонсорская) ссылка](https://something.else){: rel="opener" target="_blank"}
-
-[Внутренняя (в том же окне) ссылка](https://something.else)
-
-[Якорь на той же странице](#prokachka-persona-zha-za-ordu-po-kvestam-ot-1-do-79){: .anchor-link}
-
 Предвступление будет таким:
 
 * я использую [мапстер](https://sirus.su/api/base/addons/download/Mapster){: rel="nofollow noopener" target="_blank"}, в гайде есть координаты

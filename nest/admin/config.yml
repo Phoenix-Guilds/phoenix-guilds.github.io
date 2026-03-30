@@ -8,6 +8,8 @@ backend:
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"
 
+markdown: kramdown
+
 collections:
   - name: "guides"
     label: "Гайды"

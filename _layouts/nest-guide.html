@@ -48,7 +48,7 @@ layout: nest-default
       <div class="col-12 col-lg-8">
         <div id="guide-panels" class="guide-content-area shadow-sm rounded-4 p-1"></div>
 
-        <div class="guide-navigation-footer mt-5 pt-4 border-top border-secondary d-flex justify-content-between gap-3 flex-wrap">
+        <div class="guide-navigation-footer mt-5 pt-4 border-top border-secondary d-flex justify-content-between gap-3">
           <button id="guide-prev" type="button" class="btn btn-outline-info px-4" disabled>← Назад</button>
           <a href="/nest/useful/guides/" class="btn btn-outline-secondary px-4">Все гайды</a>
           <button id="guide-next" type="button" class="btn btn-outline-info px-4" disabled>Вперед →</button>
@@ -64,26 +64,24 @@ layout: nest-default
 
 <style>
   :root {
-    --guide-navbar-offset: 80px;
+    --guide-navbar-offset: 94px;
   }
-
-  /* --- ГЛАВНОЕ: ограничиваем всю зону гайда по высоте экрана --- */
   .guide-layout {
-    height: calc(100vh - var(--guide-navbar-offset) - 40px);
+    height: calc(100vh - var(--guide-navbar-offset) - 60px);
   }
 
   .guide-layout > [class*="col-"] {
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-height: 0; /* 🔥 */
+    min-height: 0;
   }
 
   .guide-layout .collapse.d-lg-block {
     flex: 1;
     display: flex !important;
     flex-direction: column;
-    min-height: 0; /* 🔥 */
+    min-height: 0;
   }
 
   .guide-toc-box {
@@ -91,29 +89,26 @@ layout: nest-default
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    min-height: 0; /* 🔥 */
+    min-height: 0;
   }
 
   .guide-toc-body {
     flex: 1 1 auto;
     overflow-y: auto;
-    min-height: 0; /* 🔥 */
+    min-height: 0;
   }
   
-  /* --- ПРАВАЯ КОЛОНКА --- */
   .guide-content-area {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
     padding: 1rem;
   }
-
-  /* фикс футера */
+  
   .guide-navigation-footer {
     flex: 0 0 auto;
   }
-
-  /* скролл стили */
+  
   .guide-toc-body::-webkit-scrollbar,
   .guide-content-area::-webkit-scrollbar {
     width: 5px;

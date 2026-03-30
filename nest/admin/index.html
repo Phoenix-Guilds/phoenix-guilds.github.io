@@ -14,8 +14,120 @@ layout: null
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <script>
+      window.addEventListener(
+        "message",
+        (event) => {
+          if (event.origin === "https://decap-cms-oauth-proxy.vercel.app") {
+            // console.log("Сигнал получен, обрабатываем токен...");
 
-      // --- ТРАНСЛИТ ---
+            if (event.data && event.data.includes("success")) {
+              const jsonStr = event.data.replace("authorization:github:success:", "");
+
+              try {
+                const data = JSON.parse(jsonStr);
+
+                if (data.token) {
+                  const user = {
+                    backendName: "github",
+
+                    token: data.token,
+
+                    provider: "github",
+                  };
+
+                  localStorage.setItem("decap-cms-user", JSON.stringify(user));
+                  localStorage.setItem("netlify-cms-user", JSON.stringify(user));
+                  // console.log("Токен сохранен! Перезагрузка...");
+
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 500);
+                }
+              } catch (e) {
+                // console.error("Ошибка парсинга токена:", e);
+              }
+            }
+          }
+        },
+
+        false,
+      );
+
+      CMS.registerEditorComponent({
+        id: "smart-image",
+        label: "Изображение со стилем",
+        fields: [
+          {
+            label: "Выберите изображение",
+            name: "image",
+            widget: "image",
+            media_library: { allow_multiple: false },
+          },
+          {
+            label: "Описание (Alt)",
+            name: "alt",
+            widget: "string",
+          },
+          {
+            label: "Пресет оформления",
+            name: "preset",
+            widget: "select",
+            options: [
+              { label: "По умолчанию (только адаптивность)", value: "img-fluid" },
+              { label: "С округлением углов", value: "img-fluid rounded-4" },
+              { label: "С округлением и тенью", value: "img-fluid rounded-4 shadow-lg" },
+              { label: "Малое по центру (с тенью)", value: "img-fluid rounded-4 shadow w-50 d-block mx-auto" },
+              { label: "Обтекание слева", value: "img-fluid rounded-3 shadow float-start me-3 mb-2 w-25" },
+              { label: "Обтекание справа", value: "img-fluid rounded-3 shadow float-end ms-3 mb-2 w-25" },
+            ],
+            default: "img-fluid",
+          },
+          {
+            label: "Свой CSS класс (дополнительно)",
+            name: "custom_class",
+            widget: "string",
+            hint: "Добавится к выбранному пресету через пробел",
+          },
+          {
+            label: "Инлайн-стили (Style)",
+            name: "style",
+            widget: "string",
+            placeholder: "например, border: 2px solid gold;",
+          },
+        ],
+
+        toBlock: function (obj) {
+          // Собираем все классы воедино
+          const combinedClasses = `${obj.preset || ""} ${obj.custom_class || ""}`.trim();
+          const klassAttr = combinedClasses ? `{: .${combinedClasses}}` : "";
+          const styleAttr = obj.style ? `{: style="${obj.style}"}` : "";
+
+          // Kramdown очень чувствителен к пробелам.
+          // Вставляем атрибуты сразу после закрывающей скобки без пробела.
+          return `![${obj.alt || ""}](${obj.image})${klassAttr}${styleAttr}`;
+        },
+
+        fromBlock: function (match) {
+          return {
+            alt: match[1],
+            image: match[2],
+            // Мы не можем легко разделить пресет и кастомный класс обратно,
+            // поэтому при редактировании всё попадет в поле Custom Class, а пресет сбросится в дефолт.
+            custom_class: match[3],
+            style: match[4],
+          };
+        },
+
+        // Улучшенный паттерн для захвата атрибутов
+        pattern: /^!\[(.*)\]\((.*)\)(?:{: \.(.*)})?(?:{: style="(.*)"})?$/,
+
+        toPreview: function (obj) {
+          const combinedClasses = `${obj.preset || ""} ${obj.custom_class || ""}`.trim();
+          // В превью админки мы имитируем работу Kramdown, подставляя классы напрямую в тег
+          return `<img src="${obj.image}" alt="${obj.alt}" class="${combinedClasses}" style="${obj.style || ""}" />`;
+        },
+      });
+
       function translit(str) {
         const ru = {
           а: "a",
@@ -61,7 +173,7 @@ layout: null
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-+|-+$/g, "");
       }
-      
+
       function setupSlugAutoFill() {
         const titleInput = document.querySelector('input[name="title"]');
         const slugInput = document.querySelector('input[name="slug"]');

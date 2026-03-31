@@ -78,4 +78,4 @@ description: Миша, фас. Или как скинуть с себя отве
 
 78-79 Смертоносные выстрелы на 2
 
-![](/nest/assets/images/uploads/хант.png)
+![билд бм](/nest/assets/images/uploads/хант.png)

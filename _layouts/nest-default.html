@@ -20,12 +20,33 @@
       {{ content }}
     </main>
 
-    {% include nest/module-donations.html %}
+    {% include nest/module-donations.html %} {% include nest/footer.html %}
 
-    {% include nest/footer.html %}
+    <button type="button" id="backToTop" class="btn btn-dark rounded-circle main-content shadow" title="Наверх"><i class="bi bi-arrow-up"></i> ↑</button>
 
     <script>
       const whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const backToTopBtn = document.getElementById("backToTop");
+
+        // Следим за прокруткой
+        window.addEventListener("scroll", function () {
+          if (window.pageYOffset > 300) {
+            backToTopBtn.classList.add("show");
+          } else {
+            backToTopBtn.classList.remove("show");
+          }
+        });
+
+        // Логика клика
+        backToTopBtn.addEventListener("click", function () {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth", // Плавная прокрутка
+          });
+        });
+      });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

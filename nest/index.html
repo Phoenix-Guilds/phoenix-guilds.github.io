@@ -3,7 +3,7 @@ layout: nest-default
 title: Главная страница - Гильдия "Phoenix Nest" ("Гнездо Феникса", Sirus-WoW х2)
 ---
 
-<div class="container main my-3 my-lg-5">
+<div class="container main my-3">
   <div class="row">
     <div class="col-12 text-light">
       <div class="alert alert-warning fs-5" id="alert" role="alert">
@@ -29,7 +29,7 @@ title: Главная страница - Гильдия "Phoenix Nest" ("Гне�
   </div>
 </div>
 
-<!-- <div class="container main my-3 my-lg-5">
+<!-- <div class="container main my-3">
   <div class="row">
     <div class="col-12 text-light">
       <div class="main-content p-3 p-lg-5" id="search">
@@ -531,7 +531,7 @@ title: Главная страница - Гильдия "Phoenix Nest" ("Гне�
   </div>
 </div>
 
-<div class="container main my-3 my-lg-5">
+<div class="container main my-3">
   <div class="row">
     <div class="col-12 col-lg-4 mb-5 mb-lg-0 text-light">
       <div class="main-content p-3 p-lg-5" id="items">
@@ -558,7 +558,7 @@ title: Главная страница - Гильдия "Phoenix Nest" ("Гне�
   </div>
 </div> -->
 
-<div class="container main my-3 my-lg-5">
+<div class="container main my-3">
   <div class="row">
     <div class="col-12 text-light">
       <div class="main-content p-3 p-lg-5" id="about">
@@ -581,13 +581,13 @@ title: Главная страница - Гильдия "Phoenix Nest" ("Гне�
   </div>
 </div>
 
-<div class="container main my-3 my-lg-5 text-light">
+<div class="container main my-3 mb-lg-4 text-light">
   <h2 class="text-center">Наши аддоны:</h2>
   <div class="row">
-    <div class="col-12 col-lg-auto mt-4" id="ItemStorageBrowser">
+    <div class="col-12 col-lg-auto my-4" id="ItemStorageBrowser">
       <div class="main-content p-3 p-lg-5">
         <a href="#ItemStorageBrowser"><h4>ItemStorageBrowser</h4></a>
-        <div class="addon-content mb-5">
+        <div class="addon-content mb-3">
           <div class="row">
             <div class="col-12 col-lg-6">
               <img src="{{ '/nest/uploads/ItemStorageBrowser_1_1.jpg' | relative_url }}" alt="Item Storage Browser v2" class="img-fluid mb-3" />
@@ -607,7 +607,7 @@ title: Главная страница - Гильдия "Phoenix Nest" ("Гне�
               ></iframe> -->
             </div>
             <div class="col-12 col-lg-6">
-              <h5>Стабильная версия: <span class="text-success">2.8.0-beta</span> (17/10/25 14:01)</h5>
+              <h5>Стабильная версия: <span class="text-success">v2.8.2</span> (9/03/26)</h5>
               <h5>Описание:</h5>
               <p>
                 Складской аддон состоит из нескольких вкладок (иконки-кнопки слева), переключающихся кликом по ним. Первая вкладка предназначена для текстового
@@ -665,25 +665,27 @@ title: Главная страница - Гильдия "Phoenix Nest" ("Гне�
             </div>
           </div>
         </div>
-        <div class="text-end p-3 p-lg-5 fixed-bottom">
-          <a
-            href="https://github.com/Phoenix-Guilds/ItemStorageBrowser/blob/data/ItemStorageDB.lua"
-            class="btn btn-outline-info text-light me-1"
-            rel="noopener noreferrer"
-            target="_blank"
-            >Скачать актуальный файл БД аддона</a
-          >
-          <span class="me-1">или</span>
-          <a
-            href="https://github.com/Phoenix-Guilds/ItemStorageDesktop"
-            class="btn btn-outline-primary text-light me-3"
-            rel="noopener noreferrer"
-            target="_blank"
-            >Скачать приложение-обновлятор БД аддона</a
-          >
-          <a href="https://github.com/Phoenix-Guilds/ItemStorageBrowser" class="btn btn-outline-success" rel="noopener noreferrer" target="_blank"
-            >Скачать аддон ItemStorageBrowser</a
-          >
+        <div class="mt-3 py-3 border-top">
+          <div class="d-grid gap-2 d-lg-flex justify-content-lg-end align-items-center">
+            <a
+              href="https://github.com/Phoenix-Guilds/ItemStorageBrowser/blob/data/ItemStorageDB.lua"
+              class="btn btn-outline-info text-light"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Скачать файл БД
+            </a>
+
+            <span class="text-center mx-lg-2 text-muted">или</span>
+
+            <a href="https://github.com/Phoenix-Guilds/ItemStorageDesktop" class="btn btn-outline-primary text-light" rel="noopener noreferrer" target="_blank">
+              Приложение-обновлятор БД
+            </a>
+
+            <a href="https://github.com/Phoenix-Guilds/ItemStorageBrowser" class="btn btn-outline-success ms-lg-3" rel="noopener noreferrer" target="_blank">
+              Скачать складской аддон
+            </a>
+          </div>
         </div>
       </div>
     </div>

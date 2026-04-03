@@ -26,14 +26,14 @@ collections:
 
     fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "nest-guide" }
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Автор", name: "author", widget: "string", default: "" }
+      - { label: "Заголовок", name: "title", widget: "string", required: false }
+      - { label: "Автор", name: "author", widget: "string", default: "", required: false }
       - { 
           label: "Обложка (для плитки в админке)", 
           name: "thumbnail", 
           widget: "image", 
           required: false,
-          hint: "Эта картинка будет отображаться в сетке гайдов в админке" 
+          hint: "Эта картинка будет отображаться в сетке гайдов в админке",
         }
-      - { label: "Краткое описание", name: "description", widget: "text" }
+      - { label: "Краткое описание", name: "description", widget: "text", required: false }
       - { label: "Текст гайда", name: "body", widget: "markdown" }

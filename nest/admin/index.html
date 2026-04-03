@@ -8,119 +8,105 @@ layout: null
     <meta charset="utf-8" />
     <meta name="robots" content="noindex, nofollow, noarchive" />
     <title>Content Manager | Phoenix Nest</title>
+    <style>
+      /* Стили индикатора автосохранения */
+      #autosave-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: -75px;
+        transform: translateX(-50%);
+        background: rgba(33, 37, 41, 0.95);
+        color: #0dcaf0;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        border: 1px solid #0dcaf0;
+        z-index: 99999;
+        display: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+    </style>
   </head>
   <body>
     <div id="nc-root"></div>
+    <div id="autosave-indicator"></div>
+
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <script>
+      // --- 1. Обработка авторизации ---
       window.addEventListener(
         "message",
         (event) => {
           if (event.origin === "https://decap-cms-oauth-proxy.vercel.app") {
-            // console.log("Сигнал получен, обрабатываем токен...");
-
             if (event.data && event.data.includes("success")) {
               const jsonStr = event.data.replace("authorization:github:success:", "");
-
               try {
                 const data = JSON.parse(jsonStr);
-
                 if (data.token) {
                   const user = {
                     backendName: "github",
-
                     token: data.token,
-
                     provider: "github",
                   };
-
                   localStorage.setItem("decap-cms-user", JSON.stringify(user));
                   localStorage.setItem("netlify-cms-user", JSON.stringify(user));
-                  // console.log("Токен сохранен! Перезагрузка...");
-
                   setTimeout(() => {
                     window.location.reload();
                   }, 500);
                 }
               } catch (e) {
-                // console.error("Ошибка парсинга токена:", e);
+                console.error("Auth error:", e);
               }
             }
           }
         },
-
         false,
       );
 
+      // --- 2. Кастомный компонент: Smart Image ---
       CMS.registerEditorComponent({
         id: "smart-image",
         label: "Изображение со стилем",
         fields: [
-          {
-            label: "Выберите изображение",
-            name: "image",
-            widget: "image",
-            media_library: { allow_multiple: false },
-          },
-          {
-            label: "Описание (Alt)",
-            name: "alt",
-            widget: "string",
-          },
+          { label: "Выберите изображение", name: "image", widget: "image", media_library: { allow_multiple: false } },
+          { label: "Описание (Alt)", name: "alt", widget: "string" },
           {
             label: "Пресет оформления",
             name: "preset",
             widget: "select",
             options: [
-              { label: "По умолчанию (только адаптивность)", value: "img-fluid" },
+              { label: "По умолчанию", value: "img-fluid" },
               { label: "С округлением углов", value: "img-fluid rounded-4" },
               { label: "С округлением и тенью", value: "img-fluid rounded-4 shadow-lg" },
-              { label: "Малое по центру (с тенью)", value: "img-fluid rounded-4 shadow w-50 d-block mx-auto" },
+              { label: "Малое по центру", value: "img-fluid rounded-4 shadow w-50 d-block mx-auto" },
               { label: "Обтекание слева", value: "img-fluid rounded-3 shadow float-start me-3 mb-2 w-25" },
               { label: "Обтекание справа", value: "img-fluid rounded-3 shadow float-end ms-3 mb-2 w-25" },
             ],
             default: "img-fluid",
           },
-          {
-            label: "Свой CSS класс (дополнительно)",
-            name: "custom_class",
-            widget: "string",
-            hint: "Добавится к выбранному пресету через пробел",
-          },
-          {
-            label: "Инлайн-стили (Style)",
-            name: "style",
-            widget: "string",
-            placeholder: "например, border: 2px solid gold;",
-          },
+          { label: "Свой CSS класс", name: "custom_class", widget: "string" },
+          { label: "Инлайн-стили", name: "style", widget: "string", placeholder: "border: 2px solid gold;" },
         ],
-
-        toBlock: function (obj) {
+        toBlock: (obj) => {
           const combinedClasses = `${obj.preset || ""} ${obj.custom_class || ""}`.trim();
           const klassAttr = combinedClasses ? `{: .${combinedClasses}}` : "";
           const styleAttr = obj.style ? `{: style="${obj.style}"}` : "";
-
           return `![${obj.alt || ""}](${obj.image})${klassAttr}${styleAttr}`;
         },
-
-        fromBlock: function (match) {
-          return {
-            alt: match[1],
-            image: match[2],
-            custom_class: match[3],
-            style: match[4],
-          };
-        },
-
+        fromBlock: (match) => ({ alt: match[1], image: match[2], custom_class: match[3], style: match[4] }),
         pattern: /^!\[(.*)\]\((.*)\)(?:{: \.(.*)})?(?:{: style="(.*)"})?$/,
-
-        toPreview: function (obj) {
+        toPreview: (obj) => {
           const combinedClasses = `${obj.preset || ""} ${obj.custom_class || ""}`.trim();
           return `<img src="${obj.image}" alt="${obj.alt}" class="${combinedClasses}" style="${obj.style || ""}" />`;
         },
       });
 
+      // --- 3. Автозаполнение Slug (Транслит) ---
       function translit(str) {
         const ru = {
           а: "a",
@@ -150,14 +136,13 @@ layout: null
           ч: "ch",
           ш: "sh",
           щ: "sch",
-          ъ: "",
           ы: "y",
-          ь: "",
           э: "e",
           ю: "yu",
           я: "ya",
+          ь: "",
+          ъ: "",
         };
-
         return str
           .toLowerCase()
           .split("")
@@ -170,32 +155,93 @@ layout: null
       function setupSlugAutoFill() {
         const titleInput = document.querySelector('input[name="title"]');
         const slugInput = document.querySelector('input[name="slug"]');
-
         if (!titleInput || !slugInput) return;
-
         titleInput.addEventListener("input", () => {
           if (slugInput.dataset.locked === "true") return;
-
-          const slug = translit(titleInput.value);
-          slugInput.value = slug;
+          slugInput.value = translit(titleInput.value);
           slugInput.dispatchEvent(new Event("input", { bubbles: true }));
         });
-
         slugInput.addEventListener("input", () => {
-          if (slugInput.value) {
-            slugInput.dataset.locked = "true";
-          }
+          if (slugInput.value) slugInput.dataset.locked = "true";
         });
       }
 
-      const observer = new MutationObserver(() => {
-        setupSlugAutoFill();
-      });
+      new MutationObserver(setupSlugAutoFill).observe(document.body, { childList: true, subtree: true });
 
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
+      // --- 4. Система Автосохранения Nest ---
+      (function () {
+        let saveTimeout;
+        let countdownInterval;
+        const WAIT_TIME = 60; // 1 минута до сейва
+        const SHOW_TIMER_AFTER = 5; // Показать таймер через 5 сек бездействия
+        const indicator = document.getElementById("autosave-indicator");
+
+        // Более гибкий поиск кнопки сохранения
+        function getSaveButton() {
+          const buttons = document.querySelectorAll("button");
+          for (let btn of buttons) {
+            const text = btn.innerText.trim();
+            // Проверяем на "Save" или "Сохранить", включая режим Editorial Workflow
+            if (["Save", "Сохранить", "Save to Draft", "Сохранить черновик"].some((s) => text.includes(s))) {
+              return btn;
+            }
+          }
+          return null;
+        }
+
+        function startCountdown() {
+          let secondsLeft = WAIT_TIME - SHOW_TIMER_AFTER;
+          clearInterval(countdownInterval);
+
+          indicator.style.display = "block";
+          indicator.style.color = "#0dcaf0";
+          indicator.style.borderColor = "#0dcaf0";
+          indicator.innerText = `До автосохранения: ${secondsLeft}с`;
+
+          countdownInterval = setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft > 0) {
+              indicator.innerText = `До автосохранения: ${secondsLeft}с`;
+            } else {
+              clearInterval(countdownInterval);
+              const btn = getSaveButton();
+              if (btn && !btn.disabled) {
+                btn.click();
+                indicator.innerText = "✓ Сохранено в черновики";
+                indicator.style.color = "#20c997";
+                indicator.style.borderColor = "#20c997";
+                setTimeout(() => {
+                  indicator.style.display = "none";
+                }, 4000);
+              } else {
+                indicator.style.display = "none";
+              }
+            }
+          }, 1000);
+        }
+
+        function resetTimers() {
+          clearTimeout(saveTimeout);
+          clearInterval(countdownInterval);
+
+          // Скрываем индикатор только если он еще не в режиме "Сохранено"
+          if (!indicator.innerText.includes("✓")) {
+            indicator.style.display = "none";
+          }
+
+          const btn = getSaveButton();
+          // Запускаем таймер, только если кнопка Save существует и активна (есть изменения)
+          if (btn && !btn.disabled) {
+            saveTimeout = setTimeout(startCountdown, SHOW_TIMER_AFTER * 1000);
+          }
+        }
+
+        // Отслеживаем активность
+        document.addEventListener("keydown", resetTimers, true);
+        document.addEventListener("mousedown", resetTimers, true);
+
+        console.log("Nest Guardian: Автосохранение запущено");
+      })();
     </script>
   </body>
 </html>

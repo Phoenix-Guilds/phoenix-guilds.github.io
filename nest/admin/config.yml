@@ -5,6 +5,8 @@ backend:
   base_url: https://decap-cms-oauth-proxy.vercel.app
   auth_endpoint: auth
 
+publish_mode: editorial_workflow
+
 media_folder: "nest/assets/images/uploads"
 public_folder: "/nest/assets/images/uploads"
 

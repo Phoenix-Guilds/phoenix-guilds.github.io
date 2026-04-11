@@ -13,3 +13,5 @@ let myNick = "",
     isLoadedAll = false;
 let replyId = null,
     editingId = null;
+
+let currentUser = null;

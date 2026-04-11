@@ -128,6 +128,56 @@ function toggleEmojiPicker() {
 
     container.style.display = container.style.display === "none" ? "block" : "none";
 }
+function showProfile() {
+    const avatar = prompt("Введите ссылку на новую аватарку:", currentUser.avatar_url);
+    if (avatar && avatar !== currentUser.avatar_url) {
+        updateProfile({ avatar_url: avatar });
+    }
+}
+
+async function updateProfile(updates) {
+    const { data, error } = await client
+        .from("profiles")
+        .update(updates)
+        .eq("id", currentUser.id)
+        .select()
+        .single();
+
+    if (!error) {
+        currentUser = data; // Обновили локальную переменную
+
+        // КРИТИЧЕСКИЙ МОМЕНТ: Обновляем сессию в localStorage
+        // Теперь при перезагрузке страницы подхватятся новые данные
+        saveSession(myNick, masterKey, currentUser);
+
+        renderUserHeader();
+        alert("Профиль обновлен!");
+    } else {
+        console.error("Ошибка при обновлении профиля:", error);
+        alert("Не удалось сохранить изменения.");
+    }
+}
+
+function renderUserHeader() {
+    if (currentUser) {
+        const img = document.getElementById("user-avatar");
+        img.src = currentUser.avatar_url;
+        img.style.display = "block";
+        document.getElementById("display-name").innerText = currentUser.username;
+
+        // Если есть роль, можем покрасить ник
+        if (currentUser.role === 'owner' || currentUser.role === 'admin') {
+            document.getElementById("display-name").classList.add("text-info");
+        }
+    }
+}
+
+async function deleteAccount() {
+    if (confirm("ВНИМАНИЕ! Это полностью удалит ваш аккаунт без возможности восстановления. Продолжить?")) {
+        await client.from("profiles").delete().eq("id", currentUser.id);
+        logout();
+    }
+}
 
 // Обработка клика вне меню
 window.onclick = function (event) {

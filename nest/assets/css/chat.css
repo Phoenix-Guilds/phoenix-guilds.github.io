@@ -85,6 +85,7 @@
   border-radius: 14px;
   background: #2b3035;
   color: #eee;
+  min-width: 250px;
   max-width: 80%;
   align-self: flex-start;
   position: relative;
@@ -97,7 +98,6 @@
   background: #a9ffd0;
   color: #0b2e13;
   border-bottom-right-radius: 4px;
-  min-width: 250px;
 }
 
 .msg-bubble:not(.own) {

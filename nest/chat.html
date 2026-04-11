@@ -8,20 +8,18 @@ permalink: /nest/chat/
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <style>
-  /* Основной контейнер чата */
   #chat-wrapper {
     display: flex;
     flex-direction: column;
-    height: 75vh; /* Высота чата — 75% экрана */
+    height: 75vh;
     min-height: 500px;
     background: #1a1d20;
     border: 1px solid #333;
     border-radius: 12px;
-    overflow: hidden; /* Чтобы углы не вылезали */
+    overflow: hidden;
     position: relative;
   }
 
-  /* Врата авторизации (поверх всего) */
   #auth-gate {
     position: absolute;
     inset: 0;
@@ -32,13 +30,12 @@ permalink: /nest/chat/
     justify-content: center;
   }
 
-  /* Область сообщений */
   #chat-messages {
-    flex: 1; /* Занимает всё свободное место */
+    flex: 1;
     overflow-y: auto;
     padding: 20px;
     display: flex;
-    flex-direction: column-reverse; /* Новые сообщения снизу */
+    flex-direction: column-reverse;
     background-image: linear-gradient(rgba(15, 17, 19, 0.9), rgba(15, 17, 19, 0.9)), url("https://www.transparenttextures.com/patterns/dark-matter.png");
   }
 
@@ -53,13 +50,15 @@ permalink: /nest/chat/
     align-self: flex-start;
     position: relative;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
   }
 
   .msg-bubble.own {
     align-self: flex-end;
-    background: #a9ffd0; /* Твой цвет */
-    color: #0b2e13; /* Темный текст для контраста */
+    background: #a9ffd0;
+    color: #0b2e13;
     border-bottom-right-radius: 4px;
+    min-width: 250px;
   }
 
   .msg-bubble:not(.own) {
@@ -68,59 +67,122 @@ permalink: /nest/chat/
   }
 
   .msg-info {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
     margin-bottom: 4px;
     opacity: 0.7;
+    padding-right: 40px; /* Место под кнопки */
   }
 
-  /* Фиксированная панель ввода снизу */
+  /* Кнопки действий (Уменьшены в 1.5 раза) */
+  .msg-actions {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: none;
+    gap: 5px;
+    z-index: 10;
+  }
+
+  .msg-bubble:hover .msg-actions {
+    display: flex;
+  }
+
+  .msg-btn {
+    font-size: 0.7rem; /* Уменьшено */
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: 0.2s;
+  }
+
+  .msg-btn:hover {
+    background: #0dcaf0;
+    color: white;
+  }
+  .own .msg-btn:hover {
+    background: #0b2e13;
+    color: #a9ffd0;
+  }
+
+  /* Цитата внутри сообщения */
+  .reply-quote {
+    background: rgba(0, 0, 0, 0.15);
+    border-left: 3px solid #0dcaf0;
+    padding: 4px 10px;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  .own .reply-quote {
+    background: rgba(0, 0, 0, 0.05);
+    border-left-color: #0b2e13;
+  }
+
+  /* Панель ответа/редактирования НАД вводом */
+  #reply-preview {
+    display: none;
+    padding: 8px 15px;
+    background: #212529;
+    border-top: 1px solid #333;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+  }
+
   #chat-input-area {
-    flex-shrink: 0; /* Не сжимается */
     padding: 15px;
     background: #121416;
     border-top: 1px solid #333;
   }
 
-  /* Кастомный скроллбар под стиль Nest */
-  #chat-messages::-webkit-scrollbar {
-    width: 6px;
+  .edited-mark {
+    font-size: 0.6rem;
+    opacity: 0.5;
+    margin-left: 4px;
   }
-  #chat-messages::-webkit-scrollbar-track {
-    background: transparent;
+
+  #chat-messages::-webkit-scrollbar {
+    width: 5px;
   }
   #chat-messages::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 10px;
   }
-
-  .lock-icon {
-    font-size: 0.7rem;
-    margin-left: 5px;
-    vertical-align: middle;
-  }
 </style>
 
-<div class="container">
-  <div class="main-content">
-    <div id="chat-wrapper">
-      <div id="auth-gate">
-        <div class="p-4 text-center" style="max-width: 320px; width: 100%;">
-          <h4 class="mb-3 text-white">Чат гильдии</h4>
-          <input type="text" id="user-nick" class="form-control mb-2 bg-dark text-white border-secondary" placeholder="Ваш Ник" />
-          <input type="password" id="secret-key" class="form-control mb-3 bg-dark text-white border-secondary" placeholder="Гильдейский пароль" />
-          <button onclick="initChat()" class="btn btn-info w-100 fw-bold shadow-sm">Подключиться</button>
-          <p class="small text-muted mt-3">E2EE шифрование активно <span class="lock-icon">🔒</span></p>
-        </div>
+<div class="container mt-4">
+  <div id="chat-wrapper">
+    <div id="auth-gate">
+      <div class="p-4 text-center" style="max-width: 320px; width: 100%;">
+        <h4 class="mb-3 text-white">Чат гильдии</h4>
+        <input type="text" id="user-nick" class="form-control mb-2 bg-dark text-white border-secondary" placeholder="Ваш Ник" />
+        <input type="password" id="secret-key" class="form-control mb-3 bg-dark text-white border-secondary" placeholder="Пароль" />
+        <button onclick="initChat()" class="btn btn-info w-100 fw-bold">Войти</button>
       </div>
+    </div>
 
-      <div id="chat-messages"></div>
+    <div id="chat-messages"></div>
 
-      <div id="chat-input-area">
-        <div class="input-group">
-          <input type="text" id="msg-field" class="form-control bg-dark text-white border-secondary shadow-none" placeholder="Написать сообщение..." disabled />
-          <button onclick="handleSend()" id="send-btn" class="btn btn-primary px-4 shadow-sm" disabled>➤</button>
-        </div>
+    <div id="reply-preview">
+      <div id="reply-text" class="text-truncate text-muted pr-3"></div>
+      <div onclick="cancelAllModes()" style="cursor: pointer;" class="text-danger fw-bold">✕</div>
+    </div>
+
+    <div id="chat-input-area">
+      <div class="input-group">
+        <input type="text" id="msg-field" class="form-control bg-dark text-white border-secondary shadow-none" placeholder="Сообщение..." disabled />
+        <button onclick="handleSend()" id="send-btn" class="btn btn-primary px-3" disabled>➤</button>
       </div>
     </div>
   </div>
@@ -132,19 +194,20 @@ permalink: /nest/chat/
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhbmNua3RrZGpvdGpidGRqem53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4NTE3OTgsImV4cCI6MjA5MTQyNzc5OH0.ZPVyfehHS6KCTKthlc9hv2kzzQX-G28Z3JubWQpteKA";
   const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  let myNick = "";
-  let masterKey = "";
-  let lastTimestamp = null;
-  let isLoadedAll = false;
+  let myNick = "",
+    masterKey = "",
+    lastTimestamp = null,
+    isLoadedAll = false;
+  let replyId = null,
+    editingId = null;
 
-  // Инициализация (Твой исправленный алгоритм)
   async function initChat() {
     myNick = document.getElementById("user-nick").value.trim();
     const inputPass = document.getElementById("secret-key").value.trim();
     if (!myNick || !inputPass) return alert("Введите данные!");
 
     const { data: settings, error } = await client.from("chat_settings").select("*").single();
-    if (error) return alert("Ошибка: Настройки чата не найдены в БД.");
+    if (error) return alert("Ошибка БД");
 
     const loginHash = CryptoJS.SHA256(inputPass).toString();
     if (loginHash !== settings.password_hash) return alert("Неверный пароль!");
@@ -154,7 +217,7 @@ permalink: /nest/chat/
       masterKey = bytes.toString(CryptoJS.enc.Utf8);
       if (!masterKey) throw new Error();
     } catch (e) {
-      return alert("Критическая ошибка дешифровки!");
+      return alert("Ошибка дешифровки!");
     }
 
     document.getElementById("auth-gate").style.display = "none";
@@ -166,23 +229,68 @@ permalink: /nest/chat/
     setupInfiniteScroll();
   }
 
-  // Отправка
   async function handleSend() {
     const field = document.getElementById("msg-field");
     const text = field.value.trim();
     if (!text || !masterKey) return;
 
     const encrypted = CryptoJS.AES.encrypt(text, masterKey).toString();
-    const { error } = await client.from("messages").insert([{ author: myNick, payload: encrypted }]);
-    if (!error) field.value = "";
+
+    if (editingId) {
+      await client.from("messages").update({ payload: encrypted, is_edited: true }).eq("id", editingId);
+      cancelAllModes();
+    } else {
+      const { error } = await client.from("messages").insert([{ author: myNick, payload: encrypted, reply_to_id: replyId }]);
+      if (!error) {
+        field.value = "";
+        cancelAllModes();
+      }
+    }
   }
 
-  // Загрузка старых сообщений
+  function prepareReply(id, author, text) {
+    cancelAllModes();
+    replyId = id;
+    showPreview(`Ответ ${author}: ${text.substring(0, 20)}...`);
+  }
+
+  function prepareEdit(id, text) {
+    cancelAllModes();
+    editingId = id;
+    document.getElementById("msg-field").value = text;
+    showPreview(`Редактирование...`);
+  }
+
+  function showPreview(text) {
+    document.getElementById("reply-text").innerText = text;
+    document.getElementById("reply-preview").style.display = "flex";
+    document.getElementById("msg-field").focus();
+  }
+
+  function cancelAllModes() {
+    replyId = null;
+    editingId = null;
+    document.getElementById("msg-field").value = "";
+    document.getElementById("reply-preview").style.display = "none";
+  }
+
+  async function deleteMessage(id) {
+    if (confirm("Удалить?")) await client.from("messages").delete().eq("id", id);
+  }
+
+  function scrollToMessage(id) {
+    const el = document.getElementById(`msg-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.style.background = "#444";
+      setTimeout(() => (el.style.background = ""), 1500);
+    }
+  }
+
   async function loadHistory() {
     if (isLoadedAll) return;
-    let query = client.from("messages").select("*").order("created_at", { ascending: false }).limit(50);
+    let query = client.from("messages").select("*").order("created_at", { ascending: false }).limit(40);
     if (lastTimestamp) query = query.lt("created_at", lastTimestamp);
-
     const { data } = await query;
     if (!data || data.length === 0) {
       isLoadedAll = true;
@@ -192,55 +300,60 @@ permalink: /nest/chat/
     data.forEach((msg) => displayMessage(msg, "append"));
   }
 
-  // Рендер и контроль памяти
   function displayMessage(msg, method = "prepend") {
     const container = document.getElementById("chat-messages");
-    let decryptedText = "🔒 [Ошибка расшифровки]";
+    const existing = document.getElementById(`msg-${msg.id}`);
+    if (existing) existing.remove();
+
+    let text = "🔒 Error";
     try {
       const bytes = CryptoJS.AES.decrypt(msg.payload, masterKey);
-      const decoded = bytes.toString(CryptoJS.enc.Utf8);
-      if (decoded) decryptedText = decoded;
+      text = bytes.toString(CryptoJS.enc.Utf8);
     } catch (e) {}
 
     const isOwn = msg.author === myNick;
+    const cleanText = text.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+
     const msgHtml = `
-      <div class="msg-bubble ${isOwn ? "own" : ""}">
-        <div class="msg-info">${msg.author} • ${new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
-        <div class="msg-text">${decryptedText}</div>
+      <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
+        <div class="msg-actions">
+          <div class="msg-btn" onclick="prepareReply(${msg.id}, '${msg.author}', '${cleanText}')">↩</div>
+          ${isOwn ? `<div class="msg-btn" onclick="prepareEdit(${msg.id}, '${cleanText}')">✏️</div>` : ""}
+          ${isOwn ? `<div class="msg-btn" onclick="deleteMessage(${msg.id})">🗑️</div>` : ""}
+        </div>
+        <div class="msg-info">
+          ${msg.author} • ${new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          ${msg.is_edited ? '<span class="edited-mark">(изм.)</span>' : ""}
+        </div>
+        ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}
+        <div class="msg-text">${text}</div>
       </div>`;
 
-    if (method === "prepend") {
-      container.insertAdjacentHTML("afterbegin", msgHtml);
-    } else {
-      container.insertAdjacentHTML("beforeend", msgHtml);
-    }
-
-    // Очистка памяти: держим 100 сообщений в DOM
-    if (container.children.length > 100 && method === "prepend") {
-      container.removeChild(container.lastElementChild);
-    }
+    method === "prepend" ? container.insertAdjacentHTML("afterbegin", msgHtml) : container.insertAdjacentHTML("beforeend", msgHtml);
   }
 
   function startRealtime() {
     client
       .channel("any")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (p) => displayMessage(p.new, "prepend"))
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, (p) => {
+        if (p.eventType === "DELETE") {
+          const el = document.getElementById(`msg-${p.old.id}`);
+          if (el) el.remove();
+        } else {
+          displayMessage(p.new, "prepend");
+        }
+      })
       .subscribe();
   }
 
   function setupInfiniteScroll() {
     const container = document.getElementById("chat-messages");
-    container.addEventListener("scroll", () => {
-      // При column-reverse scrollTop отрицательный или ведет себя иначе в разных браузерах,
-      // Math.abs помогает универсально определить близость к концу скролла (верху списка)
-      if (Math.abs(container.scrollTop) + container.clientHeight >= container.scrollHeight - 10) {
-        loadHistory();
-      }
-    });
+    container.onscroll = () => {
+      if (Math.abs(container.scrollTop) + container.clientHeight >= container.scrollHeight - 20) loadHistory();
+    };
   }
 
-  // Обработка Enter
-  document.getElementById("msg-field").addEventListener("keypress", (e) => {
+  document.getElementById("msg-field").onkeypress = (e) => {
     if (e.key === "Enter") handleSend();
-  });
+  };
 </script>

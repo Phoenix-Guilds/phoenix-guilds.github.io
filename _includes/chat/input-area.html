@@ -1,5 +1,8 @@
 <div id="chat-input-area">
+  <div id="emoji-picker-container" style="display: none; position: absolute; bottom: 80px; right: 20px; z-index: 2000;"></div>
+
   <div class="input-group">
+    <button onclick="toggleEmojiPicker()" class="btn btn-outline-secondary" type="button">😀</button>
     <input type="text" id="msg-field" class="form-control bg-dark text-white border-secondary shadow-none" placeholder="Сообщение..." disabled />
     <button onclick="handleSend()" id="send-btn" class="btn btn-primary px-3" disabled>➤</button>
   </div>

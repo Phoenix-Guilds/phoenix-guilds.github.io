@@ -95,10 +95,48 @@ function scrollToMessage(id) {
     }
 }
 
+let picker = null;
+
+function toggleEmojiPicker() {
+    const container = document.getElementById("emoji-picker-container");
+
+    // Инициализируем пикер только при первом клике (ленивая загрузка)
+    if (!picker) {
+        picker = new EmojiMart.Picker({
+            data: async () => {
+                const response = await fetch("https://cdn.jsdelivr.net/npm/@emoji-mart/data");
+                return response.json();
+            },
+            onEmojiSelect: (emoji) => {
+                const input = document.getElementById("msg-field");
+                // Вставляем эмодзи в текущую позицию курсора
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+                const text = input.value;
+                input.value = text.slice(0, start) + emoji.native + text.slice(end);
+
+                // Возвращаем фокус на инпут
+                input.focus();
+                // Скрываем пикер после выбора (опционально)
+                container.style.display = "none";
+            },
+            theme: "dark", // Темы: light или dark
+            locale: "ru",
+        });
+        container.appendChild(picker);
+    }
+
+    container.style.display = container.style.display === "none" ? "block" : "none";
+}
+
 // Обработка клика вне меню
 window.onclick = function (event) {
     if (!event.target.matches("#mute-indicator")) {
         const menu = document.getElementById("settings-menu");
         if (menu && menu.style.display === "block") menu.style.display = "none";
+    }
+
+    if (!event.target.closest('#emoji-picker-container') && !event.target.matches('.btn-outline-secondary')) {
+        document.getElementById("emoji-picker-container").style.display = "none";
     }
 };

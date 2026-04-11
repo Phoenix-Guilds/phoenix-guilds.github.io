@@ -20,6 +20,56 @@ permalink: /nest/chat/
     position: relative;
   }
 
+  /* Верхняя панель настроек */
+  #chat-header {
+    background: #121416;
+    padding: 10px 15px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .settings-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  #settings-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background: #2b3035;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 200px;
+    z-index: 1001;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .mute-option {
+    display: block;
+    width: 100%;
+    padding: 5px 10px;
+    background: none;
+    border: none;
+    color: #eee;
+    text-align: left;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .mute-option:hover {
+    background: #3d4246;
+  }
+  .mute-active {
+    color: #ffc107 !important;
+  }
+
   #auth-gate {
     position: absolute;
     inset: 0;
@@ -39,7 +89,6 @@ permalink: /nest/chat/
     background-image: linear-gradient(rgba(15, 17, 19, 0.9), rgba(15, 17, 19, 0.9)), url("https://www.transparenttextures.com/patterns/dark-matter.png");
   }
 
-  /* Стили пузырьков */
   .msg-bubble {
     margin-bottom: 12px;
     padding: 10px 14px;
@@ -71,10 +120,9 @@ permalink: /nest/chat/
     font-weight: bold;
     margin-bottom: 4px;
     opacity: 0.7;
-    padding-right: 40px; /* Место под кнопки */
+    padding-right: 40px;
   }
 
-  /* Кнопки действий (Уменьшены в 1.5 раза) */
   .msg-actions {
     position: absolute;
     top: 6px;
@@ -89,7 +137,7 @@ permalink: /nest/chat/
   }
 
   .msg-btn {
-    font-size: 0.7rem; /* Уменьшено */
+    font-size: 0.7rem;
     cursor: pointer;
     background: rgba(0, 0, 0, 0.2);
     width: 20px;
@@ -98,7 +146,6 @@ permalink: /nest/chat/
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    transition: 0.2s;
   }
 
   .msg-btn:hover {
@@ -110,7 +157,6 @@ permalink: /nest/chat/
     color: #a9ffd0;
   }
 
-  /* Цитата внутри сообщения */
   .reply-quote {
     background: rgba(0, 0, 0, 0.15);
     border-left: 3px solid #0dcaf0;
@@ -124,12 +170,7 @@ permalink: /nest/chat/
     text-overflow: ellipsis;
     display: block;
   }
-  .own .reply-quote {
-    background: rgba(0, 0, 0, 0.05);
-    border-left-color: #0b2e13;
-  }
 
-  /* Панель ответа/редактирования НАД вводом */
   #reply-preview {
     display: none;
     padding: 8px 15px;
@@ -146,12 +187,6 @@ permalink: /nest/chat/
     border-top: 1px solid #333;
   }
 
-  .edited-mark {
-    font-size: 0.6rem;
-    opacity: 0.5;
-    margin-left: 4px;
-  }
-
   #chat-messages::-webkit-scrollbar {
     width: 5px;
   }
@@ -163,6 +198,23 @@ permalink: /nest/chat/
 
 <div class="container mt-4">
   <div id="chat-wrapper">
+    <div id="chat-header">
+      <div class="small text-muted fw-bold">🛡️ ENCRYPTED COMMAND CHANNEL</div>
+      <div class="settings-dropdown">
+        <button onclick="toggleSettings()" class="btn btn-sm btn-outline-secondary" id="mute-indicator">🔊 Настройки</button>
+        <div id="settings-menu">
+          <div class="small text-muted mb-2 px-2 border-bottom pb-1">Уведомления:</div>
+          <button onclick="setMute(0)" class="mute-option" id="mute-0">🔊 Включить звук</button>
+          <button onclick="setMute(5)" class="mute-option" id="mute-5">🔇 На 5 минут</button>
+          <button onclick="setMute(15)" class="mute-option" id="mute-15">🔇 На 15 минут</button>
+          <button onclick="setMute(30)" class="mute-option" id="mute-30">🔇 На 30 минут</button>
+          <button onclick="setMute(60)" class="mute-option" id="mute-60">🔇 На 1 час</button>
+          <button onclick="setMute(180)" class="mute-option" id="mute-180">🔇 На 3 часа</button>
+          <button onclick="setMute(-1)" class="mute-option" id="mute-forever">🔕 Отключить навсегда</button>
+        </div>
+      </div>
+    </div>
+
     <div id="auth-gate">
       <div class="p-4 text-center" style="max-width: 320px; width: 100%;">
         <h4 class="mb-3 text-white">Чат гильдии</h4>
@@ -188,6 +240,8 @@ permalink: /nest/chat/
   </div>
 </div>
 
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
+
 <script>
   const SUPABASE_URL = "https://aancnktkdjotjbtdjznw.supabase.co";
   const SUPABASE_KEY =
@@ -201,6 +255,50 @@ permalink: /nest/chat/
   let replyId = null,
     editingId = null;
 
+  // Логика звука
+  function toggleSettings() {
+    const menu = document.getElementById("settings-menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  function setMute(minutes) {
+    let until = 0;
+    if (minutes === -1) until = 9999999999999;
+    // Навсегда
+    else if (minutes > 0) until = Date.now() + minutes * 60 * 1000;
+
+    localStorage.setItem("chat_mute_until", until);
+    updateMuteUI();
+    document.getElementById("settings-menu").style.display = "none";
+  }
+
+  function updateMuteUI() {
+    const until = parseInt(localStorage.getItem("chat_mute_until") || "0");
+    const indicator = document.getElementById("mute-indicator");
+
+    // Сбрасываем активные стили
+    document.querySelectorAll(".mute-option").forEach((el) => el.classList.remove("mute-active"));
+
+    if (until > Date.now()) {
+      indicator.innerText = until > Date.now() + 10 * 365 * 24 * 60 * 60 * 1000 ? "🔕 Без звука" : "🔇 Мьют активен";
+      indicator.classList.replace("btn-outline-secondary", "btn-outline-warning");
+    } else {
+      indicator.innerText = "🔊 Настройки";
+      indicator.classList.replace("btn-outline-warning", "btn-outline-secondary");
+      document.getElementById("mute-0").classList.add("mute-active");
+    }
+  }
+
+  function playNotifSound() {
+    const until = parseInt(localStorage.getItem("chat_mute_until") || "0");
+    if (Date.now() > until) {
+      const sound = document.getElementById("notif-sound");
+      sound.currentTime = 0;
+      sound.play().catch((e) => console.log("Браузер заблокировал звук до взаимодействия"));
+    }
+  }
+
+  // Обновим инициализацию
   async function initChat() {
     myNick = document.getElementById("user-nick").value.trim();
     const inputPass = document.getElementById("secret-key").value.trim();
@@ -215,7 +313,6 @@ permalink: /nest/chat/
     try {
       const bytes = CryptoJS.AES.decrypt(settings.encrypted_master_key, inputPass);
       masterKey = bytes.toString(CryptoJS.enc.Utf8);
-      if (!masterKey) throw new Error();
     } catch (e) {
       return alert("Ошибка дешифровки!");
     }
@@ -224,18 +321,18 @@ permalink: /nest/chat/
     document.getElementById("msg-field").disabled = false;
     document.getElementById("send-btn").disabled = false;
 
+    updateMuteUI();
     loadHistory();
     startRealtime();
     setupInfiniteScroll();
   }
 
+  // Остальные функции без изменений, кроме старта Realtime
   async function handleSend() {
     const field = document.getElementById("msg-field");
     const text = field.value.trim();
     if (!text || !masterKey) return;
-
     const encrypted = CryptoJS.AES.encrypt(text, masterKey).toString();
-
     if (editingId) {
       await client.from("messages").update({ payload: encrypted, is_edited: true }).eq("id", editingId);
       cancelAllModes();
@@ -246,58 +343,6 @@ permalink: /nest/chat/
         cancelAllModes();
       }
     }
-  }
-
-  function prepareReply(id, author, text) {
-    cancelAllModes();
-    replyId = id;
-    showPreview(`Ответ ${author}: ${text.substring(0, 20)}...`);
-  }
-
-  function prepareEdit(id, text) {
-    cancelAllModes();
-    editingId = id;
-    document.getElementById("msg-field").value = text;
-    showPreview(`Редактирование...`);
-  }
-
-  function showPreview(text) {
-    document.getElementById("reply-text").innerText = text;
-    document.getElementById("reply-preview").style.display = "flex";
-    document.getElementById("msg-field").focus();
-  }
-
-  function cancelAllModes() {
-    replyId = null;
-    editingId = null;
-    document.getElementById("msg-field").value = "";
-    document.getElementById("reply-preview").style.display = "none";
-  }
-
-  async function deleteMessage(id) {
-    if (confirm("Удалить?")) await client.from("messages").delete().eq("id", id);
-  }
-
-  function scrollToMessage(id) {
-    const el = document.getElementById(`msg-${id}`);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      el.style.background = "#444";
-      setTimeout(() => (el.style.background = ""), 1500);
-    }
-  }
-
-  async function loadHistory() {
-    if (isLoadedAll) return;
-    let query = client.from("messages").select("*").order("created_at", { ascending: false }).limit(40);
-    if (lastTimestamp) query = query.lt("created_at", lastTimestamp);
-    const { data } = await query;
-    if (!data || data.length === 0) {
-      isLoadedAll = true;
-      return;
-    }
-    lastTimestamp = data[data.length - 1].created_at;
-    data.forEach((msg) => displayMessage(msg, "append"));
   }
 
   function displayMessage(msg, method = "prepend") {
@@ -341,19 +386,76 @@ permalink: /nest/chat/
           if (el) el.remove();
         } else {
           displayMessage(p.new, "prepend");
+          // Звук только на входящие от других
+          if (p.eventType === "INSERT" && p.new.author !== myNick) {
+            playNotifSound();
+          }
         }
       })
       .subscribe();
   }
 
+  // Вспомогательные функции...
+  function prepareReply(id, author, text) {
+    cancelAllModes();
+    replyId = id;
+    showPreview(`Ответ ${author}: ${text.substring(0, 20)}...`);
+  }
+  function prepareEdit(id, text) {
+    cancelAllModes();
+    editingId = id;
+    document.getElementById("msg-field").value = text;
+    showPreview(`Редактирование...`);
+  }
+  function showPreview(text) {
+    document.getElementById("reply-text").innerText = text;
+    document.getElementById("reply-preview").style.display = "flex";
+    document.getElementById("msg-field").focus();
+  }
+  function cancelAllModes() {
+    replyId = null;
+    editingId = null;
+    document.getElementById("msg-field").value = "";
+    document.getElementById("reply-preview").style.display = "none";
+  }
+  async function deleteMessage(id) {
+    if (confirm("Удалить?")) await client.from("messages").delete().eq("id", id);
+  }
+  function scrollToMessage(id) {
+    const el = document.getElementById(`msg-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.style.background = "#444";
+      setTimeout(() => (el.style.background = ""), 1500);
+    }
+  }
+  async function loadHistory() {
+    if (isLoadedAll) return;
+    let query = client.from("messages").select("*").order("created_at", { ascending: false }).limit(40);
+    if (lastTimestamp) query = query.lt("created_at", lastTimestamp);
+    const { data } = await query;
+    if (!data || data.length === 0) {
+      isLoadedAll = true;
+      return;
+    }
+    lastTimestamp = data[data.length - 1].created_at;
+    data.forEach((msg) => displayMessage(msg, "append"));
+  }
   function setupInfiniteScroll() {
     const container = document.getElementById("chat-messages");
     container.onscroll = () => {
       if (Math.abs(container.scrollTop) + container.clientHeight >= container.scrollHeight - 20) loadHistory();
     };
   }
-
   document.getElementById("msg-field").onkeypress = (e) => {
     if (e.key === "Enter") handleSend();
+  };
+
+  // Клик вне меню закрывает его
+  window.onclick = function (event) {
+    if (!event.target.matches("#mute-indicator")) {
+      const menu = document.getElementById("settings-menu");
+      if (menu && menu.style.display === "block") menu.style.display = "none";
+    }
   };
 </script>

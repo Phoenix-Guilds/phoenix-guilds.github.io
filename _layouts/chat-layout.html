@@ -1,0 +1,16 @@
+---
+layout: nest-default
+---
+
+<link rel="stylesheet" href="{{ '/nest/assets/css/chat.css' | relative_url }}" />
+
+{% include nest/header.html %}
+<div class="container mt-4">
+    <div id="chat-wrapper" class="main-content">
+        {{ content }}
+    </div>
+</div>
+
+<script src="{{ '/nest/assets/js/chat-config.js' | relative_url }}"></script>
+<script src="{{ '/nest/assets/js/chat-ui.js' | relative_url }}"></script>
+<script src="{{ '/nest/assets/js/chat-core.js' | relative_url }}"></script>

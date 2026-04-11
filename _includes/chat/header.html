@@ -1,0 +1,16 @@
+<div id="chat-header">
+  <div class="small text-muted fw-bold"></div>
+  <div class="settings-dropdown">
+    <button onclick="toggleSettings()" class="btn btn-sm btn-outline-secondary" id="mute-indicator">🔊 Настройки</button>
+    <div id="settings-menu">
+      <div class="small text-muted mb-2 px-2 border-bottom pb-1">Уведомления:</div>
+      <button onclick="setMute(0)" class="mute-option" id="mute-0">🔊 Включить звук</button>
+      <button onclick="setMute(5)" class="mute-option" id="mute-5">🔇 На 5 минут</button>
+      <button onclick="setMute(15)" class="mute-option" id="mute-15">🔇 На 15 минут</button>
+      <button onclick="setMute(30)" class="mute-option" id="mute-30">🔇 На 30 минут</button>
+      <button onclick="setMute(60)" class="mute-option" id="mute-60">🔇 На 1 час</button>
+      <button onclick="setMute(180)" class="mute-option" id="mute-180">🔇 На 3 часа</button>
+      <button onclick="setMute(-1)" class="mute-option" id="mute-forever">🔕 Отключить навсегда</button>
+    </div>
+  </div>
+</div>

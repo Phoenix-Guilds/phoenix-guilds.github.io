@@ -8,13 +8,11 @@ permalink: /nest/chat/
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <div id="chat-wrapper">
-  {% include chat/header.html %}
-  {% include chat/auth-gate.html %}
-  
+  {% include chat/header.html %} {% include chat/auth-gate.html %}
+
   <div id="chat-messages"></div>
 
-  {% include chat/reply-preview.html %}
-  {% include chat/input-area.html %}
+  {% include chat/reply-preview.html %} {% include chat/input-area.html %}
 </div>
 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>

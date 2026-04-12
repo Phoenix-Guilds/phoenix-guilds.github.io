@@ -1,0 +1,89 @@
+<div class="modal fade" id="chatModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white main-content">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="chatModalTitle">Уведомление</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="chatModalBody"></div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" id="modalBtnCancel" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" id="modalBtnConfirm">Ок</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="promptModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white main-content">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="promptModalTitle">Введите данные</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="promptModalText"></p>
+        <input type="password" id="promptModalInput" class="form-control bg-dark text-white border-secondary" />
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" id="promptBtnConfirm">Подтвердить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white main-content">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title">Мой профиль</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="avatar-edit-container" onclick="toggleAvatarEditor()">
+          <img id="profile-preview" src="" width="120" height="120" style="object-fit: cover;" />
+          <div class="avatar-overlay">
+            <span>Изменить ✏️</span>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <strong id="profile-username-display" class="fs-5"></strong>
+        </div>
+
+        <div id="avatar-editor-controls">
+          <label class="small text-muted d-block mb-2">Настройка стиля:</label>
+          <select id="avatar-style" class="form-select form-select-sm bg-dark text-white border-secondary mb-2" onchange="generatePreview()">
+            <option value="bottts">🤖 Роботы</option>
+            <option value="adventurer">🤠 Путешественники</option>
+            <option value="avataaars">🧑‍💼 Люди</option>
+            <option value="pixel-art">👾 Пиксели</option>
+            <option value="lorelei">👩‍🎤 Стильные</option>
+            <option value="identicon">🧩 Абстракция</option>
+          </select>
+          <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="generatePreview(true)">🎲 Другой вариант</button>
+          <p class="x-small text-muted">Нажмите «Сохранить», чтобы применить изменения</p>
+        </div>
+
+        <hr class="dropdown-divider border-secondary" />
+
+        <div class="mt-4 pt-3 border-top border-secondary">
+          <button onclick="logout()" class="btn btn-link btn-sm text-primary text-decoration-none">
+            🚪 Выйти из аккаунта
+          </button>
+        </div>
+
+        <div class="mt-4 pt-3 border-top border-secondary">
+          <button onclick="deleteAccount()" class="btn btn-link btn-sm text-danger text-decoration-none">
+            ❌ Удалить аккаунт
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" id="saveProfileBtn">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>

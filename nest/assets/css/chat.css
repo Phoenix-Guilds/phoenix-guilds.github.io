@@ -184,3 +184,43 @@
   background: #333;
   border-radius: 10px;
 }
+
+/* Контейнер аватарки в модалке */
+.avatar-edit-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Эффект при наведении */
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.avatar-edit-container:hover .avatar-overlay {
+  opacity: 1;
+}
+
+/* Скрытая панель инструментов */
+#avatar-editor-controls {
+  display: none; /* Скрыто по умолчанию */
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}

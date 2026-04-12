@@ -1,3 +1,47 @@
+// Хелперы для модальных окон (вместо alert/confirm/prompt)
+const chatAlert = (title, text) => {
+    const modal = new bootstrap.Modal(document.getElementById('chatModal'));
+    document.getElementById('chatModalTitle').innerText = title;
+    document.getElementById('chatModalBody').innerText = text;
+    document.getElementById('modalBtnCancel').style.display = 'none';
+    document.getElementById('modalBtnConfirm').onclick = () => modal.hide();
+    modal.show();
+};
+
+const chatConfirm = (title, text) => {
+    return new Promise((resolve) => {
+        const modal = new bootstrap.Modal(document.getElementById('chatModal'));
+        document.getElementById('chatModalTitle').innerText = title;
+        document.getElementById('chatModalBody').innerText = text;
+        document.getElementById('modalBtnCancel').style.display = 'inline-block';
+
+        document.getElementById('modalBtnConfirm').onclick = () => { modal.hide(); resolve(true); };
+        document.getElementById('modalBtnCancel').onclick = () => { modal.hide(); resolve(false); };
+        modal.show();
+    });
+};
+
+const chatPrompt = (title, text, isPassword = true) => {
+    return new Promise((resolve) => {
+        const modalEl = document.getElementById('promptModal');
+        const modal = new bootstrap.Modal(modalEl);
+        const input = document.getElementById('promptModalInput');
+
+        document.getElementById('promptModalTitle').innerText = title;
+        document.getElementById('promptModalText').innerText = text;
+        input.type = isPassword ? 'password' : 'text';
+        input.value = '';
+
+        document.getElementById('promptBtnConfirm').onclick = () => {
+            const val = input.value.trim();
+            if (val) { modal.hide(); resolve(val); }
+        };
+
+        modalEl.addEventListener('shown.bs.modal', () => input.focus(), { once: true });
+        modal.show();
+    });
+};
+
 // Логика звука и настроек
 function toggleSettings() {
     const menu = document.getElementById("settings-menu");
@@ -39,7 +83,6 @@ function playNotifSound() {
     }
 }
 
-// Рендер сообщений
 function displayMessage(msg, method = "prepend") {
     const container = document.getElementById("chat-messages");
     const existing = document.getElementById(`msg-${msg.id}`);
@@ -72,7 +115,6 @@ function displayMessage(msg, method = "prepend") {
     method === "prepend" ? container.insertAdjacentHTML("afterbegin", msgHtml) : container.insertAdjacentHTML("beforeend", msgHtml);
 }
 
-// Вспомогательные UI функции
 function showPreview(text) {
     document.getElementById("reply-text").innerText = text;
     document.getElementById("reply-preview").style.display = "flex";
@@ -96,11 +138,8 @@ function scrollToMessage(id) {
 }
 
 let picker = null;
-
 function toggleEmojiPicker() {
     const container = document.getElementById("emoji-picker-container");
-
-    // Инициализируем пикер только при первом клике (ленивая загрузка)
     if (!picker) {
         picker = new EmojiMart.Picker({
             data: async () => {
@@ -109,52 +148,88 @@ function toggleEmojiPicker() {
             },
             onEmojiSelect: (emoji) => {
                 const input = document.getElementById("msg-field");
-                // Вставляем эмодзи в текущую позицию курсора
                 const start = input.selectionStart;
                 const end = input.selectionEnd;
-                const text = input.value;
-                input.value = text.slice(0, start) + emoji.native + text.slice(end);
-
-                // Возвращаем фокус на инпут
+                input.value = input.value.slice(0, start) + emoji.native + input.value.slice(end);
                 input.focus();
-                // Скрываем пикер после выбора (опционально)
                 container.style.display = "none";
             },
-            theme: "dark", // Темы: light или dark
+            theme: "dark",
             locale: "ru",
         });
         container.appendChild(picker);
     }
-
     container.style.display = container.style.display === "none" ? "block" : "none";
 }
+
+// Открытие модалки профиля
 function showProfile() {
-    const avatar = prompt("Введите ссылку на новую аватарку:", currentUser.avatar_url);
-    if (avatar && avatar !== currentUser.avatar_url) {
-        updateProfile({ avatar_url: avatar });
+    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    const preview = document.getElementById('profile-preview');
+    const controls = document.getElementById('avatar-editor-controls');
+
+    // Сбрасываем состояние редактора (скрываем при открытии)
+    controls.style.display = "none";
+
+    // Заполняем данные
+    tempAvatarUrl = currentUser.avatar_url;
+    preview.src = tempAvatarUrl;
+    document.getElementById('profile-username-display').innerText = currentUser.username;
+
+    document.getElementById('saveProfileBtn').onclick = async () => {
+        if (tempAvatarUrl !== currentUser.avatar_url) {
+            await updateProfile({ avatar_url: tempAvatarUrl });
+        }
+        modal.hide();
+    };
+
+    modal.show();
+}
+
+// Показать/скрыть выбор стилей
+function toggleAvatarEditor() {
+    const controls = document.getElementById('avatar-editor-controls');
+    const isHidden = controls.style.display === "none" || controls.style.display === "";
+
+    controls.style.display = isHidden ? "block" : "none";
+
+    // Если открыли — сразу генерируем вариант, если до этого аватарка была пустой
+    if (isHidden && !tempAvatarUrl) {
+        generatePreview();
+    }
+}
+
+// Генерация превью (обновленная)
+function generatePreview(randomize = false) {
+    const style = document.getElementById('avatar-style').value;
+    const seed = randomize ? Math.random().toString(36).substring(7) : currentUser.username;
+
+    tempAvatarUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
+    document.getElementById('profile-preview').src = tempAvatarUrl;
+}
+
+// Обновляем функцию updateProfile (убираем лишний alert, если хочешь)
+async function updateProfile(updates) {
+    const { data, error } = await client.from("profiles").update(updates).eq("id", currentUser.id).select().single();
+    if (!error) {
+        currentUser = data;
+        saveSession(myNick, masterKey, currentUser);
+        renderUserHeader();
+        // Можно добавить маленькое уведомление (Toast) вместо Alert
+    } else {
+        chatAlert("Ошибка", "Не удалось сохранить изменения.");
     }
 }
 
 async function updateProfile(updates) {
-    const { data, error } = await client
-        .from("profiles")
-        .update(updates)
-        .eq("id", currentUser.id)
-        .select()
-        .single();
-
+    const { data, error } = await client.from("profiles").update(updates).eq("id", currentUser.id).select().single();
     if (!error) {
-        currentUser = data; // Обновили локальную переменную
-
-        // КРИТИЧЕСКИЙ МОМЕНТ: Обновляем сессию в localStorage
-        // Теперь при перезагрузке страницы подхватятся новые данные
+        currentUser = data;
         saveSession(myNick, masterKey, currentUser);
-
         renderUserHeader();
-        alert("Профиль обновлен!");
+        chatAlert("Успех", "Профиль обновлен!");
     } else {
-        console.error("Ошибка при обновлении профиля:", error);
-        alert("Не удалось сохранить изменения.");
+        chatAlert("Ошибка", "Не удалось сохранить изменения.");
     }
 }
 
@@ -164,8 +239,6 @@ function renderUserHeader() {
         img.src = currentUser.avatar_url;
         img.style.display = "block";
         document.getElementById("display-name").innerText = currentUser.username;
-
-        // Если есть роль, можем покрасить ник
         if (currentUser.role === 'owner' || currentUser.role === 'admin') {
             document.getElementById("display-name").classList.add("text-info");
         }
@@ -173,19 +246,18 @@ function renderUserHeader() {
 }
 
 async function deleteAccount() {
-    if (confirm("ВНИМАНИЕ! Это полностью удалит ваш аккаунт без возможности восстановления. Продолжить?")) {
+    const confirmed = await chatConfirm("Удаление аккаунта", "Это действие нельзя отменить. Вы уверены?");
+    if (confirmed) {
         await client.from("profiles").delete().eq("id", currentUser.id);
         logout();
     }
 }
 
-// Обработка клика вне меню
 window.onclick = function (event) {
     if (!event.target.matches("#mute-indicator")) {
         const menu = document.getElementById("settings-menu");
         if (menu && menu.style.display === "block") menu.style.display = "none";
     }
-
     if (!event.target.closest('#emoji-picker-container') && !event.target.matches('.btn-outline-secondary')) {
         document.getElementById("emoji-picker-container").style.display = "none";
     }

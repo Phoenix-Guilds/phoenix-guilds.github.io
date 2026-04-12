@@ -1,6 +1,14 @@
 <div id="chat-header">
   <div class="d-flex align-items-center">
-    <img id="user-avatar" src="" width="30" height="30" class="rounded-circle me-2" style="display: none; object-fit: cover;" />
+    <img
+      id="user-avatar"
+      src=""
+      width="30"
+      height="30"
+      class="rounded-circle me-2"
+      style="display: none; object-fit: cover; cursor: pointer;"
+      onclick="showProfile()"
+    />
     <span id="display-name" class="text-white small fw-bold"></span>
   </div>
 
@@ -18,10 +26,6 @@
       <button onclick="setMute(60)" class="mute-option" id="mute-60">🔇 На 1 час</button>
       <button onclick="setMute(180)" class="mute-option" id="mute-180">🔇 На 3 часа</button>
       <button onclick="setMute(-1)" class="mute-option" id="mute-forever">🔕 Отключить навсегда</button>
-      <hr class="dropdown-divider border-secondary" />
-      <button onclick="logout()" class="mute-option text-danger">
-        🚪 Выйти из аккаунта
-      </button>
     </div>
   </div>
 </div>

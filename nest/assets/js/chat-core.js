@@ -42,60 +42,47 @@ async function initChat() {
     const nickInput = document.getElementById("user-nick").value.trim();
     const masterPass = document.getElementById("secret-key").value.trim();
 
-    if (!nickInput || !masterPass) return alert("Введите ник и пароль чата!");
+    if (!nickInput || !masterPass) return chatAlert("Внимание", "Введите ник и пароль чата!");
 
-    // 1. Проверяем Мастер-пароль и получаем ключ шифрования (как раньше)
     const { data: settings, error: sError } = await client.from("chat_settings").select("*").single();
-    if (sError) return alert("Ошибка связи с БД");
+    if (sError) return chatAlert("Ошибка", "Ошибка связи с БД");
 
     const masterHash = CryptoJS.SHA256(masterPass).toString();
-    if (masterHash !== settings.password_hash) return alert("Неверный пароль чата!");
+    if (masterHash !== settings.password_hash) return chatAlert("Ошибка", "Неверный пароль чата!");
 
     try {
         const bytes = CryptoJS.AES.decrypt(settings.encrypted_master_key, masterPass);
         masterKey = bytes.toString(CryptoJS.enc.Utf8);
-    } catch (e) { return alert("Ошибка дешифровки!"); }
+    } catch (e) { return chatAlert("Ошибка", "Ошибка дешифровки!"); }
 
-    // 2. Проверяем существование пользователя
-    const { data: profile, error: pError } = await client
-        .from("profiles")
-        .select("*")
-        .eq("username", nickInput)
-        .single();
+    const { data: profile } = await client.from("profiles").select("*").eq("username", nickInput).single();
 
     if (!profile) {
-        // Регистрация нового ника
-        const userPass = prompt(`Ник "${nickInput}" свободен. Придумайте ЛИЧНЫЙ пароль для аккаунта:`);
+        const userPass = await chatPrompt("Регистрация", `Ник "${nickInput}" свободен. Придумайте личный пароль:`);
         if (!userPass) return;
 
-        const userPassHash = CryptoJS.SHA256(userPass).toString();
-        const { data: newProfile, error: regError } = await client
-            .from("profiles")
-            .insert([{
-                username: nickInput,
-                password_hash: userPassHash,
-                avatar_url: `https://api.dicebear.com/9.x/avataaars/svg?seed=${nickInput}`
-            }])
-            .select()
-            .single();
+        const { data: newProfile, error: regError } = await client.from("profiles").insert([{
+            username: nickInput,
+            password_hash: CryptoJS.SHA256(userPass).toString(),
+            avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${nickInput}`
+        }]).select().single();
 
-        if (regError) return alert("Ошибка регистрации");
+        if (regError) return chatAlert("Ошибка", "Ошибка регистрации");
         currentUser = newProfile;
     } else {
-        // Вход в существующий аккаунт
-        const userPass = prompt(`Ник занят. Введите пароль для "${nickInput}":`);
-        const userPassHash = CryptoJS.SHA256(userPass).toString();
+        const userPass = await chatPrompt("Авторизация", `Введите личный пароль для "${nickInput}":`);
+        if (!userPass) return;
 
-        if (userPassHash !== profile.password_hash) {
-            return alert("Неверный личный пароль!");
+        if (CryptoJS.SHA256(userPass).toString() !== profile.password_hash) {
+            return chatAlert("Ошибка", "Неверный личный пароль!");
         }
-        if (profile.is_banned) return alert("Ваш аккаунт заблокирован!");
+        if (profile.is_banned) return chatAlert("Доступ закрыт", "Ваш аккаунт заблокирован!");
 
         currentUser = profile;
     }
 
     myNick = currentUser.username;
-    saveSession(myNick, masterKey, currentUser); // Добавляем профиль в сессию
+    saveSession(myNick, masterKey, currentUser);
     enterChatUI();
 }
 

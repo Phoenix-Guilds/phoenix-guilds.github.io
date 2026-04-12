@@ -17,3 +17,4 @@ let replyId = null,
 let currentUser = null;
 
 let tempAvatarUrl = "";
+let selectedFiles = [];

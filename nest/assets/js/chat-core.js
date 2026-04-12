@@ -109,22 +109,85 @@ function logout() {
 checkPersistedSession();
 
 // Отправка и редактирование
+// Вспомогательная функция для получения размеров изображения
+const getImageDimensions = (file) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            // Замеряем реальные пиксели файла
+            const dims = { 
+                w: img.naturalWidth || 1200, 
+                h: img.naturalHeight || 800 
+            };
+            URL.revokeObjectURL(img.src);
+            resolve(dims);
+        };
+        img.onerror = () => resolve({ w: 1200, h: 800 });
+        img.src = URL.createObjectURL(file);
+    });
+};
+
 async function handleSend() {
     const field = document.getElementById("msg-field");
     const text = field.value.trim();
-    if (!text || !masterKey) return;
 
-    const encrypted = CryptoJS.AES.encrypt(text, masterKey).toString();
+    if ((!text && selectedFiles.length === 0) || !masterKey) return;
 
-    if (editingId) {
-        await client.from("messages").update({ payload: encrypted, is_edited: true }).eq("id", editingId);
-        cancelAllModes();
-    } else {
-        const { error } = await client.from("messages").insert([{ author: myNick, payload: encrypted, reply_to_id: replyId }]);
-        if (!error) {
-            field.value = "";
-            cancelAllModes();
+    field.disabled = true;
+
+    try {
+        let mediaData = [];
+
+        for (const file of selectedFiles) {
+            const dims = await getImageDimensions(file);
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substr(7)}.${fileExt}`;
+            const filePath = `public/${fileName}`;
+
+            const { data, error: uploadError } = await client.storage
+                .from('chat-media')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: urlData } = client.storage
+                .from('chat-media')
+                .getPublicUrl(filePath);
+
+            mediaData.push({
+                url: urlData.publicUrl,
+                w: dims.w,
+                h: dims.h
+            });
         }
+
+        const msgObject = { text: text, media: mediaData };
+        const encrypted = CryptoJS.AES.encrypt(JSON.stringify(msgObject), masterKey).toString();
+
+        if (editingId) {
+            await client.from("messages").update({ payload: encrypted, is_edited: true }).eq("id", editingId);
+            cancelAllModes();
+        } else {
+            const { error } = await client.from("messages").insert([{
+                author: myNick,
+                payload: encrypted,
+                reply_to_id: replyId
+            }]);
+
+            if (!error) {
+                field.value = "";
+                selectedFiles = []; 
+                if (document.getElementById("image-previews")) document.getElementById("image-previews").innerHTML = "";
+                if (document.getElementById("file-input")) document.getElementById("file-input").value = "";
+                cancelAllModes();
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        chatAlert("Ошибка", "Не удалось отправить");
+    } finally {
+        field.disabled = false;
+        field.focus();
     }
 }
 
@@ -187,3 +250,110 @@ function setupInfiniteScroll() {
 document.getElementById("msg-field").onkeypress = (e) => {
     if (e.key === "Enter") handleSend();
 };
+
+async function handleFileSelect(event) {
+    const files = Array.from(event.target.files);
+    if (selectedFiles.length + files.length > 10) return chatAlert("Ой", "Максимум 10 файлов!");
+
+    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
+
+    for (const file of files) {
+        try {
+            // Оптимизация на лету (кроме GIF, их лучше не трогать, чтобы не сломать анимацию)
+            const compressedFile = file.type === 'image/gif' ? file : await imageCompression(file, options);
+            selectedFiles.push(compressedFile);
+            renderPreviews();
+        } catch (error) { console.error(error); }
+    }
+}
+
+function renderPreviews() {
+    const container = document.getElementById("image-previews");
+    container.innerHTML = selectedFiles.map((f, i) => `
+        <div class="position-relative">
+            <img src="${URL.createObjectURL(f)}" style="width:60px;height:60px;object-fit:cover" class="rounded border">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                  style="cursor:pointer" onclick="removeFile(${i})">&times;</span>
+        </div>
+    `).join("");
+}
+
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    renderPreviews();
+}
+
+// Изменяем handleSend
+async function handleSend() {
+    const field = document.getElementById("msg-field");
+    const text = field.value.trim();
+
+    // Если нет ни текста, ни выбранных файлов — ничего не делаем
+    if (!text && selectedFiles.length === 0) return;
+
+    // Блокируем интерфейс на время загрузки
+    field.disabled = true;
+    const sendBtn = document.getElementById("send-btn");
+    if (sendBtn) sendBtn.disabled = true;
+
+    try {
+        let mediaUrls = [];
+
+        // 1. Загружаем файлы в Supabase Storage, если они выбраны
+        if (selectedFiles.length > 0) {
+            for (const file of selectedFiles) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `public/${fileName}`;
+
+                const { data, error: uploadError } = await client.storage
+                    .from('chat-media')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = client.storage
+                    .from('chat-media')
+                    .getPublicUrl(filePath);
+
+                mediaUrls.push(urlData.publicUrl);
+            }
+        }
+
+        // 2. Формируем объект сообщения (Новый формат)
+        const messageObject = {
+            text: text,
+            media: mediaUrls
+        };
+
+        // 3. Шифруем весь объект как одну строку
+        const encrypted = CryptoJS.AES.encrypt(JSON.stringify(messageObject), masterKey).toString();
+
+        // 4. Отправляем в БД
+        if (editingId) {
+            await client.from("messages").update({ payload: encrypted, is_edited: true }).eq("id", editingId);
+            cancelAllModes();
+        } else {
+            const { error } = await client.from("messages").insert([{
+                author: myNick,
+                payload: encrypted,
+                reply_to_id: replyId
+            }]);
+
+            if (!error) {
+                field.value = "";
+                selectedFiles = []; // Очищаем массив файлов
+                const previewContainer = document.getElementById("image-previews");
+                if (previewContainer) previewContainer.innerHTML = ""; // Очищаем превью в UI
+                cancelAllModes();
+            }
+        }
+    } catch (err) {
+        console.error("Ошибка при отправке:", err);
+        alert("Не удалось отправить сообщение: " + err.message);
+    } finally {
+        field.disabled = false;
+        if (sendBtn) sendBtn.disabled = false;
+        field.focus();
+    }
+}

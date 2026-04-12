@@ -3,7 +3,11 @@
 
   <div class="input-group">
     <button onclick="toggleEmojiPicker()" class="btn btn-outline-secondary" type="button">😀</button>
+    <button class="btn btn-outline-secondary" onclick="document.getElementById('file-input').click()">📎</button>
+    <input type="file" id="file-input" multiple accept="image/*,image/gif" style="display: none;" onchange="handleFileSelect(event)" />
+
     <input type="text" id="msg-field" class="form-control bg-dark text-white border-secondary shadow-none" placeholder="Сообщение..." disabled />
     <button onclick="handleSend()" id="send-btn" class="btn btn-primary px-3" disabled>➤</button>
   </div>
+  <div id="image-previews" class="d-flex flex-wrap gap-2 mt-2"></div>
 </div>

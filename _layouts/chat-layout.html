@@ -3,6 +3,7 @@ layout: nest-default
 ---
 
 <link rel="stylesheet" href="{{ '/nest/assets/css/chat.css' | relative_url }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.4/photoswipe.min.css">
 
 {% include nest/header.html %}
 
@@ -17,6 +18,48 @@ layout: nest-default
 {% include chat/modals.html %}
 
 <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+
+<script type="module">
+    import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/photoswipe-lightbox.esm.min.js';
+    
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: '#chat-messages',
+        children: '.msg-img-link',
+        
+        showHideAnimationType: 'none', // Отключаем прыжки
+        initialZoomLevel: 'fit',
+        
+        // Убираем задержки анимаций
+        showAnimationDuration: 0,
+        hideAnimationDuration: 0,
+
+        pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/photoswipe.esm.min.js')
+    });
+
+    lightbox.addFilter('domItemData', (itemData, element) => {
+        const w = element.getAttribute('data-pswp-width');
+        const h = element.getAttribute('data-pswp-height');
+        
+        // Если в HTML есть корректные цифры, используем их
+        if (w && h && parseInt(w) > 0 && parseInt(h) > 0) {
+            itemData.w = parseInt(w, 10);
+            itemData.h = parseInt(h, 10);
+        } else {
+            // Если цифр нет (старое сообщение), удаляем свойства w и h,
+            // тогда PhotoSwipe определит их сам после загрузки картинки.
+            delete itemData.w;
+            delete itemData.h;
+        }
+
+        itemData.src = element.getAttribute('href');
+        itemData.msrc = null; // Запрещаем использовать миниатюру как плейсхолдер
+        
+        return itemData;
+    });
+
+    lightbox.init();
+</script>
 <script src="{{ '/nest/assets/js/chat-config.js' | relative_url }}"></script>
 <script src="{{ '/nest/assets/js/chat-ui.js' | relative_url }}"></script>
 <script src="{{ '/nest/assets/js/chat-core.js' | relative_url }}"></script>

@@ -88,14 +88,47 @@ function displayMessage(msg, method = "prepend") {
     const existing = document.getElementById(`msg-${msg.id}`);
     if (existing) existing.remove();
 
-    let text = "🔒 Error";
+    let decryptedText = "";
+    let mediaHtml = "";
+    let rawContent = "🔒 Error";
+
     try {
         const bytes = CryptoJS.AES.decrypt(msg.payload, masterKey);
-        text = bytes.toString(CryptoJS.enc.Utf8);
-    } catch (e) { }
+        rawContent = bytes.toString(CryptoJS.enc.Utf8);
+
+        // Проверка формата: JSON (новое) или Текст (старое)
+        if (rawContent.startsWith('{') && rawContent.endsWith('}')) {
+            const obj = JSON.parse(rawContent);
+            decryptedText = obj.text || "";
+
+            if (obj.media && obj.media.length > 0) {
+                mediaHtml = `<div class="msg-media-grid items-${obj.media.length}">`;
+                obj.media.forEach(item => {
+                    const isObj = typeof item === 'object';
+                    const url = isObj ? item.url : item;
+                    const width = isObj ? item.w : "1200";
+                    const height = isObj ? item.h : "800";
+
+                    mediaHtml += `
+            <a href="${url}" 
+               data-pswp-width="${width}" 
+               data-pswp-height="${height}" 
+               target="_blank" 
+               class="msg-img-link">
+                <img src="${url}" class="msg-img" loading="lazy">
+            </a>`;
+                });
+                mediaHtml += `</div>`;
+            }
+        } else {
+            decryptedText = rawContent;
+        }
+    } catch (e) {
+        decryptedText = rawContent;
+    }
 
     const isOwn = msg.author === myNick;
-    const cleanText = text.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+    const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
@@ -109,7 +142,9 @@ function displayMessage(msg, method = "prepend") {
         ${msg.is_edited ? '<span class="edited-mark">(изм.)</span>' : ""}
       </div>
       ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}
-      <div class="msg-text">${text}</div>
+      
+      ${mediaHtml}
+      <div class="msg-text">${decryptedText}</div>
     </div>`;
 
     method === "prepend" ? container.insertAdjacentHTML("afterbegin", msgHtml) : container.insertAdjacentHTML("beforeend", msgHtml);

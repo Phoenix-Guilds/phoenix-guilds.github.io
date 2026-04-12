@@ -81,7 +81,7 @@
 
 .msg-bubble {
   margin-bottom: 12px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 14px;
   background: #2b3035;
   color: #eee;
@@ -223,4 +223,58 @@
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Сетка сообщений --- */
+/* --- Сетка сообщений (не меняем, тут всё ок) --- */
+.msg-media-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 8px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 400px;
+}
+
+.msg-img-link {
+  display: block;
+  flex: 1 1 calc(50% - 4px);
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+}
+
+.items-1 .msg-img-link {
+  flex: 1 1 100%;
+  height: auto;
+  max-height: 350px;
+}
+
+.msg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- ФИКС PHOTOSWIPE (Убираем растягивание и прыжки) --- */
+
+/* 1. Скрываем "призраков" */
+.pswp__img--placeholder {
+    display: none !important;
+}
+
+/* 2. КРИТИЧНО: Сбрасываем CSS, который может растягивать картинку */
+.pswp__img {
+    width: auto;      /* Никаких !important здесь! */
+    height: auto;     /* PhotoSwipe сам подставит нужные px в style */
+    max-width: none;
+    object-fit: contain; 
+}
+
+/* 3. Гарантируем черный фон сразу */
+.pswp__bg {
+    background: #000 !important;
+    opacity: 1 !important;
 }

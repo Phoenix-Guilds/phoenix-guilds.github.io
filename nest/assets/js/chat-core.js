@@ -251,7 +251,7 @@ async function deleteMessage(id) {
                 if (obj.media && obj.media.length > 0) {
                     const pathsToDelete = obj.media.map(item => {
                         const url = (typeof item === 'object') ? item.url : item;
-                        
+
                         // 1. Находим начало пути после имени бакета
                         const bucketName = 'chat-media';
                         const searchStr = `/${bucketName}/`;
@@ -308,18 +308,37 @@ document.getElementById("msg-field").onkeypress = (e) => {
 
 async function handleFileSelect(event) {
     const files = Array.from(event.target.files);
-    if (selectedFiles.length + files.length > 10) return chatAlert("Ой", "Максимум 10 файлов!");
+
+    // 1. Проверка на общее количество
+    if (selectedFiles.length + files.length > 10) {
+        event.target.value = ""; // Сбрасываем инпут
+        return chatAlert("Ой", "Максимум 10 файлов!");
+    }
 
     const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
 
     for (const file of files) {
+        // 2. ФИЛЬТР: Пропускаем всё, что не является изображением
+        if (!file.type.startsWith('image/')) {
+            console.warn(`Файл ${file.name} пропущен: не изображение.`);
+            continue; // Просто пропускаем файл и идем к следующему
+        }
+
         try {
-            // Оптимизация на лету (кроме GIF, их лучше не трогать, чтобы не сломать анимацию)
-            const compressedFile = file.type === 'image/gif' ? file : await imageCompression(file, options);
+            // Оптимизация на лету
+            const compressedFile = file.type === 'image/gif'
+                ? file
+                : await imageCompression(file, options);
+
             selectedFiles.push(compressedFile);
             renderPreviews();
-        } catch (error) { console.error(error); }
+        } catch (error) {
+            console.error("Ошибка сжатия файла:", error);
+        }
     }
+
+    // 3. СБРОС ИНПУТА: чтобы можно было выбрать те же файлы снова
+    event.target.value = "";
 }
 
 function renderPreviews() {

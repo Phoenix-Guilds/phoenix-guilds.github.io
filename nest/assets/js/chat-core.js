@@ -115,9 +115,9 @@ const getImageDimensions = (file) => {
         const img = new Image();
         img.onload = () => {
             // Замеряем реальные пиксели файла
-            const dims = { 
-                w: img.naturalWidth || 1200, 
-                h: img.naturalHeight || 800 
+            const dims = {
+                w: img.naturalWidth || 1200,
+                h: img.naturalHeight || 800
             };
             URL.revokeObjectURL(img.src);
             resolve(dims);
@@ -176,7 +176,7 @@ async function handleSend() {
 
             if (!error) {
                 field.value = "";
-                selectedFiles = []; 
+                selectedFiles = [];
                 if (document.getElementById("image-previews")) document.getElementById("image-previews").innerHTML = "";
                 if (document.getElementById("file-input")) document.getElementById("file-input").value = "";
                 cancelAllModes();
@@ -236,7 +236,66 @@ function prepareEdit(id, text) {
 }
 
 async function deleteMessage(id) {
-    if (confirm("Удалить?")) await client.from("messages").delete().eq("id", id);
+    if (!confirm("Удалить это сообщение и вложения?")) return;
+
+    const { data: msg } = await client.from("messages").select("payload").eq("id", id).single();
+
+    if (msg) {
+        try {
+            const bytes = CryptoJS.AES.decrypt(msg.payload, masterKey);
+            const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
+
+            if (decryptedStr.startsWith('{')) {
+                const obj = JSON.parse(decryptedStr);
+
+                if (obj.media && obj.media.length > 0) {
+                    const pathsToDelete = obj.media.map(item => {
+                        const url = (typeof item === 'object') ? item.url : item;
+
+                        // 1. Находим начало пути после имени бакета
+                        const bucketName = 'chat-media';
+                        const searchStr = `/${bucketName}/`;
+                        const index = url.indexOf(searchStr);
+
+                        if (index !== -1) {
+                            // Извлекаем всё, что идет ПОСЛЕ '/chat-media/'
+                            let path = url.substring(index + searchStr.length);
+
+                            // 2. Декодируем URL (на случай если в имени файла есть пробелы или спецсимволы %20 и т.д.)
+                            path = decodeURIComponent(path);
+
+                            return path;
+                        }
+                        return null;
+                    }).filter(p => p !== null);
+
+                    console.log("Финальные пути для удаления:", pathsToDelete);
+
+                    if (pathsToDelete.length > 0) {
+                        const { data, error: storageError } = await client.storage
+                            .from('chat-media')
+                            .remove(pathsToDelete);
+
+                        if (storageError) {
+                            console.error("Ошибка Storage:", storageError);
+                        } else {
+                            // Если data.length всё еще 0, значит пути всё равно не верны
+                            console.log("Результат удаления (список удаленных):", data);
+                            if (data && data.length === 0) {
+                                console.warn("Внимание: Файлы не найдены в хранилище. Проверь иерархию папок в Supabase.");
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn("Не удалось обработать вложения (возможно, старый формат):", e);
+        }
+    }
+
+    // Удаляем само сообщение
+    const { error: deleteError } = await client.from("messages").delete().eq("id", id);
+    if (deleteError) console.error("Ошибка удаления сообщения:", deleteError);
 }
 
 // Скролл и ввод

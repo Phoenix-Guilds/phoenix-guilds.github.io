@@ -251,7 +251,7 @@ async function deleteMessage(id) {
                 if (obj.media && obj.media.length > 0) {
                     const pathsToDelete = obj.media.map(item => {
                         const url = (typeof item === 'object') ? item.url : item;
-
+                        
                         // 1. Находим начало пути после имени бакета
                         const bucketName = 'chat-media';
                         const searchStr = `/${bucketName}/`;
@@ -269,8 +269,6 @@ async function deleteMessage(id) {
                         return null;
                     }).filter(p => p !== null);
 
-                    console.log("Финальные пути для удаления:", pathsToDelete);
-
                     if (pathsToDelete.length > 0) {
                         const { data, error: storageError } = await client.storage
                             .from('chat-media')
@@ -279,8 +277,6 @@ async function deleteMessage(id) {
                         if (storageError) {
                             console.error("Ошибка Storage:", storageError);
                         } else {
-                            // Если data.length всё еще 0, значит пути всё равно не верны
-                            console.log("Результат удаления (список удаленных):", data);
                             if (data && data.length === 0) {
                                 console.warn("Внимание: Файлы не найдены в хранилище. Проверь иерархию папок в Supabase.");
                             }

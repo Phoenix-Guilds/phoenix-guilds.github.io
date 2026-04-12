@@ -159,6 +159,21 @@ function showPreview(text) {
 function cancelAllModes() {
     replyId = null;
     editingId = null;
+    // СБРОС ФАЙЛОВ
+    selectedFiles = [];
+
+    // Очистка визуальных превью
+    const previewContainer = document.getElementById("image-previews");
+    if (previewContainer) previewContainer.innerHTML = "";
+
+    // КРИТИЧЕСКИЙ ФИКС: сброс значения инпута, чтобы можно было выбрать те же файлы
+    const fileInput = document.getElementById("file-input");
+    if (fileInput) fileInput.value = "";
+
+    // Скрытие панели редактирования/ответа в UI
+    const editPanel = document.getElementById("edit-panel");
+    if (editPanel) editPanel.classList.add("hidden");
+
     document.getElementById("msg-field").value = "";
     document.getElementById("reply-preview").style.display = "none";
 }

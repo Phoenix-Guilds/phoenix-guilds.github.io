@@ -173,7 +173,9 @@ function cancelAllModes() {
     // Скрытие панели редактирования/ответа в UI
     const editPanel = document.getElementById("edit-panel");
     if (editPanel) editPanel.classList.add("hidden");
-    
+
+    msgField.style.height = 'auto';
+
     document.getElementById("msg-field").value = "";
     document.getElementById("reply-preview").style.display = "none";
 }
@@ -302,6 +304,46 @@ async function deleteAccount() {
         logout();
     }
 }
+
+if (msgField) {
+    msgField.addEventListener('input', function () {
+        // Сбрасываем высоту, чтобы корректно вычислить новую через scrollHeight
+        this.style.height = 'auto';
+
+        // Устанавливаем новую высоту на основе содержимого
+        const newHeight = this.scrollHeight;
+        this.style.height = newHeight + 'px';
+
+        // Если текст превысил max-height, включаем прокрутку, иначе скрываем
+        if (newHeight > 150) {
+            this.style.overflowY = 'auto';
+        } else {
+            this.style.overflowY = 'hidden';
+        }
+    });
+
+    // Обработка клавиши Enter
+    msgField.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            // Если нажат Enter без Shift — отправляем сообщение
+            e.preventDefault();
+            handleSend();
+        }
+        // Если Shift + Enter — браузер просто перенесет строку (стандартное поведение)
+    });
+}
+
+const originalHandleSend = window.handleSend;
+window.handleSend = async function() {
+    // Ждем выполнения основной функции отправки
+    await originalHandleSend();
+    
+    // Сбрасываем высоту поля
+    if (msgField) {
+        msgField.style.height = 'auto';
+        msgField.style.overflowY = 'hidden';
+    }
+};
 
 window.onclick = function (event) {
     if (!event.target.matches("#mute-indicator")) {

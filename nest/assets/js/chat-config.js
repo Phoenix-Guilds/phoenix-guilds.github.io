@@ -18,3 +18,5 @@ let currentUser = null;
 
 let tempAvatarUrl = "";
 let selectedFiles = [];
+
+const msgField = document.getElementById('msg-field');

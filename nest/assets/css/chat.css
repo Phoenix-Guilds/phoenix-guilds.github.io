@@ -91,6 +91,7 @@
   position: relative;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: background 0.2s;
+  word-break: break-word;
 }
 
 .msg-bubble.own {
@@ -103,6 +104,12 @@
 .msg-bubble:not(.own) {
   border-bottom-left-radius: 4px;
   border-left: 3px solid #0dcaf0;
+}
+
+.msg-text {
+  white-space: pre-wrap;
+  display: block;
+  line-height: 1.4;
 }
 
 .msg-info {
@@ -262,19 +269,47 @@
 
 /* 1. Скрываем "призраков" */
 .pswp__img--placeholder {
-    display: none !important;
+  display: none !important;
 }
 
 /* 2. КРИТИЧНО: Сбрасываем CSS, который может растягивать картинку */
 .pswp__img {
-    width: auto;      /* Никаких !important здесь! */
-    height: auto;     /* PhotoSwipe сам подставит нужные px в style */
-    max-width: none;
-    object-fit: contain; 
+  width: auto; /* Никаких !important здесь! */
+  height: auto; /* PhotoSwipe сам подставит нужные px в style */
+  max-width: none;
+  object-fit: contain;
 }
 
 /* 3. Гарантируем черный фон сразу */
 .pswp__bg {
-    background: #000 !important;
-    opacity: 1 !important;
+  background: #000 !important;
+  opacity: 1 !important;
+}
+
+/* Настройки для многострочного поля ввода */
+#msg-field {
+  resize: none; /* Запрещаем пользователю тянуть за угол */
+  overflow-y: hidden; /* Скрываем скролл, пока он не нужен */
+  min-height: 38px;
+  max-height: 150px; /* Максимальная высота, после которой появится прокрутка */
+  line-height: 20px;
+  padding: 8px 12px;
+  transition: height 0.1s ease; /* Плавное изменение высоты */
+  scrollbar-width: thin; /* Для Firefox */
+}
+
+/* Стилизация скролла внутри textarea для Chrome/Safari */
+#msg-field::-webkit-scrollbar {
+  width: 4px;
+}
+#msg-field::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+
+/* Фикс для Bootstrap: чтобы кнопки и textarea дружили при разной высоте */
+.input-group > .btn {
+  height: 38px; /* Фиксируем высоту кнопок */
+  display: flex;
+  align-items: center;
 }

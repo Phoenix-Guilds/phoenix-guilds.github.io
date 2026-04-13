@@ -173,7 +173,7 @@ function cancelAllModes() {
     // Скрытие панели редактирования/ответа в UI
     const editPanel = document.getElementById("edit-panel");
     if (editPanel) editPanel.classList.add("hidden");
-
+    
     document.getElementById("msg-field").value = "";
     document.getElementById("reply-preview").style.display = "none";
 }

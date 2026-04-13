@@ -315,8 +315,13 @@ async function handleFileSelect(event) {
         return chatAlert("Ой", "Максимум 10 файлов!");
     }
 
-    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
-
+    const options = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        initialQuality: 1
+    };
+    
     for (const file of files) {
         // 2. ФИЛЬТР: Пропускаем всё, что не является изображением
         if (!file.type.startsWith('image/')) {

@@ -378,9 +378,29 @@
   margin-left: 0;
 }
 
-#reaction-picker-container em-emoji-picker {
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
-  border-radius: 15px;
+/* Базовый контейнер */
+#reaction-picker-container {
+    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    line-height: 0; /* Убирает лишние отступы внутри */
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 576px) {
+    #reaction-picker-container {
+        /* Игнорируем JS-координаты и ставим по центру */
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90% !important;
+        display: flex;
+        justify-content: center;
+    }
+
+    #reaction-picker-container em-emoji-picker {
+        width: 100% !important;
+        max-width: 350px;
+        height: 60vh !important; /* Делаем чуть ниже на мобилках */
+    }
 }
 
 /* Затемнение фона при открытом пикере (опционально) */

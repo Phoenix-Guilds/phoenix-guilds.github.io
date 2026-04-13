@@ -389,7 +389,6 @@ function openReactionPicker(event, messageId) {
     event.stopPropagation();
     const container = document.getElementById("reaction-picker-container");
 
-    // Если пикер еще не создан, инициализируем его
     if (!reactionPicker) {
         reactionPicker = new EmojiMart.Picker({
             data: async () => {
@@ -408,21 +407,27 @@ function openReactionPicker(event, messageId) {
         container.appendChild(reactionPicker);
     }
 
-    // Позиционируем меню рядом с курсором/кнопкой
     container.setAttribute("data-current-msg-id", messageId);
     container.style.display = "block";
 
-    // Расчет позиции (чтобы не уходило за края экрана)
-    let x = event.clientX;
-    let y = event.clientY;
+    // ПРОВЕРКА: Если это мобилка (экран < 576px), не считаем координаты
+    if (window.innerWidth > 576) {
+        let x = event.clientX;
+        let y = event.clientY;
 
-    if (x + 350 > window.innerWidth) x -= 350;
-    if (y + 400 > window.innerHeight) y -= 400;
+        // Корректировка, чтобы не вылезало за края (для десктопа)
+        if (x + 350 > window.innerWidth) x = window.innerWidth - 370;
+        if (y + 430 > window.innerHeight) y = window.innerHeight - 450;
 
-    container.style.left = x + "px";
-    container.style.top = y + "px";
+        container.style.left = x + "px";
+        container.style.top = y + "px";
+        container.style.transform = "none"; // Сбрасываем центрирование
+    } else {
+        // Для мобилок координаты сбросятся (CSS сам отцентрирует через !important)
+        container.style.left = "";
+        container.style.top = "";
+    }
 
-    // Закрытие при клике мимо
     const closePicker = (e) => {
         if (!container.contains(e.target)) {
             container.style.display = "none";

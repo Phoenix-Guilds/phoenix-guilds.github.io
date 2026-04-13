@@ -194,7 +194,7 @@ async function handleSend() {
 // Загрузка данных
 async function loadHistory() {
     if (isLoadedAll) return;
-    let query = client.from("messages").select("*").order("created_at", { ascending: false }).limit(40);
+    let query = client.from("messages").select("*, reactions(*)").order("created_at", { ascending: false }).limit(40);
     if (lastTimestamp) query = query.lt("created_at", lastTimestamp);
 
     const { data } = await query;

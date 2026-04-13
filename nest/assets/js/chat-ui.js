@@ -129,10 +129,11 @@ function displayMessage(msg, method = "prepend") {
 
     const isOwn = msg.author === myNick;
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-
+    
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
       <div class="msg-actions">
+        <div class="msg-btn" onclick="toggleReaction(${msg.id}, '👍')">👍</div>
         <div class="msg-btn" onclick="prepareReply(${msg.id}, '${msg.author}', '${cleanText}')">↩</div>
         ${isOwn ? `<div class="msg-btn" onclick="prepareEdit(${msg.id}, '${cleanText}')">✏️</div>` : ""}
         ${isOwn ? `<div class="msg-btn" onclick="deleteMessage(${msg.id})">🗑️</div>` : ""}
@@ -142,9 +143,11 @@ function displayMessage(msg, method = "prepend") {
         ${msg.is_edited ? '<span class="edited-mark">(изм.)</span>' : ""}
       </div>
       ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}
-      
+
       ${mediaHtml}
       <div class="msg-text">${decryptedText}</div>
+
+      ${renderReactionsHTML(msg.id, msg.reactions)}
     </div>`;
 
     method === "prepend" ? container.insertAdjacentHTML("afterbegin", msgHtml) : container.insertAdjacentHTML("beforeend", msgHtml);
@@ -344,6 +347,37 @@ window.handleSend = async function () {
         msgField.style.overflowY = 'hidden';
     }
 };
+
+function renderReactionsHTML(messageId, reactions = []) {
+    if (!reactions || reactions.length === 0) return `<div id="reactions-${messageId}" class="reactions-container"></div>`;
+
+    // Группируем реакции по эмодзи
+    const grouped = reactions.reduce((acc, r) => {
+        acc[r.emoji] = acc[r.emoji] || [];
+        acc[r.emoji].push(r);
+        return acc;
+    }, {});
+
+    const html = Object.entries(grouped).map(([emoji, users]) => {
+        const isMyReaction = users.some(u => u.user_id === currentUser?.id);
+
+        return `
+            <div class="reaction-badge ${isMyReaction ? 'active' : ''}" 
+                 onclick="toggleReaction(${messageId}, '${emoji}')"
+                 title="${users.map(u => u.user_name).join(', ')}">
+                <span>${emoji}</span>
+                <span class="reaction-count">${users.length}</span>
+                <div class="reaction-avatars">
+                    ${users.slice(0, 3).map(u => `
+                        <img src="${u.user_avatar}" class="reaction-avatar">
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    return `<div id="reactions-${messageId}" class="reactions-container">${html}</div>`;
+}
 
 window.onclick = function (event) {
     if (!event.target.matches("#mute-indicator")) {

@@ -83,7 +83,7 @@ function playNotifSound() {
     }
 }
 
-function displayMessage(msg, method = "prepend") {
+async function displayMessage(msg, method = "prepend") {
     const container = document.getElementById("chat-messages");
     const existing = document.getElementById(`msg-${msg.id}`);
     if (existing) existing.remove();
@@ -110,13 +110,13 @@ function displayMessage(msg, method = "prepend") {
                     const height = isObj ? item.h : "800";
 
                     mediaHtml += `
-            <a href="${url}" 
-               data-pswp-width="${width}" 
-               data-pswp-height="${height}" 
-               target="_blank" 
-               class="msg-img-link">
-                <img src="${url}" class="msg-img" loading="lazy">
-            </a>`;
+                        <a href="${url}" 
+                           data-pswp-width="${width}" 
+                           data-pswp-height="${height}" 
+                           target="_blank" 
+                           class="msg-img-link">
+                            <img src="${url}" class="msg-img" loading="lazy">
+                        </a>`;
                 });
                 mediaHtml += `</div>`;
             }
@@ -126,6 +126,10 @@ function displayMessage(msg, method = "prepend") {
     } catch (e) {
         decryptedText = rawContent;
     }
+
+    // --- НОВАЯ ЛОГИКА ОБРАБОТКИ ССЫЛОК ---
+    const { html: formattedText, firstUrl } = processText(decryptedText);
+    // -------------------------------------
 
     const isOwn = msg.author === myNick;
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
@@ -145,12 +149,50 @@ function displayMessage(msg, method = "prepend") {
       ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}
 
       ${mediaHtml}
-      <div class="msg-text">${decryptedText}</div>
+      <div class="msg-text">${formattedText}</div>
+      
+      <div id="preview-${msg.id}"></div>
 
       ${renderReactionsHTML(msg.id, msg.reactions)}
     </div>`;
 
-    method === "prepend" ? container.insertAdjacentHTML("afterbegin", msgHtml) : container.insertAdjacentHTML("beforeend", msgHtml);
+    // Вставляем сообщение в чат
+    if (method === "prepend") {
+        container.insertAdjacentHTML("afterbegin", msgHtml);
+    } else {
+        container.insertAdjacentHTML("beforeend", msgHtml);
+    }
+
+    // --- ЗАПУСК ЗАГРУЗКИ ПРЕВЬЮ ---
+    if (firstUrl) {
+        loadPreview(msg.id, firstUrl);
+    }
+}
+
+async function loadPreview(msgId, url) {
+    const previewContainer = document.getElementById(`preview-${msgId}`);
+    if (!previewContainer) return;
+
+    // Можно использовать бесплатный сервис без ключа для теста (например, через OpenGraph Ninja)
+    try {
+        const res = await fetch(`https://opengraph.ninja/api/v1?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if (data && (data.title || data.image)) {
+            previewContainer.innerHTML = `
+                <a href="${url}" target="_blank" class="link-preview">
+                    ${data.image ? `<img src="${data.image.url}" class="lp-image">` : ""}
+                    <div class="lp-content">
+                        <div class="lp-title">${data.title || 'Link'}</div>
+                        <div class="lp-desc">${data.description || ''}</div>
+                        <div class="lp-site">${new URL(url).hostname}</div>
+                    </div>
+                </a>
+            `;
+        }
+    } catch (e) {
+        console.log("Превью не загружено для:", url);
+    }
 }
 
 function showPreview(text) {
@@ -435,6 +477,33 @@ function openReactionPicker(event, messageId) {
         }
     };
     setTimeout(() => document.addEventListener("click", closePicker), 10);
+}
+
+// Регулярное выражение для поиска ссылок
+const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+
+async function fetchLinkPreview(url) {
+    try {
+        // Используем бесплатный CORS-прокси или специализированный API
+        // В данном примере используем открытый API (может потребоваться ключ для продакшена)
+        const response = await fetch(`https://api.linkpreview.net/?key=YOUR_FREE_KEY_OR_PROXY&q=${encodeURIComponent(url)}`);
+        if (!response.ok) return null;
+        return await response.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+// Функция для обработки текста (делает ссылки активными и ищет первую для превью)
+function processText(text) {
+    const urls = text.match(URL_REGEX);
+    let html = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(URL_REGEX, '<a href="$1" target="_blank" class="msg-link">$1</a>');
+
+    return { html, firstUrl: urls ? urls[0] : null };
 }
 
 window.onclick = function (event) {

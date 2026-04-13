@@ -436,3 +436,58 @@ async function handleSend() {
         field.focus();
     }
 }
+
+// Функция переключения реакции
+async function toggleReaction(messageId, emoji) {
+    // Используем глобальный объект currentUser, который у тебя уже есть
+    if (!currentUser) {
+        console.error("Реакция невозможна: пользователь не авторизован");
+        return;
+    }
+
+    const myId = currentUser.id;
+    const myName = currentUser.username;
+    const myAvatar = currentUser.avatar_url;
+
+    // 1. Проверяем, стоит ли уже ТАКАЯ ЖЕ реакция от нас
+    const { data: existing, error: fetchError } = await client
+        .from('reactions')
+        .select('id, emoji')
+        .eq('message_id', messageId)
+        .eq('user_id', myId)
+        .maybeSingle();
+
+    if (fetchError) {
+        console.error("Ошибка при получении реакций:", fetchError);
+        return;
+    }
+
+    if (existing) {
+        if (existing.emoji === emoji) {
+            // Если кликнули по тому же эмодзи — удаляем реакцию
+            await client.from('reactions').delete().eq('id', existing.id);
+            console.log("Реакция удалена");
+        } else {
+            // Если кликнули по другому эмодзи — обновляем на новый
+            await client.from('reactions')
+                .update({ emoji: emoji })
+                .eq('id', existing.id);
+            console.log("Реакция изменена");
+        }
+    } else {
+        // 2. Если реакции нет — создаем новую
+        const { error: insertError } = await client.from('reactions').insert({
+            message_id: messageId,
+            user_id: myId,
+            user_name: myName,
+            user_avatar: myAvatar,
+            emoji: emoji
+        });
+        
+        if (insertError) {
+            console.error("Ошибка при добавлении реакции:", insertError);
+        } else {
+            console.log("Реакция добавлена");
+        }
+    }
+}

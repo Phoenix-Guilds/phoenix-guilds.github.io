@@ -334,10 +334,10 @@ if (msgField) {
 }
 
 const originalHandleSend = window.handleSend;
-window.handleSend = async function() {
+window.handleSend = async function () {
     // Ждем выполнения основной функции отправки
     await originalHandleSend();
-    
+
     // Сбрасываем высоту поля
     if (msgField) {
         msgField.style.height = 'auto';

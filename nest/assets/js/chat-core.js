@@ -208,17 +208,82 @@ async function loadHistory() {
 
 // Realtime события
 function startRealtime() {
-    client.channel("any").on("postgres_changes", { event: "*", schema: "public", table: "messages" }, (p) => {
+    // 1. Сообщения
+    client.channel("messages_changes").on("postgres_changes", { event: "*", schema: "public", table: "messages" }, (p) => {
         if (p.eventType === "DELETE") {
             const el = document.getElementById(`msg-${p.old.id}`);
             if (el) el.remove();
         } else {
             displayMessage(p.new, "prepend");
-            if (p.eventType === "INSERT" && p.new.author !== myNick) {
-                playNotifSound();
+            if (p.eventType === "INSERT" && p.new.author !== myNick) playNotifSound();
+        }
+    }).subscribe();
+
+    // 2. Реакции (Улучшенная логика поиска контейнера)
+    client.channel("reactions_changes").on("postgres_changes", { event: "*", schema: "public", table: "reactions" }, async (p) => {
+        let messageId = p.new?.message_id || p.old?.message_id;
+
+        // Если БД все еще жадничает и не прислала message_id при DELETE
+        if (!messageId && p.eventType === "DELETE") {
+            // Ищем в DOM badge реакции, у которого есть атрибут onclick с нашим messageId
+            // Находим любой элемент внутри которого есть вызов toggleReaction с id нашей удаленной записи
+            // Но проще: мы просто перерисуем все видимые реакции, если не знаем точно, какая удалена
+            // console.log("Realtime: Ищем message_id вручную в DOM...");
+            const allContainers = document.querySelectorAll('.reactions-container');
+            allContainers.forEach(async (container) => {
+                const mid = container.id.replace('reactions-', '');
+                const { data: updated } = await client.from('reactions').select('*').eq('message_id', mid);
+                container.outerHTML = renderReactionsHTML(mid, updated || []);
+            });
+            return;
+        }
+
+        if (messageId) {
+            const { data: updated } = await client.from('reactions').select('*').eq('message_id', messageId);
+            const container = document.getElementById(`reactions-${messageId}`);
+            if (container) {
+                container.outerHTML = renderReactionsHTML(messageId, updated || []);
             }
         }
     }).subscribe();
+}
+
+// Функция переключения реакции (ИСПРАВЛЕНО - добавлена очистка кэша)
+async function toggleReaction(messageId, emoji) {
+    if (!currentUser) return;
+
+    const myId = currentUser.id;
+    const myName = currentUser.username;
+    const myAvatar = currentUser.avatar_url;
+
+    // Сначала проверяем, есть ли уже такая реакция от нас
+    const { data: existing } = await client
+        .from('reactions')
+        .select('id, emoji')
+        .eq('message_id', messageId)
+        .eq('user_id', myId)
+        .maybeSingle();
+
+    if (existing) {
+        if (existing.emoji === emoji) {
+            // Если нажали на тот же эмодзи — удаляем его
+            await client.from('reactions').delete().eq('id', existing.id);
+        } else {
+            // Если нажали на другой — обновляем
+            await client.from('reactions').update({ emoji: emoji }).eq('id', existing.id);
+        }
+    } else {
+        // Если реакции нет — создаем
+        await client.from('reactions').insert({
+            message_id: messageId,
+            user_id: myId,
+            user_name: myName,
+            user_avatar: myAvatar,
+            emoji: emoji
+        });
+    }
+
+    // UI обновится автоматически через Realtime канал во всех вкладках
 }
 
 // Режимы ответа/редактирования
@@ -321,7 +386,7 @@ async function handleFileSelect(event) {
         useWebWorker: true,
         initialQuality: 1
     };
-    
+
     for (const file of files) {
         // 2. ФИЛЬТР: Пропускаем всё, что не является изображением
         if (!file.type.startsWith('image/')) {
@@ -439,55 +504,45 @@ async function handleSend() {
 
 // Функция переключения реакции
 async function toggleReaction(messageId, emoji) {
-    // Используем глобальный объект currentUser, который у тебя уже есть
-    if (!currentUser) {
-        console.error("Реакция невозможна: пользователь не авторизован");
-        return;
-    }
+    if (!currentUser) return;
 
     const myId = currentUser.id;
     const myName = currentUser.username;
     const myAvatar = currentUser.avatar_url;
 
-    // 1. Проверяем, стоит ли уже ТАКАЯ ЖЕ реакция от нас
-    const { data: existing, error: fetchError } = await client
+    const { data: existing } = await client
         .from('reactions')
         .select('id, emoji')
         .eq('message_id', messageId)
         .eq('user_id', myId)
         .maybeSingle();
 
-    if (fetchError) {
-        console.error("Ошибка при получении реакций:", fetchError);
-        return;
-    }
-
+    // Выполняем действие в БД
     if (existing) {
         if (existing.emoji === emoji) {
-            // Если кликнули по тому же эмодзи — удаляем реакцию
             await client.from('reactions').delete().eq('id', existing.id);
-            console.log("Реакция удалена");
         } else {
-            // Если кликнули по другому эмодзи — обновляем на новый
-            await client.from('reactions')
-                .update({ emoji: emoji })
-                .eq('id', existing.id);
-            console.log("Реакция изменена");
+            await client.from('reactions').update({ emoji: emoji }).eq('id', existing.id);
         }
     } else {
-        // 2. Если реакции нет — создаем новую
-        const { error: insertError } = await client.from('reactions').insert({
+        await client.from('reactions').insert({
             message_id: messageId,
             user_id: myId,
             user_name: myName,
             user_avatar: myAvatar,
             emoji: emoji
         });
-        
-        if (insertError) {
-            console.error("Ошибка при добавлении реакции:", insertError);
-        } else {
-            console.log("Реакция добавлена");
-        }
+    }
+
+    // СРАЗУ ОБНОВЛЯЕМ UI в текущей вкладке
+    // Это делает интерфейс отзывчивым
+    const { data: updated } = await client
+        .from('reactions')
+        .select('*')
+        .eq('message_id', messageId);
+
+    const container = document.getElementById(`reactions-${messageId}`);
+    if (container) {
+        container.outerHTML = renderReactionsHTML(messageId, updated || []);
     }
 }

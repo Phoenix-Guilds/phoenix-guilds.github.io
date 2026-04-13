@@ -129,7 +129,7 @@ function displayMessage(msg, method = "prepend") {
 
     const isOwn = msg.author === myNick;
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-    
+
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
       <div class="msg-actions">
@@ -349,27 +349,31 @@ window.handleSend = async function () {
 };
 
 function renderReactionsHTML(messageId, reactions = []) {
-    if (!reactions || reactions.length === 0) return `<div id="reactions-${messageId}" class="reactions-container"></div>`;
+    // Если реакций нет, возвращаем пустой скрытый контейнер с ID
+    if (!reactions || reactions.length === 0) {
+        return `<div id="reactions-${messageId}" class="reactions-container"></div>`;
+    }
 
     // Группируем реакции по эмодзи
     const grouped = reactions.reduce((acc, r) => {
-        acc[r.emoji] = acc[r.emoji] || [];
+        if (!acc[r.emoji]) acc[r.emoji] = [];
         acc[r.emoji].push(r);
         return acc;
     }, {});
 
     const html = Object.entries(grouped).map(([emoji, users]) => {
         const isMyReaction = users.some(u => u.user_id === currentUser?.id);
+        const userList = users.map(u => u.user_name).join(', ');
 
         return `
             <div class="reaction-badge ${isMyReaction ? 'active' : ''}" 
                  onclick="toggleReaction(${messageId}, '${emoji}')"
-                 title="${users.map(u => u.user_name).join(', ')}">
+                 title="${userList}">
                 <span>${emoji}</span>
                 <span class="reaction-count">${users.length}</span>
                 <div class="reaction-avatars">
                     ${users.slice(0, 3).map(u => `
-                        <img src="${u.user_avatar}" class="reaction-avatar">
+                        <img src="${u.user_avatar}" class="reaction-avatar" title="${u.user_name}">
                     `).join('')}
                 </div>
             </div>

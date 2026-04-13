@@ -17,6 +17,8 @@ layout: nest-default
 
 {% include chat/modals.html %}
 
+<div id="reaction-picker-container" style="display: none; position: fixed; z-index: 9999;"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
 
@@ -33,7 +35,7 @@ layout: nest-default
         // Убираем задержки анимаций
         showAnimationDuration: 0,
         hideAnimationDuration: 0,
-
+        
         pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/photoswipe.esm.min.js')
     });
 

@@ -133,7 +133,7 @@ function displayMessage(msg, method = "prepend") {
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
       <div class="msg-actions">
-        <div class="msg-btn" onclick="toggleReaction(${msg.id}, '👍')">👍</div>
+        <div class="msg-btn" onclick="openReactionPicker(event, ${msg.id})">😀</div>
         <div class="msg-btn" onclick="prepareReply(${msg.id}, '${msg.author}', '${cleanText}')">↩</div>
         ${isOwn ? `<div class="msg-btn" onclick="prepareEdit(${msg.id}, '${cleanText}')">✏️</div>` : ""}
         ${isOwn ? `<div class="msg-btn" onclick="deleteMessage(${msg.id})">🗑️</div>` : ""}
@@ -381,6 +381,55 @@ function renderReactionsHTML(messageId, reactions = []) {
     }).join('');
 
     return `<div id="reactions-${messageId}" class="reactions-container">${html}</div>`;
+}
+
+let reactionPicker = null;
+
+function openReactionPicker(event, messageId) {
+    event.stopPropagation();
+    const container = document.getElementById("reaction-picker-container");
+
+    // Если пикер еще не создан, инициализируем его
+    if (!reactionPicker) {
+        reactionPicker = new EmojiMart.Picker({
+            data: async () => {
+                const response = await fetch("https://cdn.jsdelivr.net/npm/@emoji-mart/data");
+                return response.json();
+            },
+            onEmojiSelect: (emoji) => {
+                const mid = container.getAttribute("data-current-msg-id");
+                toggleReaction(parseInt(mid), emoji.native);
+                container.style.display = "none";
+            },
+            theme: "dark",
+            locale: "ru",
+            set: "native"
+        });
+        container.appendChild(reactionPicker);
+    }
+
+    // Позиционируем меню рядом с курсором/кнопкой
+    container.setAttribute("data-current-msg-id", messageId);
+    container.style.display = "block";
+
+    // Расчет позиции (чтобы не уходило за края экрана)
+    let x = event.clientX;
+    let y = event.clientY;
+
+    if (x + 350 > window.innerWidth) x -= 350;
+    if (y + 400 > window.innerHeight) y -= 400;
+
+    container.style.left = x + "px";
+    container.style.top = y + "px";
+
+    // Закрытие при клике мимо
+    const closePicker = (e) => {
+        if (!container.contains(e.target)) {
+            container.style.display = "none";
+            document.removeEventListener("click", closePicker);
+        }
+    };
+    setTimeout(() => document.addEventListener("click", closePicker), 10);
 }
 
 window.onclick = function (event) {

@@ -377,3 +377,18 @@
 .reaction-avatar:first-child {
   margin-left: 0;
 }
+
+#reaction-picker-container em-emoji-picker {
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+}
+
+/* Затемнение фона при открытом пикере (опционально) */
+.picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+}

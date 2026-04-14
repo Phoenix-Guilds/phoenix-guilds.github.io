@@ -219,16 +219,10 @@ function startRealtime() {
         }
     }).subscribe();
 
-    // 2. Реакции (Улучшенная логика поиска контейнера)
+    // 2. Реакции
     client.channel("reactions_changes").on("postgres_changes", { event: "*", schema: "public", table: "reactions" }, async (p) => {
         let messageId = p.new?.message_id || p.old?.message_id;
-
-        // Если БД все еще жадничает и не прислала message_id при DELETE
         if (!messageId && p.eventType === "DELETE") {
-            // Ищем в DOM badge реакции, у которого есть атрибут onclick с нашим messageId
-            // Находим любой элемент внутри которого есть вызов toggleReaction с id нашей удаленной записи
-            // Но проще: мы просто перерисуем все видимые реакции, если не знаем точно, какая удалена
-            // console.log("Realtime: Ищем message_id вручную в DOM...");
             const allContainers = document.querySelectorAll('.reactions-container');
             allContainers.forEach(async (container) => {
                 const mid = container.id.replace('reactions-', '');
@@ -237,15 +231,43 @@ function startRealtime() {
             });
             return;
         }
-
         if (messageId) {
             const { data: updated } = await client.from('reactions').select('*').eq('message_id', messageId);
             const container = document.getElementById(`reactions-${messageId}`);
-            if (container) {
-                container.outerHTML = renderReactionsHTML(messageId, updated || []);
-            }
+            if (container) container.outerHTML = renderReactionsHTML(messageId, updated || []);
         }
     }).subscribe();
+
+    // 3. НОВЫЙ БЛОК: Broadcast для индикатора печати
+    broadcastChannel = client.channel('chat-room-1');
+
+    broadcastChannel
+        .on('broadcast', { event: 'typing' }, (payload) => {
+            const { user } = payload.payload;
+            if (user === myNick) return;
+
+            typingUsers.set(user, Date.now());
+            updateTypingUI();
+
+            // Удаляем через 3 сек неактивности
+            setTimeout(() => {
+                if (Date.now() - (typingUsers.get(user) || 0) >= 3000) {
+                    typingUsers.delete(user);
+                    updateTypingUI();
+                }
+            }, 3100);
+        })
+        .subscribe();
+}
+
+// Функция отправки сигнала "я печатаю"
+function sendTypingSignal() {
+    if (!broadcastChannel || !myNick) return;
+    broadcastChannel.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: { user: myNick },
+    });
 }
 
 // Функция переключения реакции (ИСПРАВЛЕНО - добавлена очистка кэша)
@@ -371,6 +393,16 @@ document.getElementById("msg-field").onkeypress = (e) => {
     if (e.key === "Enter") handleSend();
 };
 
+document.getElementById("msg-field").addEventListener("input", () => {
+    // Чтобы не спамить в сеть каждым нажатием, шлем сигнал раз в 2 секунды
+    if (!typingTimeout) {
+        sendTypingSignal();
+        typingTimeout = setTimeout(() => {
+            typingTimeout = null;
+        }, 2000);
+    }
+});
+
 async function handleFileSelect(event) {
     const files = Array.from(event.target.files);
 
@@ -414,7 +446,7 @@ async function handleFileSelect(event) {
 function renderPreviews() {
     const container = document.getElementById("image-previews");
     container.innerHTML = selectedFiles.map((f, i) => `
-        <div class="position-relative">
+        <div class="position-relative mt-3">
             <img src="${URL.createObjectURL(f)}" style="width:60px;height:60px;object-fit:cover" class="rounded border">
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
                   style="cursor:pointer" onclick="removeFile(${i})">&times;</span>

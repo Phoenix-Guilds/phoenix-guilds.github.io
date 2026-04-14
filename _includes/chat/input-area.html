@@ -1,14 +1,17 @@
-<div id="chat-input-area">
+<div id="chat-input-area" style="position: relative;">
   <div id="emoji-picker-container" style="display: none; position: absolute; bottom: 80px; right: 20px; z-index: 2000;"></div>
+  <div
+    id="typing-indicator"
+    style="position: absolute; top: -25px; left: 10px; height: 20px; font-size: 0.8rem; color: #81eb9e; font-style: italic; pointer-events: none;"
+  ></div>
 
   <div class="input-group align-items-end">
     <button onclick="toggleEmojiPicker()" class="btn btn-outline-secondary" type="button">😀</button>
     <button class="btn btn-outline-secondary" onclick="document.getElementById('file-input').click()">📎</button>
     <input type="file" id="file-input" multiple accept="image/*,image/gif" style="display: none;" onchange="handleFileSelect(event)" />
-
     <textarea id="msg-field" class="form-control bg-dark text-white border-secondary shadow-none" placeholder="Сообщение..." rows="1" disabled></textarea>
 
     <button onclick="handleSend()" id="send-btn" class="btn btn-primary px-3" disabled>➤</button>
   </div>
-  <div id="image-previews" class="d-flex flex-wrap gap-2 mt-2"></div>
+  <div id="image-previews" class="d-flex flex-wrap gap-2"></div>
 </div>

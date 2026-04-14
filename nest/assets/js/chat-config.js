@@ -20,3 +20,7 @@ let tempAvatarUrl = "";
 let selectedFiles = [];
 
 const msgField = document.getElementById('msg-field');
+
+let typingUsers = new Map();
+let typingTimeout = null;
+let broadcastChannel = null;

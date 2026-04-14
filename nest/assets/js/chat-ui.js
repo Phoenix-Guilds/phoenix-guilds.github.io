@@ -191,7 +191,7 @@ async function loadPreview(msgId, url) {
             `;
         }
     } catch (e) {
-        console.log("Превью не загружено для:", url);
+        // console.log("Превью не загружено для:", url);
     }
 }
 
@@ -504,6 +504,33 @@ function processText(text) {
         .replace(URL_REGEX, '<a href="$1" target="_blank" class="msg-link">$1</a>');
 
     return { html, firstUrl: urls ? urls[0] : null };
+}
+
+function updateTypingUI() {
+    const indicator = document.getElementById("typing-indicator");
+    if (!indicator) return;
+
+    const names = Array.from(typingUsers.keys());
+    const count = names.length;
+
+    if (count === 0) {
+        indicator.innerHTML = "";
+        return;
+    }
+
+    let text = "";
+    if (count === 1) {
+        text = `<b>${names[0]}</b> печатает...`;
+    } else if (count === 2) {
+        text = `<b>${names[0]}</b> и <b>${names[1]}</b> печатают...`;
+    } else if (count === 3) {
+        text = `<b>${names[0]}</b>, <b>${names[1]}</b> и <b>${names[2]}</b> печатают...`;
+    } else {
+        // Логика "и еще X"
+        text = `<b>${names[0]}</b>, <b>${names[1]}</b> и еще ${count - 2} печатают...`;
+    }
+
+    indicator.innerHTML = text;
 }
 
 window.onclick = function (event) {

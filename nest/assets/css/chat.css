@@ -265,6 +265,31 @@
   display: block;
 }
 
+.msg-info {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Отступ между элементами */
+  margin-bottom: 4px;
+}
+
+.msg-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* Круглый аватар */
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.msg-author-name {
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.msg-time {
+  font-size: 0.75rem;
+  color: #888;
+}
+
 /* --- ФИКС PHOTOSWIPE (Убираем растягивание и прыжки) --- */
 
 /* 1. Скрываем "призраков" */

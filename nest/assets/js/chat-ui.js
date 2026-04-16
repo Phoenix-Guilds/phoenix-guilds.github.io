@@ -88,6 +88,26 @@ async function displayMessage(msg, method = "prepend") {
     const existing = document.getElementById(`msg-${msg.id}`);
     if (existing) existing.remove();
 
+    // --- ОПРЕДЕЛЯЕМ АВТОРA И АВАТАР ---
+    let authorName = "Аноним";
+    let userAvatar = "";
+
+    if (typeof msg.author === 'object' && msg.author !== null) {
+        // Если это данные из истории (объект после join)
+        authorName = msg.author_name || msg.author.username || "User";
+        userAvatar = msg.author.avatar_url;
+    } else {
+        // Если это Realtime (просто строка с ником)
+        authorName = msg.author;
+    }
+
+    if (!userAvatar) {
+        userAvatar = `https://api.dicebear.com/7.x/identicon/svg?seed=${authorName}`;
+    }
+
+    // --- ПРОВЕРКА "СВОЕ/ЧУЖОЕ" (ИСПРАВЛЕНО) ---
+    const isOwn = authorName === myNick; 
+
     let decryptedText = "";
     let mediaHtml = "";
     let rawContent = "🔒 Error";
@@ -96,7 +116,6 @@ async function displayMessage(msg, method = "prepend") {
         const bytes = CryptoJS.AES.decrypt(msg.payload, masterKey);
         rawContent = bytes.toString(CryptoJS.enc.Utf8);
 
-        // Проверка формата: JSON (новое) или Текст (старое)
         if (rawContent.startsWith('{') && rawContent.endsWith('}')) {
             const obj = JSON.parse(rawContent);
             decryptedText = obj.text || "";
@@ -127,44 +146,39 @@ async function displayMessage(msg, method = "prepend") {
         decryptedText = rawContent;
     }
 
-    // --- НОВАЯ ЛОГИКА ОБРАБОТКИ ССЫЛОК ---
     const { html: formattedText, firstUrl } = processText(decryptedText);
-    // -------------------------------------
-
-    const isOwn = msg.author === myNick;
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
+    // Формируем HTML с использованием ПРАВИЛЬНОГО isOwn
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
       <div class="msg-actions">
         <div class="msg-btn" onclick="openReactionPicker(event, ${msg.id})">😀</div>
-        <div class="msg-btn" onclick="prepareReply(${msg.id}, '${msg.author}', '${cleanText}')">↩</div>
+        <div class="msg-btn" onclick="prepareReply(${msg.id}, '${authorName}', '${cleanText}')">↩</div>
         ${isOwn ? `<div class="msg-btn" onclick="prepareEdit(${msg.id}, '${cleanText}')">✏️</div>` : ""}
         ${isOwn ? `<div class="msg-btn" onclick="deleteMessage(${msg.id})">🗑️</div>` : ""}
       </div>
+      
       <div class="msg-info">
-        ${msg.author}
-        <!-- • -->${/* new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })*/""}
+        <img src="${userAvatar}" class="msg-avatar" alt="${authorName}">
+        <span class="msg-author-name">${authorName}</span>
         ${msg.is_edited ? '<span class="edited-mark">(изм.)</span>' : ""}
       </div>
+
       ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}
 
       ${mediaHtml}
       <div class="msg-text">${formattedText}</div>
-      
       <div id="preview-${msg.id}"></div>
-
       ${renderReactionsHTML(msg.id, msg.reactions)}
     </div>`;
 
-    // Вставляем сообщение в чат
     if (method === "prepend") {
         container.insertAdjacentHTML("afterbegin", msgHtml);
     } else {
         container.insertAdjacentHTML("beforeend", msgHtml);
     }
 
-    // --- ЗАПУСК ЗАГРУЗКИ ПРЕВЬЮ ---
     if (firstUrl) {
         loadPreview(msg.id, firstUrl);
     }

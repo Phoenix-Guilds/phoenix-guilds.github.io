@@ -106,42 +106,45 @@ function getRelativeDateLabel(dateString) {
 
 async function displayMessage(msg, method = "prepend") {
     const container = document.getElementById("chat-messages");
-
     const existing = document.getElementById(`msg-${msg.id}`);
     if (existing) existing.remove();
 
     // --- 1. ЛОГИКА ДАТЫ И ГРУППИРОВКИ ---
     const dateObj = new Date(msg.created_at);
     const dateId = `date-group-${dateObj.getFullYear()}-${dateObj.getMonth()}-${dateObj.getDate()}`;
-
     let dateGroup = document.getElementById(dateId);
 
     if (!dateGroup) {
         const dateLabel = getRelativeDateLabel(msg.created_at);
-        // Создаем группу дня. Добавляем класс day-group для стилей.
         const groupHtml = `
             <div id="${dateId}" class="day-group">
                 <div class="date-separator"><span class="date-badge">${dateLabel}</span></div>
                 <div class="day-messages-container" style="display: flex; flex-direction: column;"></div>
             </div>`;
-
-        if (method === "prepend") {
-            container.insertAdjacentHTML("afterbegin", groupHtml);
-        } else {
-            container.insertAdjacentHTML("beforeend", groupHtml);
-        }
+        method === "prepend" ? container.insertAdjacentHTML("afterbegin", groupHtml) : container.insertAdjacentHTML("beforeend", groupHtml);
         dateGroup = document.getElementById(dateId);
     }
-
     const messagesContainer = dateGroup.querySelector(".day-messages-container");
 
-    // --- 2. ПОДГОТОВКА ДАННЫХ ---
-    // ВАЖНО: убедитесь, что переменная myNick определена глобально
-    let authorName = typeof msg.author === 'object' ? (msg.author_name || msg.author.username) : msg.author;
-    let userAvatar = msg.author?.avatar_url || `https://api.dicebear.com/7.x/identicon/svg?seed=${authorName}`;
-
+    // --- 2. ПОДГОТОВКА ДАННЫХ И ФИКС АВАТАРКИ ---
+    let authorName = typeof msg.author === 'object' ? (msg.author_name || msg.author.username) : (msg.author_name || msg.author);
     const isOwn = String(authorName).toLowerCase() === String(myNick).toLowerCase();
 
+    // ЛОГИКА ВЫБОРА АВАТАРКИ:
+    let userAvatar;
+    if (isOwn && window.myAvatar) {
+        // 1. Если сообщение наше — берем актуальную аватарку из профиля (глобальная переменная)
+        userAvatar = window.myAvatar;
+    } else if (msg.author && typeof msg.author === 'object' && msg.author.avatar_url) {
+        // 2. Если пришло из истории (объект профиля прикреплен)
+        userAvatar = msg.author.avatar_url;
+    } else {
+        // 3. Если это Realtime от другого игрока — пробуем взять из кэша или ставим заглушку
+        // (Опционально: тут можно добавить запрос в БД, но DiceBear — надежный фоллбек)
+        userAvatar = `https://api.dicebear.com/7.x/identicon/svg?seed=${authorName}`;
+    }
+
+    // --- 3. РАСШИФРОВКА ТЕКСТА ---
     let decryptedText = "";
     let mediaHtml = "";
     try {
@@ -160,8 +163,7 @@ async function displayMessage(msg, method = "prepend") {
     const { html: formattedText, firstUrl } = processText(decryptedText);
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
-    // --- 3. ШАБЛОН СООБЩЕНИЯ ---
-    // Класс "own" добавляется здесь. Если стили не применяются, проверьте CSS на наличие .day-messages-container .own
+    // --- 4. ШАБЛОН СООБЩЕНИЯ ---
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
       <div class="msg-actions">
@@ -183,15 +185,8 @@ async function displayMessage(msg, method = "prepend") {
       ${renderReactionsHTML(msg.id, msg.reactions)}
     </div>`;
 
-    // --- 4. ВСТАВКА ВНУТРИ ГРУППЫ ---
-    if (method === "prepend") {
-        // Новое сообщение: всегда в самый верх актуального дня
-        messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
-    } else {
-        // История: добавляем вниз (но так как в истории мы идем от новых к старым, 
-        // используем afterbegin, чтобы старые сообщения оказывались выше новых внутри дня)
-        messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
-    }
+    // --- 5. ВСТАВКА ---
+    messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
 
     if (firstUrl) loadPreview(msg.id, firstUrl);
 }

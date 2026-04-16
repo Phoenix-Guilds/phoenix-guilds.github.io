@@ -83,73 +83,85 @@ function playNotifSound() {
     }
 }
 
+function getRelativeDateLabel(dateString) {
+    const d = new Date(dateString);
+    const now = new Date();
+
+    const isToday = d.toDateString() === now.toDateString();
+
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = d.toDateString() === yesterday.toDateString();
+
+    if (isToday) return "Сегодня";
+    if (isYesterday) return "Вчера";
+
+    // Если дата старая — выводим "15 апреля" или "15 апреля 2025"
+    const options = { day: 'numeric', month: 'long' };
+    if (d.getFullYear() !== now.getFullYear()) {
+        options.year = 'numeric';
+    }
+    return d.toLocaleDateString('ru-RU', options);
+}
+
 async function displayMessage(msg, method = "prepend") {
     const container = document.getElementById("chat-messages");
+
     const existing = document.getElementById(`msg-${msg.id}`);
     if (existing) existing.remove();
 
-    // --- ОПРЕДЕЛЯЕМ АВТОРA И АВАТАР ---
-    let authorName = "Аноним";
-    let userAvatar = "";
+    // --- 1. ЛОГИКА ДАТЫ И ГРУППИРОВКИ ---
+    const dateObj = new Date(msg.created_at);
+    const dateId = `date-group-${dateObj.getFullYear()}-${dateObj.getMonth()}-${dateObj.getDate()}`;
 
-    if (typeof msg.author === 'object' && msg.author !== null) {
-        // Если это данные из истории (объект после join)
-        authorName = msg.author_name || msg.author.username || "User";
-        userAvatar = msg.author.avatar_url;
-    } else {
-        // Если это Realtime (просто строка с ником)
-        authorName = msg.author;
+    let dateGroup = document.getElementById(dateId);
+
+    if (!dateGroup) {
+        const dateLabel = getRelativeDateLabel(msg.created_at);
+        // Создаем группу дня. Добавляем класс day-group для стилей.
+        const groupHtml = `
+            <div id="${dateId}" class="day-group">
+                <div class="date-separator"><span class="date-badge">${dateLabel}</span></div>
+                <div class="day-messages-container" style="display: flex; flex-direction: column;"></div>
+            </div>`;
+
+        if (method === "prepend") {
+            container.insertAdjacentHTML("afterbegin", groupHtml);
+        } else {
+            container.insertAdjacentHTML("beforeend", groupHtml);
+        }
+        dateGroup = document.getElementById(dateId);
     }
 
-    if (!userAvatar) {
-        userAvatar = `https://api.dicebear.com/7.x/identicon/svg?seed=${authorName}`;
-    }
+    const messagesContainer = dateGroup.querySelector(".day-messages-container");
 
-    // --- ПРОВЕРКА "СВОЕ/ЧУЖОЕ" (ИСПРАВЛЕНО) ---
-    const isOwn = authorName === myNick; 
+    // --- 2. ПОДГОТОВКА ДАННЫХ ---
+    // ВАЖНО: убедитесь, что переменная myNick определена глобально
+    let authorName = typeof msg.author === 'object' ? (msg.author_name || msg.author.username) : msg.author;
+    let userAvatar = msg.author?.avatar_url || `https://api.dicebear.com/7.x/identicon/svg?seed=${authorName}`;
+
+    const isOwn = String(authorName).toLowerCase() === String(myNick).toLowerCase();
 
     let decryptedText = "";
     let mediaHtml = "";
-    let rawContent = "🔒 Error";
-
     try {
         const bytes = CryptoJS.AES.decrypt(msg.payload, masterKey);
-        rawContent = bytes.toString(CryptoJS.enc.Utf8);
-
-        if (rawContent.startsWith('{') && rawContent.endsWith('}')) {
+        const rawContent = bytes.toString(CryptoJS.enc.Utf8);
+        if (rawContent.startsWith('{')) {
             const obj = JSON.parse(rawContent);
             decryptedText = obj.text || "";
-
-            if (obj.media && obj.media.length > 0) {
-                mediaHtml = `<div class="msg-media-grid items-${obj.media.length}">`;
-                obj.media.forEach(item => {
-                    const isObj = typeof item === 'object';
-                    const url = isObj ? item.url : item;
-                    const width = isObj ? item.w : "1200";
-                    const height = isObj ? item.h : "800";
-
-                    mediaHtml += `
-                        <a href="${url}" 
-                           data-pswp-width="${width}" 
-                           data-pswp-height="${height}" 
-                           target="_blank" 
-                           class="msg-img-link">
-                            <img src="${url}" class="msg-img" loading="lazy">
-                        </a>`;
-                });
-                mediaHtml += `</div>`;
+            if (obj.media?.length) {
+                mediaHtml = `<div class="msg-media-grid items-${obj.media.length}">` +
+                    obj.media.map(item => `<a href="${item.url || item}" data-pswp-width="${item.w || 1200}" data-pswp-height="${item.h || 800}" target="_blank" class="msg-img-link"><img src="${item.url || item}" class="msg-img" loading="lazy"></a>`).join('') + `</div>`;
             }
-        } else {
-            decryptedText = rawContent;
-        }
-    } catch (e) {
-        decryptedText = rawContent;
-    }
+        } else { decryptedText = rawContent; }
+    } catch (e) { decryptedText = "🔒 Ошибка"; }
 
     const { html: formattedText, firstUrl } = processText(decryptedText);
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
-    // Формируем HTML с использованием ПРАВИЛЬНОГО isOwn
+    // --- 3. ШАБЛОН СООБЩЕНИЯ ---
+    // Класс "own" добавляется здесь. Если стили не применяются, проверьте CSS на наличие .day-messages-container .own
     const msgHtml = `
     <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
       <div class="msg-actions">
@@ -158,30 +170,30 @@ async function displayMessage(msg, method = "prepend") {
         ${isOwn ? `<div class="msg-btn" onclick="prepareEdit(${msg.id}, '${cleanText}')">✏️</div>` : ""}
         ${isOwn ? `<div class="msg-btn" onclick="deleteMessage(${msg.id})">🗑️</div>` : ""}
       </div>
-      
       <div class="msg-info">
         <img src="${userAvatar}" class="msg-avatar" alt="${authorName}">
         <span class="msg-author-name">${authorName}</span>
+        <span class="msg-time">${new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
         ${msg.is_edited ? '<span class="edited-mark">(изм.)</span>' : ""}
       </div>
-
-      ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}
-
+      ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ</div>` : ""}
       ${mediaHtml}
       <div class="msg-text">${formattedText}</div>
       <div id="preview-${msg.id}"></div>
       ${renderReactionsHTML(msg.id, msg.reactions)}
     </div>`;
 
+    // --- 4. ВСТАВКА ВНУТРИ ГРУППЫ ---
     if (method === "prepend") {
-        container.insertAdjacentHTML("afterbegin", msgHtml);
+        // Новое сообщение: всегда в самый верх актуального дня
+        messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
     } else {
-        container.insertAdjacentHTML("beforeend", msgHtml);
+        // История: добавляем вниз (но так как в истории мы идем от новых к старым, 
+        // используем afterbegin, чтобы старые сообщения оказывались выше новых внутри дня)
+        messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
     }
 
-    if (firstUrl) {
-        loadPreview(msg.id, firstUrl);
-    }
+    if (firstUrl) loadPreview(msg.id, firstUrl);
 }
 
 async function loadPreview(msgId, url) {

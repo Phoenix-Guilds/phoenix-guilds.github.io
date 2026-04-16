@@ -194,21 +194,32 @@ async function handleSend() {
 // Загрузка данных
 async function loadHistory() {
     if (isLoadedAll) return;
+
     let query = client.from("messages").select(`
         *,
         reactions(*),
         author_name:author,
         author:profiles(avatar_url)
     `).order("created_at", { ascending: false }).limit(40);
-    if (lastTimestamp) query = query.lt("created_at", lastTimestamp);
 
-    const { data } = await query;
-    if (!data || data.length === 0) {
+    if (lastTimestamp) {
+        query = query.lt("created_at", lastTimestamp);
+    }
+
+    const { data, error } = await query;
+
+    if (error || !data || data.length === 0) {
         isLoadedAll = true;
         return;
     }
+
+    // Запоминаем время самого старого сообщения в пачке
     lastTimestamp = data[data.length - 1].created_at;
-    data.forEach((msg) => displayMessage(msg, "append"));
+
+    // Просто перебираем от новых к старым и добавляем в конец (append)
+    data.forEach((msg) => {
+        displayMessage(msg, "append");
+    });
 }
 
 // Realtime события

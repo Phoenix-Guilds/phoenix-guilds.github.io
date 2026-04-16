@@ -143,7 +143,8 @@ async function displayMessage(msg, method = "prepend") {
         ${isOwn ? `<div class="msg-btn" onclick="deleteMessage(${msg.id})">🗑️</div>` : ""}
       </div>
       <div class="msg-info">
-        ${msg.author} • ${new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        ${msg.author}
+        <!-- • -->${/* new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })*/""}
         ${msg.is_edited ? '<span class="edited-mark">(изм.)</span>' : ""}
       </div>
       ${msg.reply_to_id ? `<div class="reply-quote" onclick="scrollToMessage(${msg.reply_to_id})">⤴ Ответ на сообщение</div>` : ""}

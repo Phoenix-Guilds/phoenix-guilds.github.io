@@ -106,45 +106,37 @@ function getRelativeDateLabel(dateString) {
 
 async function displayMessage(msg, method = "prepend") {
     const container = document.getElementById("chat-messages");
+
+    // --- 1. ПРОВЕРКА НА РЕДАКТИРОВАНИЕ ---
     const existing = document.getElementById(`msg-${msg.id}`);
-    if (existing) existing.remove();
 
-    // --- 1. ЛОГИКА ДАТЫ И ГРУППИРОВКИ ---
-    const dateObj = new Date(msg.created_at);
-    const dateId = `date-group-${dateObj.getFullYear()}-${dateObj.getMonth()}-${dateObj.getDate()}`;
-    let dateGroup = document.getElementById(dateId);
+    // Определяем имя автора
+    let authorName = typeof msg.author === 'object'
+        ? (msg.author_name || msg.author.username)
+        : (msg.author_name || msg.author);
 
-    if (!dateGroup) {
-        const dateLabel = getRelativeDateLabel(msg.created_at);
-        const groupHtml = `
-            <div id="${dateId}" class="day-group">
-                <div class="date-separator"><span class="date-badge">${dateLabel}</span></div>
-                <div class="day-messages-container" style="display: flex; flex-direction: column;"></div>
-            </div>`;
-        method === "prepend" ? container.insertAdjacentHTML("afterbegin", groupHtml) : container.insertAdjacentHTML("beforeend", groupHtml);
-        dateGroup = document.getElementById(dateId);
-    }
-    const messagesContainer = dateGroup.querySelector(".day-messages-container");
-
-    // --- 2. ПОДГОТОВКА ДАННЫХ И ФИКС АВАТАРКИ ---
-    let authorName = typeof msg.author === 'object' ? (msg.author_name || msg.author.username) : (msg.author_name || msg.author);
+    // Проверяем, наше ли это сообщение
     const isOwn = String(authorName).toLowerCase() === String(myNick).toLowerCase();
 
-    // ЛОГИКА ВЫБОРА АВАТАРКИ:
+    // --- 2. ЛОГИКА АВАТАРКИ (ФИКС) ---
     let userAvatar;
-    if (isOwn && window.myAvatar) {
-        // 1. Если сообщение наше — берем актуальную аватарку из профиля (глобальная переменная)
-        userAvatar = window.myAvatar;
+
+    if (isOwn && currentUser?.avatar_url) {
+        // Если мое сообщение — берем мою актуальную аватарку
+        userAvatar = currentUser.avatar_url;
     } else if (msg.author && typeof msg.author === 'object' && msg.author.avatar_url) {
-        // 2. Если пришло из истории (объект профиля прикреплен)
+        // Если сообщение из истории и там есть объект автора — сохраняем в кэш и используем
         userAvatar = msg.author.avatar_url;
+        avatarCache[authorName] = userAvatar;
+    } else if (avatarCache[authorName]) {
+        // Если это Realtime, но мы уже видели этого автора раньше — берем из кэша
+        userAvatar = avatarCache[authorName];
     } else {
-        // 3. Если это Realtime от другого игрока — пробуем взять из кэша или ставим заглушку
-        // (Опционально: тут можно добавить запрос в БД, но DiceBear — надежный фоллбек)
-        userAvatar = `https://api.dicebear.com/7.x/identicon/svg?seed=${authorName}`;
+        // Если совсем ничего нет — ставим заглушку
+        userAvatar = `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(authorName)}`;
     }
 
-    // --- 3. РАСШИФРОВКА ТЕКСТА ---
+    // --- 3. ПОДГОТОВКА ТЕКСТА И МЕДИА ---
     let decryptedText = "";
     let mediaHtml = "";
     try {
@@ -163,9 +155,7 @@ async function displayMessage(msg, method = "prepend") {
     const { html: formattedText, firstUrl } = processText(decryptedText);
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
-    // --- 4. ШАБЛОН СООБЩЕНИЯ ---
-    const msgHtml = `
-    <div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">
+    const innerHtml = `
       <div class="msg-actions">
         <div class="msg-btn" onclick="openReactionPicker(event, ${msg.id})">😀</div>
         <div class="msg-btn" onclick="prepareReply(${msg.id}, '${authorName}', '${cleanText}')">↩</div>
@@ -183,10 +173,46 @@ async function displayMessage(msg, method = "prepend") {
       <div class="msg-text">${formattedText}</div>
       <div id="preview-${msg.id}"></div>
       ${renderReactionsHTML(msg.id, msg.reactions)}
-    </div>`;
+    `;
 
-    // --- 5. ВСТАВКА ---
-    messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
+    if (existing) {
+        existing.innerHTML = innerHtml;
+        existing.className = `msg-bubble ${isOwn ? "own" : ""}`;
+        if (firstUrl) loadPreview(msg.id, firstUrl);
+        return;
+    }
+
+    // --- 4. ЛОГИКА ГРУППИРОВКИ ДАТ ---
+    const dateObj = new Date(msg.created_at);
+    const dateId = `date-group-${dateObj.getFullYear()}-${dateObj.getMonth()}-${dateObj.getDate()}`;
+    let dateGroup = document.getElementById(dateId);
+
+    if (!dateGroup) {
+        const dateLabel = getRelativeDateLabel(msg.created_at);
+        const groupHtml = `
+            <div id="${dateId}" class="day-group">
+                <div class="date-separator"><span class="date-badge">${dateLabel}</span></div>
+                <div class="day-messages-container" style="display: flex; flex-direction: column;"></div>
+            </div>`;
+
+        if (method === "prepend") {
+            container.insertAdjacentHTML("afterbegin", groupHtml);
+        } else {
+            container.insertAdjacentHTML("beforeend", groupHtml);
+        }
+        dateGroup = document.getElementById(dateId);
+    }
+    const messagesContainer = dateGroup.querySelector(".day-messages-container");
+    const msgHtml = `<div class="msg-bubble ${isOwn ? "own" : ""}" id="msg-${msg.id}">${innerHtml}</div>`;
+
+    // --- 5. ВСТАВКА СООБЩЕНИЯ (ПОРЯДОК) ---
+    if (method === "prepend") {
+        // Новое сообщение: вниз текущего дня
+        messagesContainer.insertAdjacentHTML("beforeend", msgHtml);
+    } else {
+        // Загрузка истории: вверх текущего дня
+        messagesContainer.insertAdjacentHTML("afterbegin", msgHtml);
+    }
 
     if (firstUrl) loadPreview(msg.id, firstUrl);
 }

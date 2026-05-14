@@ -1,5 +1,9 @@
 title: Phoenix Guild Hub
 email: buinoff@gmail.com
+
+google_apps_script_url: https://script.google.com/macros/s/AKfycbyPsj40FBCMrtD2CiXBwoQCdRtO56Ml0dvegiRfCjc1xFyv8XRrpc7nEEKGazx3zwgo/exec
+google_sheet_id: 17VXVPCC3wpbbVwGBQGDMMzAv-CgGsvDhZ26t6bKvmcA
+
 description: >-
   Портал гильдий True Phoenix и Phoenix Nest.
 
@@ -24,6 +28,9 @@ collections:
   guides:
     output: true
     permalink: /nest/useful/guides/:slug/
+  vacancies:
+    output: true
+    permalink: /nest/vacancies/:slug/
 
 exclude:
   - vendor/

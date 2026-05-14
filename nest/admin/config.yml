@@ -37,3 +37,22 @@ collections:
         }
       - { label: "Краткое описание", name: "description", widget: "text", required: false }
       - { label: "Текст гайда", name: "body", widget: "markdown" }
+
+  - name: "vacancies"
+    label: "Вакансии"
+    folder: "_vacancies"
+    create: true
+
+    slug: "{{slug}}"
+    summary: '{{title}} — {{description}}'
+
+    identifier_field: slug
+
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "nest-vacancy" }
+      - { label: "Заголовок", name: "title", widget: "string", required: false }
+      - { label: "Краткое описание", name: "description", widget: "text", required: false }
+      - { label: "Общее количество мест", name: "slots_total", widget: "number", required: false, default: 1, min: 0 }
+      - { label: "Занято мест", name: "slots_filled", widget: "number", required: false, default: 0, min: 0 }
+      - { label: "Требования", name: "requirements", widget: "markdown", required: false, hint: "Перечислите требования к кандидату" }
+      - { label: "Описание вакансии", name: "body", widget: "markdown", required: false }

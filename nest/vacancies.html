@@ -1,0 +1,56 @@
+---
+layout: nest-default
+title: Вакансии
+---
+
+<div class="container main my-3 my-lg-5">
+  <div class="text-center mb-5">
+    <h1 class="display-3">Вакансии</h1>
+    <p class="lead text-light">Текущие открытые позиции в Phoenix Nest и условия работы со складской системой.</p>
+  </div>
+
+  <div class="main-content p-3 p-lg-5">
+    <div class="rounded-4 border border-secondary bg-dark bg-opacity-75 p-4 mb-5">
+      <h2 class="h4 text-info mb-3">Общие требования</h2>
+      <p class="text-light mb-3">Мы ищем активных игроков, которые хотят и могут поддерживать складскую систему, работать с общими персонажами в гильдии.</p>
+      <h3 class="h5 text-light mb-3">Что будет нужно:</h3>
+      <ul class="text-light mb-3">
+        <li>аккуратно работать со складскими предметами и персонажами (обучим);</li>
+        <li>быстро реагировать на запросы согильдийцев;</li>
+        <li>наличие Discord/Telegram для связи.</li>
+      </ul>
+      <div class="mt-3">
+        <span class="text-light">Оплата: неограниченный неконтролируемый доступ к складским персонажам и содержимому их инвентаря (по желанию).</span>
+      </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 justify-content-center">
+      {% if site.vacancies.size > 0 %}
+        {% for vacancy in site.vacancies %}
+          {% assign available = vacancy.slots_total | minus: vacancy.slots_filled %}
+          <div class="col">
+            <div class="card h-100 border-secondary shadow-sm text-light bg-dark{% unless available > 0 %} opacity-75{% endunless %}">
+              <div class="card-body p-4">
+                <h2 class="h5 card-title mb-2">{{ vacancy.title }}</h2>
+                <p class="small text-muted mb-2">Свободно слотов {{ available }} из {{ vacancy.slots_total }}</p>
+                <p class="card-text text-light mb-3">{{ vacancy.description }}</p>
+                <span class="badge {% if available > 0 %}bg-success{% else %}bg-secondary{% endif %}">{% if available > 0 %}Открыт набор{% else %}Набор закрыт{% endif %}</span>
+              </div>
+              <div class="card-footer bg-transparent border-top-0 pb-4 px-4">
+                <a href="{{ vacancy.url }}" class="btn btn-outline-info w-100">Подробнее</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-lg-8">
+          <div class="text-center p-5 rounded-4 bg-dark bg-opacity-75 border border-secondary">
+            <i class="bi bi-briefcase d-block mb-3" style="font-size: 3rem; color: #adb5bd;"></i>
+            <h3 class="text-light">Вакансии пока не добавлены</h3>
+            <p class="text-muted mb-0">Добавьте первую вакансию через админку, чтобы она появилась здесь.</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

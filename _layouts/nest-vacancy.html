@@ -1,0 +1,480 @@
+---
+layout: nest-default
+---
+
+<div class="container main my-3 my-lg-5">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/nest/">Главная</a></li>
+      <li class="breadcrumb-item"><a href="/nest/vacancies/">Вакансии</a></li>
+      <li class="breadcrumb-item active text-light" aria-current="page">{{ page.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="main-content p-3 p-lg-5 text-light shadow-lg rounded-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+      <div class="flex-grow-1">
+        <h1 class="display-4 mb-3">{{ page.title }}</h1>
+        <p class="lead text-light-50">{{ page.description }}</p>
+      </div>
+      <div class="text-md-end">
+        {% assign available = page.slots_total | minus: page.slots_filled %} {% if available > 0 %}
+        <span class="badge bg-success py-2 px-3">Набор открыт</span>
+        {% else %}
+        <span class="badge bg-secondary py-2 px-3">Набор закрыт</span>
+        {% endif %}
+        <div class="small text-muted mt-2">Свободно {{ available }} из {{ page.slots_total }}</div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="p-4 rounded-4 bg-dark bg-opacity-75 border border-secondary mb-4">
+          <h2 class="h5 text-info mb-3">Описание вакансии</h2>
+          {{ content }}
+        </div>
+        <div class="p-4 rounded-4 bg-dark bg-opacity-75 border border-secondary mb-4">
+          <h2 class="h5 text-info mb-3">Требования</h2>
+          {{ page.requirements | markdownify }}
+        </div>
+
+        <!-- График заполненности -->
+        <div class="p-4 rounded-4 bg-dark bg-opacity-75 border border-secondary mb-4">
+          <h2 class="h5 text-info mb-3">График активности команды</h2>
+          <p class="text-light-50 small mb-3">Серые ячейки — уже занятые временные слоты активными сотрудниками</p>
+          <div class="table-responsive">
+            <table class="table table-sm table-dark table-bordered vacancy-schedule">
+              <thead>
+                <tr class="text-center">
+                  <th class="text-info">Время</th>
+                  <th>Пн</th>
+                  <th>Вт</th>
+                  <th>Ср</th>
+                  <th>Чт</th>
+                  <th>Пт</th>
+                  <th>Сб</th>
+                  <th>Вс</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-tbody">
+                <!-- JS заполнит эту таблицу -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <aside class="col-lg-4">
+        <div class="p-4 rounded-4 bg-dark bg-opacity-75 border border-secondary mb-4">
+          <h2 class="h5 text-info mb-3">Условия</h2>
+          <p class="text-light-50">Оплата: неограниченный неконтролируемый доступ к складским персонажам.</p>
+          <ul class="list-unstyled text-light-50 mb-0">
+            <li>Количество мест: <strong>{{ page.slots_total }}</strong></li>
+            <li>Набрано: <strong>{{ page.slots_filled }}</strong></li>
+            <li>Свободно: <strong>{{ available }}</strong></li>
+          </ul>
+        </div>
+        <div class="p-4 rounded-4 bg-dark bg-opacity-75 border border-secondary">
+          {% if available > 0 %}
+          <button class="btn btn-info w-100 mb-3" data-bs-toggle="modal" data-bs-target="#vacancyApplicationModal">Откликнуться на вакансию</button>
+          {% else %}
+          <button class="btn btn-secondary w-100 mb-3" disabled>Набор завершен</button>
+          {% endif %}
+          <a href="/nest/vacancies/" class="btn btn-outline-secondary w-100">Все вакансии</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно формы заявки -->
+<div class="modal fade" id="vacancyApplicationModal" tabindex="-1" aria-labelledby="vacancyApplicationLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h1 class="modal-title fs-5" id="vacancyApplicationLabel">Подать заявку на вакансию: {{ page.title }}</h1>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="vacancyForm" class="vacancy-application-form">
+          <!-- Имя -->
+          <div class="mb-3">
+            <label for="applicantName" class="form-label">Ваше имя <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control bg-dark text-light border-secondary"
+              id="applicantName"
+              name="name"
+              required
+              placeholder="Ваше имя в гильдии или реальное имя"
+            />
+          </div>
+          
+          <!-- Ники персонажей -->
+          <div class="mb-3">
+            <label for="characterNicks" class="form-label">Ники персонажей <span class="text-danger">*</span></label>
+            <textarea
+              class="form-control bg-dark text-light border-secondary"
+              id="characterNicks"
+              name="character_nicks"
+              rows="2"
+              required
+              placeholder="Впишите ник своего ХК-персонажа, можно перечислить ники нескольких своих ХК-персонажей через запятую или с новой строки"
+            ></textarea>
+            <small class="text-light-50">Например: Палладинодин, Охотникдва, Шамантри</small>
+          </div>
+
+          <!-- Контакт -->
+          <div class="mb-3">
+            <label class="form-label">Контакт для связи <span class="text-danger">*</span></label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <input type="text" class="form-control bg-dark text-light border-secondary" name="telegram" placeholder="Никнейм в Telegram (@username)" />
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control bg-dark text-light border-secondary" name="discord" placeholder="Никнейм в Discord" />
+              </div>
+            </div>
+            <div class="mt-2">
+              <input
+                type="email"
+                class="form-control bg-dark text-light border-secondary"
+                name="email"
+                placeholder="Email (на случай, если нет Telegram/Discord)"
+              />
+            </div>
+            <small class="text-light-50 d-block mt-2">Укажите хотя бы один способ связи</small>
+          </div>
+
+          <!-- Доступность по времени -->
+          <div class="mb-3">
+            <label class="form-label">Ваша доступность <span class="text-danger">*</span></label>
+            <small class="text-light-50 d-block mb-2">Укажите дни и время, когда вы готовы работать. Можно выбрать несколько периодов.</small>
+            <div id="availability-container" class="mb-2">
+              <!-- Клонируемый блок -->
+              <div class="availability-slot mb-3 p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary">
+                <div class="row g-2 mb-2">
+                  <div class="col-md-5">
+                    <label class="form-label small">День недели</label>
+                    <select class="form-select form-select-sm bg-dark text-light border-secondary availability-day" required>
+                      <option value="">Выберите день</option>
+                      <option value="Понедельник">Понедельник</option>
+                      <option value="Вторник">Вторник</option>
+                      <option value="Среда">Среда</option>
+                      <option value="Четверг">Четверг</option>
+                      <option value="Пятница">Пятница</option>
+                      <option value="Суббота">Суббота</option>
+                      <option value="Воскресенье">Воскресенье</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small">Время начала</label>
+                    <input type="time" class="form-control form-control-sm bg-dark text-light border-secondary availability-time-start" required />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small">Длительность</label>
+                    <select class="form-select form-select-sm bg-dark text-light border-secondary availability-duration" required>
+                      <option value="">Выберите</option>
+                      <option value="1">1 час</option>
+                      <option value="2">2 часа</option>
+                      <option value="3">3 часа</option>
+                      <option value="4">4 часа</option>
+                      <option value="8">8+ часов</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-availability-slot">Удалить</button>
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-info" id="add-availability-slot">+ Добавить ещё период</button>
+          </div>
+
+          <!-- Дополнительная информация -->
+          <div class="mb-3">
+            <label for="additionalInfo" class="form-label">Дополнительная информация</label>
+            <textarea
+              class="form-control bg-dark text-light border-secondary"
+              id="additionalInfo"
+              name="additional_info"
+              rows="3"
+              placeholder="Любая дополнительная информация о себе, опыт работы со складом и т.д."
+            ></textarea>
+          </div>
+
+          <div class="form-text text-light-50">
+            <strong>Важно!</strong> Убедитесь, что указали правильный контакт для связи. Мы свяжемся с вами в ближайшее время.
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-info" id="submitApplicationBtn">Отправить заявку</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .vacancy-schedule {
+    font-size: 0.85rem;
+  }
+
+  .vacancy-schedule th,
+  .vacancy-schedule td {
+    padding: 0.5rem !important;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .vacancy-schedule th {
+    background: rgba(13, 202, 240, 0.1);
+  }
+
+  .vacancy-schedule td.occupied {
+    background: rgba(108, 117, 125, 0.3);
+    color: #adb5bd;
+  }
+
+  .vacancy-schedule td.available {
+    background: rgba(32, 201, 151, 0.1);
+    color: #20c997;
+  }
+
+  .vacancy-application-form .form-control:focus,
+  .vacancy-application-form .form-select:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+  }
+
+  .availability-slot {
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  // Данные для страницы вакансии
+  const VACANCY_DATA = {
+    id: "{{ page.slug }}",
+    title: "{{ page.title }}",
+    sheetsUrl: "https://docs.google.com/spreadsheets/d/{{ site.google_sheet_id }}/edit",
+    scriptUrl: "{{ site.google_apps_script_url }}",
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeSchedule();
+    setupAvailabilityForm();
+    setupFormSubmission();
+  });
+
+  function initializeSchedule() {
+    const scheduleBody = document.getElementById("schedule-tbody");
+    const timeSlots = ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"];
+    const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+    timeSlots.forEach((time) => {
+      const row = document.createElement("tr");
+      const timeCell = document.createElement("th");
+      timeCell.textContent = time;
+      timeCell.className = "text-info";
+      row.appendChild(timeCell);
+
+      days.forEach((day, idx) => {
+        const cell = document.createElement("td");
+        cell.className = "available"; // По умолчанию все свободны
+        cell.dataset.day = idx;
+        cell.dataset.time = time;
+        row.appendChild(cell);
+      });
+
+      scheduleBody.appendChild(row);
+    });
+
+    // TODO: Загрузить занятые слоты из Google Sheets
+    loadOccupiedSlots();
+  }
+
+  function loadOccupiedSlots() {
+    const scriptUrl = VACANCY_DATA.scriptUrl;
+    const vacancyId = VACANCY_DATA.id;
+
+    fetch(`${scriptUrl}?vacancy_id=${encodeURIComponent(vacancyId)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success && data.occupied_slots) {
+          // Заполнить таблицу
+          markOccupiedSlots(data.occupied_slots);
+        }
+      })
+      .catch((error) => console.error("Ошибка загрузки графика:", error));
+  }
+
+  function markOccupiedSlots(slots) {
+    slots.forEach((slot) => {
+      // slot.day, slot.time_start, slot.duration_hours
+      const dayIndex = getDayIndex(slot.day);
+      const cells = document.querySelectorAll(`[data-day="${dayIndex}"]`);
+
+      cells.forEach((cell) => {
+        const cellTime = cell.dataset.time;
+        if (isTimeInSlot(cellTime, slot.time_start, slot.duration_hours)) {
+          cell.classList.remove("available");
+          cell.classList.add("occupied");
+        }
+      });
+    });
+  }
+
+  function getDayIndex(dayName) {
+    const days = {
+      Понедельник: 0,
+      Вторник: 1,
+      Среда: 2,
+      Четверг: 3,
+      Пятница: 4,
+      Суббота: 5,
+      Воскресенье: 6,
+    };
+    return days[dayName] || 0;
+  }
+
+  function isTimeInSlot(checkTime, startTime, duration) {
+    const [checkHour] = checkTime.split(":").map(Number);
+    const [startHour] = startTime.split(":").map(Number);
+    return checkHour >= startHour && checkHour < startHour + parseInt(duration);
+  }
+
+  function setupAvailabilityForm() {
+    const addBtn = document.getElementById("add-availability-slot");
+    const container = document.getElementById("availability-container");
+
+    addBtn.addEventListener("click", function () {
+      const firstSlot = container.querySelector(".availability-slot");
+      const newSlot = firstSlot.cloneNode(true);
+
+      // Очищаем значения
+      newSlot.querySelectorAll("input, select").forEach((el) => (el.value = ""));
+
+      // Добавляем слушатель на кнопку удаления
+      newSlot.querySelector(".remove-availability-slot").addEventListener("click", function () {
+        if (container.querySelectorAll(".availability-slot").length > 1) {
+          newSlot.remove();
+        } else {
+          alert("Должна быть хотя бы одна позиция доступности");
+        }
+      });
+
+      container.appendChild(newSlot);
+    });
+
+    // Слушатель для первого слота
+    document.querySelectorAll(".remove-availability-slot").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const slots = container.querySelectorAll(".availability-slot");
+        if (slots.length > 1) {
+          btn.closest(".availability-slot").remove();
+        } else {
+          alert("Должна быть хотя бы одна позиция доступности");
+        }
+      });
+    });
+  }
+
+  function setupFormSubmission() {
+    const submitBtn = document.getElementById("submitApplicationBtn");
+    const form = document.getElementById("vacancyForm");
+
+    submitBtn.addEventListener("click", async function () {
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // Проверка контакта
+      const telegram = form.querySelector('[name="telegram"]').value;
+      const discord = form.querySelector('[name="discord"]').value;
+      const email = form.querySelector('[name="email"]').value;
+
+      if (!telegram && !discord && !email) {
+        alert("Укажите хотя бы один способ связи: Telegram, Discord или Email");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Отправка...';
+
+      try {
+        const formData = gatherFormData(form);
+        await submitApplication(formData);
+
+        // Успешная отправка
+        alert("✓ Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
+        form.reset();
+        const modal = bootstrap.Modal.getInstance(document.getElementById("vacancyApplicationModal"));
+        modal.hide();
+      } catch (error) {
+        console.error("Ошибка при отправке:", error);
+        alert("Ошибка при отправке заявки. Попробуйте ещё раз.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Отправить заявку";
+      }
+    });
+  }
+
+  function gatherFormData(form) {
+    const availability = [];
+    document.querySelectorAll(".availability-slot").forEach((slot) => {
+      availability.push({
+        day: slot.querySelector(".availability-day").value,
+        time_start: slot.querySelector(".availability-time-start").value,
+        duration_hours: slot.querySelector(".availability-duration").value,
+      });
+    });
+
+    return {
+      timestamp: new Date().toISOString(),
+      vacancy_id: VACANCY_DATA.id,
+      vacancy_title: VACANCY_DATA.title,
+      name: form.querySelector('[name="name"]').value,
+      character_nicks: form.querySelector('[name="character_nicks"]').value,
+      telegram: form.querySelector('[name="telegram"]').value,
+      discord: form.querySelector('[name="discord"]').value,
+      email: form.querySelector('[name="email"]').value,
+      availability: availability,
+      additional_info: form.querySelector('[name="additional_info"]').value,
+    };
+  }
+
+  async function submitApplication(formData) {
+    // Отправка на Google Apps Script
+    const response = await fetch("{{ site.google_apps_script_url }}", {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    return response.json();
+  }
+</script>

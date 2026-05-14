@@ -118,7 +118,7 @@ async function displayMessage(msg, method = "prepend") {
     // Проверяем, наше ли это сообщение
     const isOwn = String(authorName).toLowerCase() === String(myNick).toLowerCase();
 
-    // --- 2. ЛОГИКА АВАТАРКИ (ФИКС) ---
+    // --- 2. ЛОГИКА АВАТАРКИ ---
     let userAvatar;
 
     if (isOwn && currentUser?.avatar_url) {
@@ -154,7 +154,7 @@ async function displayMessage(msg, method = "prepend") {
 
     const { html: formattedText, firstUrl } = processText(decryptedText);
     const cleanText = decryptedText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-
+    // console.log("Инфо об авторе сообщения:", msg.author);
     const innerHtml = `
       <div class="msg-actions">
         <div class="msg-btn" onclick="openReactionPicker(event, ${msg.id})">😀</div>
@@ -283,6 +283,7 @@ function scrollToMessage(id) {
 }
 
 let picker = null;
+
 function toggleEmojiPicker() {
     const container = document.getElementById("emoji-picker-container");
     if (!picker) {
@@ -353,19 +354,7 @@ function generatePreview(randomize = false) {
     document.getElementById('profile-preview').src = tempAvatarUrl;
 }
 
-// Обновляем функцию updateProfile (убираем лишний alert, если хочешь)
-async function updateProfile(updates) {
-    const { data, error } = await client.from("profiles").update(updates).eq("id", currentUser.id).select().single();
-    if (!error) {
-        currentUser = data;
-        saveSession(myNick, masterKey, currentUser);
-        renderUserHeader();
-        // Можно добавить маленькое уведомление (Toast) вместо Alert
-    } else {
-        chatAlert("Ошибка", "Не удалось сохранить изменения.");
-    }
-}
-
+// Обновляем функцию updateProfile
 async function updateProfile(updates) {
     const { data, error } = await client.from("profiles").update(updates).eq("id", currentUser.id).select().single();
     if (!error) {

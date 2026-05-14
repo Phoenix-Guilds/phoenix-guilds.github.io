@@ -25,13 +25,7 @@ const ALLOWED_ORIGINS = [
 // =====================================================
 
 function doOptions(e) {
-  var output = ContentService.createTextOutput("");
-  output.setMimeType(ContentService.MimeType.TEXT);
-  output.addHeader('Access-Control-Allow-Origin', '*');
-  output.addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  output.addHeader('Access-Control-Allow-Headers', 'Content-Type');
-  output.addHeader('Access-Control-Max-Age', '86400');
-  return output;
+  return HtmlService.createHtmlOutput("").setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 // =====================================================
@@ -181,35 +175,29 @@ function isOriginAllowed(origin) {
 }
 
 function createSuccessResponse(message, data = {}) {
-  var output = ContentService.createTextOutput(JSON.stringify({
+  var jsonOutput = JSON.stringify({
     success: true,
     message: message,
     data: data,
     timestamp: new Date().toISOString()
-  }));
+  });
   
-  output.setMimeType(ContentService.MimeType.JSON);
-  output.addHeader('Access-Control-Allow-Origin', '*');
-  output.addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  output.addHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  return output;
+  return HtmlService.createHtmlOutput(jsonOutput)
+    .setMimeType(HtmlService.MimeType.JSON)
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function createErrorResponse(message, statusCode = 400) {
-  var output = ContentService.createTextOutput(JSON.stringify({
+  var jsonOutput = JSON.stringify({
     success: false,
     error: message,
     status: statusCode,
     timestamp: new Date().toISOString()
-  }));
+  });
   
-  output.setMimeType(ContentService.MimeType.JSON);
-  output.addHeader('Access-Control-Allow-Origin', '*');
-  output.addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  output.addHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  return output;
+  return HtmlService.createHtmlOutput(jsonOutput)
+    .setMimeType(HtmlService.MimeType.JSON)
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 // =====================================================

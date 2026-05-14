@@ -5,7 +5,7 @@
 
 // ↓ УСТАНОВИТЬ ЭТИ ЗНАЧЕНИЯ ↓
 const SHEET_ID = "17VXVPCC3wpbbVwGBQGDMMzAv-CgGsvDhZ26t6bKvmcA"; // ID таблицы Google Sheets
-const DEPLOYMENT_ID = "AKfycbyPsj40FBCMrtD2CiXBwoQCdRtO56Ml0dvegiRfCjc1xFyv8XRrpc7nEEKGazx3zwgo"; // Идентификатор развертывания Web App
+const DEPLOYMENT_ID = "AKfycbxIUwa9GWQI7O42A9ObVNTAO0MKD8LMM1ssbp18vv75NyBLDQz2cj7lgoozg3TYUzLO"; // Идентификатор развертывания Web App
 const SCRIPT_URL = `https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec`;
 const ADMIN_EMAIL = "buinoff@gmail.com"; // Email для отправки уведомлений (опционально)
 
@@ -26,12 +26,12 @@ const ALLOWED_ORIGINS = [
 
 function doOptions(e) {
   var output = ContentService.createTextOutput("");
-  
-  return output
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type')
-    .setHeader('Access-Control-Max-Age', '86400');
+  output.setMimeType(ContentService.MimeType.TEXT);
+  output.addHeader('Access-Control-Allow-Origin', '*');
+  output.addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  output.addHeader('Access-Control-Allow-Headers', 'Content-Type');
+  output.addHeader('Access-Control-Max-Age', '86400');
+  return output;
 }
 
 // =====================================================
@@ -181,29 +181,35 @@ function isOriginAllowed(origin) {
 }
 
 function createSuccessResponse(message, data = {}) {
-  return ContentService.createTextOutput(JSON.stringify({
+  var output = ContentService.createTextOutput(JSON.stringify({
     success: true,
     message: message,
     data: data,
     timestamp: new Date().toISOString()
-  }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }));
+  
+  output.setMimeType(ContentService.MimeType.JSON);
+  output.addHeader('Access-Control-Allow-Origin', '*');
+  output.addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  output.addHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  return output;
 }
 
 function createErrorResponse(message, statusCode = 400) {
-  return ContentService.createTextOutput(JSON.stringify({
+  var output = ContentService.createTextOutput(JSON.stringify({
     success: false,
     error: message,
     status: statusCode,
     timestamp: new Date().toISOString()
-  }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }));
+  
+  output.setMimeType(ContentService.MimeType.JSON);
+  output.addHeader('Access-Control-Allow-Origin', '*');
+  output.addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  output.addHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  return output;
 }
 
 // =====================================================

@@ -4,7 +4,9 @@
 // =====================================================
 
 // ↓ УСТАНОВИТЬ ЭТИ ЗНАЧЕНИЯ ↓
-const SHEET_ID = "AKfycbyPsj40FBCMrtD2CiXBwoQCdRtO56Ml0dvegiRfCjc1xFyv8XRrpc7nEEKGazx3zwgo"; // Скопировать из URL таблицы (после /d/ и перед /edit)
+const SHEET_ID = "17VXVPCC3wpbbVwGBQGDMMzAv-CgGsvDhZ26t6bKvmcA"; // ID таблицы Google Sheets
+const DEPLOYMENT_ID = "AKfycbyPsj40FBCMrtD2CiXBwoQCdRtO56Ml0dvegiRfCjc1xFyv8XRrpc7nEEKGazx3zwgo"; // Идентификатор развертывания Web App
+const SCRIPT_URL = `https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec`;
 const ADMIN_EMAIL = "buinoff@gmail.com"; // Email для отправки уведомлений (опционально)
 
 // ↑ УСТАНОВИТЬ ЭТИ ЗНАЧЕНИЯ ↑
@@ -12,7 +14,10 @@ const ADMIN_EMAIL = "buinoff@gmail.com"; // Email для отправки уве
 const SHEET_NAME = "Заявки";
 const ALLOWED_ORIGINS = [
   "https://phoenix-guilds.github.io",
-  "http://localhost:4000"
+  "http://localhost",
+  "http://localhost:4000",
+  "http://127.0.0.1",
+  "http://phoenix-guilds.githab.test"
 ];
 
 // =====================================================
@@ -21,8 +26,9 @@ const ALLOWED_ORIGINS = [
 
 function doPost(e) {
   try {
-    // Получить origin из параметров
-    const origin = e.parameter.origin || (e.postData ? JSON.parse(e.postData.contents).origin : "");
+    // Получить origin из параметров или из тела запроса
+    const requestPayload = e.postData ? JSON.parse(e.postData.contents) : {};
+    const origin = e.parameter.origin || requestPayload.origin || "";
     
     // Проверить, разрешён ли этот origin
     if (!isOriginAllowed(origin)) {
@@ -31,7 +37,7 @@ function doPost(e) {
     }
 
     // Получить и парсить тело запроса
-    const payload = JSON.parse(e.postData.contents);
+    const payload = requestPayload;
 
     // Валидация базовых полей
     if (!payload.name || !payload.character_nicks) {

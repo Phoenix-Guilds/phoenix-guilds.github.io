@@ -163,8 +163,10 @@ layout: nest-default
                       <option value="Среда">Среда</option>
                       <option value="Четверг">Четверг</option>
                       <option value="Пятница">Пятница</option>
+                      <option value="Будние дни">Будние дни (Пн-Пт)</option>
                       <option value="Суббота">Суббота</option>
                       <option value="Воскресенье">Воскресенье</option>
+                      <option value="Выходные">Выходные (Сб, Вс)</option>
                     </select>
                   </div>
                   <div class="col-md-3">
@@ -204,6 +206,7 @@ layout: nest-default
           <div class="form-text text-light-50">
             <strong>Важно!</strong> Убедитесь, что указали правильный контакт для связи. Мы свяжемся с вами в ближайшее время.
           </div>
+          <div id="vacancyFormAlert" class="alert d-none mt-3" role="alert"></div>
         </form>
       </div>
       <div class="modal-footer border-secondary">
@@ -281,6 +284,20 @@ layout: nest-default
     setupAvailabilityForm();
     setupFormSubmission();
   });
+
+  function resetFormMessage() {
+    const alertBox = document.getElementById("vacancyFormAlert");
+    if (!alertBox) return;
+    alertBox.className = "alert d-none mt-3";
+    alertBox.textContent = "";
+  }
+
+  function showFormMessage(message, type = "danger") {
+    const alertBox = document.getElementById("vacancyFormAlert");
+    if (!alertBox) return;
+    alertBox.textContent = message;
+    alertBox.className = `alert alert-${type} mt-3`;
+  }
 
   function initializeSchedule() {
     const scheduleBody = document.getElementById("schedule-tbody");
@@ -375,7 +392,7 @@ layout: nest-default
         if (container.querySelectorAll(".availability-slot").length > 1) {
           newSlot.remove();
         } else {
-          alert("Должна быть хотя бы одна позиция доступности");
+          showFormMessage("Должна быть хотя бы одна позиция доступности", "warning");
         }
       });
 
@@ -389,7 +406,7 @@ layout: nest-default
         if (slots.length > 1) {
           btn.closest(".availability-slot").remove();
         } else {
-          alert("Должна быть хотя бы одна позиция доступности");
+          showFormMessage("Должна быть хотя бы одна позиция доступности", "warning");
         }
       });
     });
@@ -400,18 +417,19 @@ layout: nest-default
     const form = document.getElementById("vacancyForm");
 
     submitBtn.addEventListener("click", async function () {
+      resetFormMessage();
+
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
 
-      // Проверка контакта
       const telegram = form.querySelector('[name="telegram"]').value;
       const discord = form.querySelector('[name="discord"]').value;
       const email = form.querySelector('[name="email"]').value;
 
       if (!telegram && !discord && !email) {
-        alert("Укажите хотя бы один способ связи: Telegram, Discord или Email");
+        showFormMessage("Укажите хотя бы один способ связи: Telegram, Discord или Email", "warning");
         return;
       }
 
@@ -420,16 +438,20 @@ layout: nest-default
 
       try {
         const formData = gatherFormData(form);
-        await submitApplication(formData);
+        const responseData = await submitApplication(formData);
 
-        // Успешная отправка
-        alert("✓ Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
+        if (!responseData.success) {
+          showFormMessage(responseData.error || "Ошибка при отправке заявки. Попробуйте ещё раз.", "danger");
+          return;
+        }
+
+        showFormMessage("✓ Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.", "success");
         form.reset();
         const modal = bootstrap.Modal.getInstance(document.getElementById("vacancyApplicationModal"));
-        modal.hide();
+        setTimeout(() => modal.hide(), 1200);
       } catch (error) {
         console.error("Ошибка при отправке:", error);
-        alert("Ошибка при отправке заявки. Попробуйте ещё раз.");
+        showFormMessage("Ошибка при отправке заявки. Попробуйте ещё раз.", "danger");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = "Отправить заявку";
@@ -439,16 +461,29 @@ layout: nest-default
 
   function gatherFormData(form) {
     const availability = [];
+    const dayGroups = {
+      "Будние дни": ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница"],
+      "Выходные": ["Суббота", "Воскресенье"],
+    };
+
     document.querySelectorAll(".availability-slot").forEach((slot) => {
-      availability.push({
-        day: slot.querySelector(".availability-day").value,
-        time_start: slot.querySelector(".availability-time-start").value,
-        duration_hours: slot.querySelector(".availability-duration").value,
+      const dayValue = slot.querySelector(".availability-day").value;
+      const timeStart = slot.querySelector(".availability-time-start").value;
+      const duration = slot.querySelector(".availability-duration").value;
+
+      const days = dayGroups[dayValue] || [dayValue];
+      days.forEach((day) => {
+        availability.push({
+          day: day,
+          time_start: timeStart,
+          duration_hours: duration,
+        });
       });
     });
 
     return {
       timestamp: new Date().toISOString(),
+      origin: window.location.origin,
       vacancy_id: VACANCY_DATA.id,
       vacancy_title: VACANCY_DATA.title,
       name: form.querySelector('[name="name"]').value,
@@ -471,10 +506,12 @@ layout: nest-default
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    const responseData = await response.json();
+
+    if (!response.ok || !responseData.success) {
+      throw new Error(responseData.error || `HTTP ${response.status}`);
     }
 
-    return response.json();
+    return responseData;
   }
 </script>

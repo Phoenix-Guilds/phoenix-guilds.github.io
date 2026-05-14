@@ -3,7 +3,7 @@ layout: nest-vacancy
 title: Складской помощник
 description: Поддержка склада, выдача и/или прием предметов со склада/на банкиров.
 slots_total: 5
-slots_filled: 4
+slots_filled: 0
 requirements: >-
   * Желание и готовность помогать другим игрокам
 

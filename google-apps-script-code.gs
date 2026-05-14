@@ -21,6 +21,20 @@ const ALLOWED_ORIGINS = [
 ];
 
 // =====================================================
+// 0. Обработка preflight CORS запроса
+// =====================================================
+
+function doOptions(e) {
+  var output = ContentService.createTextOutput("");
+  
+  return output
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    .setHeader('Access-Control-Max-Age', '86400');
+}
+
+// =====================================================
 // 1. Обработка POST запроса (отправка заявки)
 // =====================================================
 
@@ -144,10 +158,26 @@ function doGet(e) {
 // =====================================================
 
 function isOriginAllowed(origin) {
-  if (!origin) return false;
-  return ALLOWED_ORIGINS.some(allowed => 
-    origin === allowed || origin.includes(allowed)
-  );
+  if (!origin) return true; // Разрешить пустой origin для локального тестирования
+  
+  const allowedOrigins = ALLOWED_ORIGINS;
+  
+  // Проверить точное совпадение
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+  
+  // Проверить по префиксу для localhost
+  if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+    return true;
+  }
+  
+  // Проверить github.io
+  if (origin.includes('github.io')) {
+    return true;
+  }
+  
+  return false;
 }
 
 function createSuccessResponse(message, data = {}) {
@@ -156,7 +186,11 @@ function createSuccessResponse(message, data = {}) {
     message: message,
     data: data,
     timestamp: new Date().toISOString()
-  })).setMimeType(ContentService.MimeType.JSON);
+  }))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 function createErrorResponse(message, statusCode = 400) {
@@ -165,7 +199,11 @@ function createErrorResponse(message, statusCode = 400) {
     error: message,
     status: statusCode,
     timestamp: new Date().toISOString()
-  })).setMimeType(ContentService.MimeType.JSON);
+  }))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 // =====================================================

@@ -1,3 +1,5 @@
+let pendingMasterKey = "";
+
 // Инициализация
 function checkPersistedSession() {
     const sessionRaw = localStorage.getItem(STORAGE_KEY);
@@ -37,54 +39,105 @@ function saveSession(nick, key, user) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
 }
 
-// Функция входа (обновленная)
-async function initChat() {
-    const nickInput = document.getElementById("user-nick").value.trim();
-    const masterPass = document.getElementById("secret-key").value.trim();
-
-    if (!nickInput || !masterPass) return chatAlert("Внимание", "Введите ник и пароль чата!");
-
-    const { data: settings, error: sError } = await client.from("chat_settings").select("*").single();
-    if (sError) return chatAlert("Ошибка", "Ошибка связи с БД");
-
-    const masterHash = CryptoJS.SHA256(masterPass).toString();
-    if (masterHash !== settings.password_hash) return chatAlert("Ошибка", "Неверный пароль чата!");
+async function checkChatRoomPassword(event) {
+    event.preventDefault();
+    const masterPass = document.getElementById("secret-key").value;
+    const errorBox = document.getElementById("chat-auth-error");
+    const submitButton = document.querySelector("#chat-room-auth-form button[type='submit']");
+    errorBox.textContent = "";
+    submitButton.disabled = true;
 
     try {
-        const bytes = CryptoJS.AES.decrypt(settings.encrypted_master_key, masterPass);
-        masterKey = bytes.toString(CryptoJS.enc.Utf8);
-    } catch (e) { return chatAlert("Ошибка", "Ошибка дешифровки!"); }
+        const { data: settings, error } = await client
+            .from("chat_settings")
+            .select("password_hash, encrypted_master_key")
+            .single();
+        if (error) throw new Error("Ошибка связи с БД.");
 
-    const { data: profile } = await client.from("profiles").select("*").eq("username", nickInput).single();
-
-    if (!profile) {
-        const userPass = await chatPrompt("Регистрация", `Ник "${nickInput}" свободен. Придумайте личный пароль:`);
-        if (!userPass) return;
-
-        const { data: newProfile, error: regError } = await client.from("profiles").insert([{
-            username: nickInput,
-            password_hash: CryptoJS.SHA256(userPass).toString(),
-            avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${nickInput}`
-        }]).select().single();
-
-        if (regError) return chatAlert("Ошибка", "Ошибка регистрации");
-        currentUser = newProfile;
-    } else {
-        const userPass = await chatPrompt("Авторизация", `Введите личный пароль для "${nickInput}":`);
-        if (!userPass) return;
-
-        if (CryptoJS.SHA256(userPass).toString() !== profile.password_hash) {
-            return chatAlert("Ошибка", "Неверный личный пароль!");
+        if (CryptoJS.SHA256(masterPass).toString() !== settings.password_hash) {
+            throw new Error("Неверный общий пароль чата.");
         }
-        if (profile.is_banned) return chatAlert("Доступ закрыт", "Ваш аккаунт заблокирован!");
 
-        currentUser = profile;
+        pendingMasterKey = CryptoJS.AES.decrypt(settings.encrypted_master_key, masterPass)
+            .toString(CryptoJS.enc.Utf8);
+        if (!pendingMasterKey) throw new Error("Не удалось открыть ключ шифрования чата.");
+
+        document.getElementById("secret-key").value = "";
+        document.getElementById("chat-room-auth-form").style.display = "none";
+        document.getElementById("chat-user-auth-form").style.display = "block";
+        document.getElementById("chat-auth-description").textContent = "Введите личный логин и пароль.";
+        document.getElementById("user-nick").focus();
+    } catch (error) {
+        errorBox.textContent = error.message || "Не удалось проверить общий пароль.";
+    } finally {
+        submitButton.disabled = false;
     }
-
-    myNick = currentUser.username;
-    saveSession(myNick, masterKey, currentUser);
-    enterChatUI();
 }
+
+async function initChat(event) {
+    event.preventDefault();
+    const nickInput = document.getElementById("user-nick").value.trim();
+    const userPass = document.getElementById("user-password").value;
+    const errorBox = document.getElementById("chat-auth-error");
+    const submitButton = document.querySelector("#chat-user-auth-form button[type='submit']");
+    errorBox.textContent = "";
+    submitButton.disabled = true;
+
+    try {
+        if (!pendingMasterKey) throw new Error("Сначала введите общий пароль чата.");
+        if (!nickInput || !userPass) throw new Error("Введите личный логин и пароль.");
+
+        const { data: profile, error: profileError } = await client
+            .from("profiles")
+            .select("*")
+            .eq("username", nickInput)
+            .maybeSingle();
+        if (profileError) throw new Error("Не удалось проверить личный аккаунт.");
+
+        if (!profile) {
+            const { data: newProfile, error } = await client.from("profiles").insert([{
+                username: nickInput,
+                password_hash: CryptoJS.SHA256(userPass).toString(),
+                avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(nickInput)}`
+            }]).select().single();
+            if (error) {
+                throw new Error(error.code === "23505"
+                    ? "Этот логин уже зарегистрирован. Проверьте личный пароль."
+                    : "Ошибка регистрации аккаунта.");
+            }
+            currentUser = newProfile;
+        } else {
+            if (profile.is_banned) throw new Error("Ваш аккаунт заблокирован.");
+            if (CryptoJS.SHA256(userPass).toString() !== profile.password_hash) {
+                throw new Error("Неверный личный пароль.");
+            }
+            currentUser = profile;
+        }
+
+        myNick = currentUser.username;
+        masterKey = pendingMasterKey;
+        pendingMasterKey = "";
+        saveSession(myNick, masterKey, currentUser);
+        enterChatUI();
+    } catch (error) {
+        errorBox.textContent = error.message || "Не удалось выполнить вход.";
+    } finally {
+        submitButton.disabled = false;
+    }
+}
+
+document.getElementById("chat-room-auth-form").addEventListener("submit", checkChatRoomPassword);
+document.getElementById("chat-user-auth-form").addEventListener("submit", initChat);
+document.getElementById("chat-auth-back").addEventListener("click", () => {
+    pendingMasterKey = "";
+    document.getElementById("user-nick").value = "";
+    document.getElementById("user-password").value = "";
+    document.getElementById("chat-user-auth-form").style.display = "none";
+    document.getElementById("chat-room-auth-form").style.display = "block";
+    document.getElementById("chat-auth-description").textContent = "Сначала подтвердите доступ общим паролем чата.";
+    document.getElementById("chat-auth-error").textContent = "";
+    document.getElementById("secret-key").focus();
+});
 
 // Общая логика входа в интерфейс
 function enterChatUI() {

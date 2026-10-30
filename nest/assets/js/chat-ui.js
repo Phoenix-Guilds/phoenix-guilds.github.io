@@ -110,13 +110,18 @@ async function displayMessage(msg, method = "prepend") {
     // --- 1. ПРОВЕРКА НА РЕДАКТИРОВАНИЕ ---
     const existing = document.getElementById(`msg-${msg.id}`);
 
-    // Определяем имя автора
-    let authorName = typeof msg.author === 'object'
-        ? (msg.author_name || msg.author.username)
-        : (msg.author_name || msg.author);
+    // Supabase returns the author as a string in Realtime and may return a
+    // related profile object when loading message history.
+    const authorProfile = msg.author && typeof msg.author === "object" ? msg.author : null;
+    const authorName = String(
+        (typeof msg.author_name === "string" && msg.author_name)
+        || (typeof msg.author === "string" && msg.author)
+        || authorProfile?.username
+        || ""
+    ).trim();
 
-    // Проверяем, наше ли это сообщение
-    const isOwn = String(authorName).toLowerCase() === String(myNick).toLowerCase();
+    const currentNick = String(currentUser?.username || myNick || "").trim();
+    const isOwn = authorName.localeCompare(currentNick, undefined, { sensitivity: "accent" }) === 0;
 
     // --- 2. ЛОГИКА АВАТАРКИ ---
     let userAvatar;
